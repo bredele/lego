@@ -38,6 +38,64 @@ describe("Store", function() {
       var store = new Store();
       assert.equal(store.get('name'), undefined);
      });
+
+    it("should delete a store attribute", function() {
+      var store = new Store();
+      store.set('name', 'olivier');
+      store.del('name');
+      assert.equal(store.get('name'), undefined);
+    });
+
+    it("should not delete a model attribute that doesn't exist", function() {
+      var store = new Store();
+      store.del('name');
+      assert.equal(store.get('name'), undefined);
+    });
+  });
+
+  describe("emitter", function() {
+
+    describe("on set", function() {
+
+      it("emits a 'change' event", function() {
+        var store = new Store(),
+            event = {};
+
+         store.on('change', function(name, value){
+           event[name] = value;
+         });
+         store.set('name', 'olivier');
+
+         assert.equal(event.name,'olivier');
+       });
+
+       it("emits a 'change' event only if attribute has changed", function() {
+         var store = new Store(),
+             changed = false;
+
+         store.set('name', 'olivier');
+         store.on('change', function(name, value){
+           changed = true;
+         });
+         store.set('name', 'olivier');
+         assert.equal(changed, false);
+       });
+
+       it("emits a 'change' event with the current and previous value", function() {
+         var store = new Store(),
+             event = {};
+
+         store.set('name', 'olivier');
+         store.on('change', function(name, value, prev){
+           event[name] = [value, prev];
+         });
+         store.set('name', 'bredele');
+
+         assert.equal(event.name[0], 'bredele');
+         assert.equal(event.name[1], 'olivier');    
+       });
+    });
+    
   });
   
 });

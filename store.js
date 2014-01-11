@@ -55,3 +55,36 @@ Store.prototype.get = function(name) {
   }
   return value;
 };
+
+
+/**
+ * Get store attribute.
+ * @param {String} name
+ * @return {Everything}
+ * @api private
+ */
+
+Store.prototype.has = function(name) {
+  return this.data.hasOwnProperty(name);
+};
+
+
+/**
+ * Delete store attribute.
+ * @param {String} name
+ * @return {Everything}
+ * @api public
+ */
+
+Store.prototype.del = function(name) {
+  //TODO:refactor this is ugly
+  if(this.has(name)){
+    if(this.data instanceof Array){
+      this.data.splice(name, 1);
+    } else {
+      delete this.data[name]; //NOTE: do we need to return something?
+    }
+    this.emit('deleted', name, name);
+    this.emit('deleted ' + name, name);
+  }
+};
