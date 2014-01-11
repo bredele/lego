@@ -21,7 +21,6 @@ module.exports = Emitter;
 
 function Emitter(obj) {
   if (obj) return utils.mixin(Emitter.prototype, obj);
-  this.listeners = {};
 }
 
 
@@ -34,6 +33,7 @@ function Emitter(obj) {
  */
 
 Emitter.prototype.on = function(event, fn, scope){
+	this.listeners = this.listeners || {};
 	(this.listeners[event] = this.listeners[event] || []).push([fn, scope]);
 	return this;
 };
@@ -49,11 +49,11 @@ Emitter.prototype.on = function(event, fn, scope){
  */
 
 Emitter.prototype.once = function(event, fn, scope){
+	this.listeners = this.listeners || {};
 	var on = function() {
 		fn.apply(scope, arguments);
 		this.off(event, on);
 	};
-
 	this.on(event, on, this);
 };
 
@@ -68,6 +68,7 @@ Emitter.prototype.once = function(event, fn, scope){
  */
 
 Emitter.prototype.off = function(event, fn){
+	this.listeners = this.listeners || {};
 	if(arguments.length === 0) this.listeners = {};
 	if(!fn) {
 		delete this.listeners[event];
@@ -90,6 +91,7 @@ Emitter.prototype.off = function(event, fn){
  */
 
 Emitter.prototype.emit = function(event){
+	this.listeners = this.listeners || {};
 	var listeners = this.listeners[event];
 	if(!listeners) return;
 	for(var i = 0, l = listeners.length; i < l; i++) {
