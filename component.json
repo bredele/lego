@@ -12,6 +12,8 @@
     "maple.js",
     "view.js",
     "store.js",
-    "emitter.js"
+    "emitter.js",
+    "lib/app.js",
+    "lib/utils.js"
   ]
 }
