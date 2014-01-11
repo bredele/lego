@@ -7,8 +7,11 @@
   "dependencies": {},
   "development": {},
   "license": "MIT",
-  "main": "src/maple.js",
+  "main": "maple.js",
   "scripts": [
-    "src/maple.js"
+    "maple.js",
+    "view.js",
+    "store.js",
+    "emitter.js"
   ]
 }
