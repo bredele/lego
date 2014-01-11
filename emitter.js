@@ -33,8 +33,8 @@ function Emitter(obj) {
  * @api public
  */
 
-Emitter.prototype.on = function(event, fn){
-	(this.listeners[event] = this.listeners[event] || []).push(fn);
+Emitter.prototype.on = function(event, fn, scope){
+	(this.listeners[event] = this.listeners[event] || []).push([fn, scope]);
 	return this;
 };
 
@@ -48,8 +48,10 @@ Emitter.prototype.on = function(event, fn){
  * @api public
  */
 
-Emitter.prototype.once = function(event, fn){
-	
+Emitter.prototype.once = function(event, fn, scope){
+	this.on(event, function() {
+
+	}, scope);
 };
 
 
@@ -63,6 +65,16 @@ Emitter.prototype.once = function(event, fn){
  */
 
 Emitter.prototype.off = function(event, fn){
+	if(arguments.length === 0) this.listeners = {};
+	if(!fn) {
+		delete this.listeners[event];
+	} else {
+		var listeners = this.listeners[event];
+		for(var l = listeners.length; l--;) {
+			if(listeners[l][0] === fn) listeners.splice(l,1);
+		}
+	}
+
 
 };
 
@@ -75,8 +87,10 @@ Emitter.prototype.off = function(event, fn){
  */
 
 Emitter.prototype.emit = function(event){
-	if(!this.listeners[event]) return;
-	for(var i = 0, l = this.listeners[event].length; i < l; i++) {
-		this.listeners[event][i].apply(this, utils.toArray(arguments, 1));
+	var listeners = this.listeners[event];
+	if(!listeners) return;
+	for(var i = 0, l = listeners.length; i < l; i++) {
+		var listener = listeners[i];
+		listener[0].apply(listener[1], utils.toArray(arguments, 1));
 	}
 };

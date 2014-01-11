@@ -23,7 +23,7 @@ describe("Emitter", function() {
 			emitter.on('foo', function(val) {
 				call = val;
 			});
-			
+
 			emitter.emit('foo', 'maple');
 			emitter.emit('bar');
 
@@ -47,6 +47,76 @@ describe("Emitter", function() {
 			assert.deepEqual(calls, ['one', 0, 'two', 0, 'one', 1, 'two', 1]);
 		});
 
+		//NOTE: is scope necessary?
+		it('should execute listener in scope', function() {
+			var emitter = new Emitter(),
+					scope = {label: 'maple'},
+			    call = null;
+
+			emitter.on('foo', function(val) {
+				call = scope[val];
+			}, scope)
+			emitter.emit('foo', 'label');
+			assert.equal(call, 'maple');
+		});
+
+	});
+
+	describe(".off()", function() {
+		it("should remove all listeners", function() {
+			var emitter = new Emitter();
+			emitter.on('foo', function(){});
+			emitter.on('bar', function(){});
+
+			emitter.off();
+			assert.deepEqual(emitter.listeners, {});
+		});
+
+		it('should remove all listeners for an event', function() {
+			var emitter = new Emitter();
+			emitter.on('foo', function(){});
+			emitter.on('foo', function(){});
+			emitter.on('bar', function(){});
+			emitter.off('foo');
+			assert.equal(emitter.listeners['foo'], undefined);
+		});
+
+		it('should remove a specific listener for an event', function() {
+			var emitter = new Emitter(),
+					call = "",
+					fn = function(){
+						call += 'is awesome'; 
+					};
+
+			emitter.on('foo', fn);
+			emitter.on('foo', fn);			
+			emitter.on('foo', function(val){
+				call += 'maple'
+			});
+			emitter.off('foo', fn);
+			emitter.emit('foo');
+
+			assert.equal(call, 'maple');
+		});
+		
+	});
+	
+	
+	describe(".once(event, fn)", function() {
+		it("should execute once listener", function() {
+			var emitter = new Emitter(),
+			    call = 0;
+
+			emitter.once('foo', function() {
+				call++;
+			});
+
+			emitter.emit('foo');
+			emitter.emit('foo');
+
+			assert.equal(call, 1);
+		});
+		
 	});
 	
 	
