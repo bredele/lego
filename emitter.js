@@ -3,8 +3,8 @@
  * Dependencies.
  */
 
-var mixin = require('utils').mixin;
-
+var mixin = require('./lib/utils').mixin;
+//NOTES: should we move utils to the root?
 
 /**
  * Expose `Emitter`.
@@ -20,7 +20,7 @@ module.exports = Emitter;
  */
 
 function Emitter(obj) {
-  if (obj) return mixin(obj);
+  if (obj) return mixin(Emitter.prototype, obj);
 }
 
 
