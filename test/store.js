@@ -96,6 +96,38 @@ describe("Store", function() {
        });
     });
     
+    describe("on delete", function() {
+
+      it("emits a 'deleted' event", function() {
+        var store = new Store(),
+            isDeleted = false,
+            deletedAttr = '';
+
+        store.set('name', 'olivier');
+        store.on('deleted', function(name){
+          isDeleted = true;
+          deletedAttr = name;
+        });
+        store.del('name');
+        assert.equal(isDeleted, true);
+        assert.equal(deletedAttr, 'name');
+      });
+
+      it("doesn't emit a 'deleted' event if attribute doesn't exist", function() {
+        var store = new Store(),
+            isDeleted = false,
+            deletedAttr = '';
+
+        store.on('deleted', function(name){
+          isDeleted = true;
+          deletedAttr = name;
+        });
+        store.del('name');
+        assert.equal(isDeleted, false);
+        assert.equal(deletedAttr, '');
+      });
+    });
+    
   });
   
 });
