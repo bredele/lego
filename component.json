@@ -5,7 +5,9 @@
   "version": "0.0.1",
   "keywords": [],
   "dependencies": {},
-  "development": {},
+  "development": {
+    "component/assert": "*"
+  },
   "license": "MIT",
   "main": "maple.js",
   "scripts": [
