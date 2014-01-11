@@ -3,7 +3,7 @@
  * Dependencies.
  */
 
-var mixin = require('./lib/utils').mixin;
+var utils = require('./lib/utils');
 //NOTES: should we move utils to the root?
 
 /**
@@ -20,7 +20,8 @@ module.exports = Emitter;
  */
 
 function Emitter(obj) {
-  if (obj) return mixin(Emitter.prototype, obj);
+  if (obj) return utils.mixin(Emitter.prototype, obj);
+  this.listeners = {};
 }
 
 
@@ -33,7 +34,8 @@ function Emitter(obj) {
  */
 
 Emitter.prototype.on = function(event, fn){
-
+	(this.listeners[event] = this.listeners[event] || []).push(fn);
+	return this;
 };
 
 
@@ -47,7 +49,7 @@ Emitter.prototype.on = function(event, fn){
  */
 
 Emitter.prototype.once = function(event, fn){
-
+	
 };
 
 
@@ -73,7 +75,8 @@ Emitter.prototype.off = function(event, fn){
  */
 
 Emitter.prototype.emit = function(event){
-
+	if(!this.listeners[event]) return;
+	for(var i = 0, l = this.listeners[event].length; i < l; i++) {
+		this.listeners[event][i].apply(this, utils.toArray(arguments, 1));
+	}
 };
-
-

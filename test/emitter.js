@@ -23,7 +23,9 @@ describe("Emitter", function() {
 			emitter.on('foo', function(val) {
 				call = val;
 			});
+			
 			emitter.emit('foo', 'maple');
+			emitter.emit('bar');
 
 			assert.equal(call, 'maple');
 		});
