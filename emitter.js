@@ -49,9 +49,12 @@ Emitter.prototype.on = function(event, fn, scope){
  */
 
 Emitter.prototype.once = function(event, fn, scope){
-	this.on(event, function() {
+	var on = function() {
+		fn.apply(scope, arguments);
+		this.off(event, on);
+	};
 
-	}, scope);
+	this.on(event, on, this);
 };
 
 
