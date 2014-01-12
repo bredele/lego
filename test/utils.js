@@ -47,5 +47,54 @@ describe("Utils", function() {
 	    assert.equal('olivier', copy.github.name);    
 	  });
 	});
+
+	describe("each", function() {
+		var each = utils.each;
+		describe('object', function(){
+			it('should iterate through each key/value pair', function(){
+				var obj = {
+					name : 'olivier',
+					github : 'bredele'
+				};
+				var results = {};
+				each(obj, function(key, val){
+					results[key] = val;
+				});
+
+				assert.deepEqual(obj, results);
+			});
+		});
+
+		describe('array', function(){
+			it('should iterate through each values', function(){
+				var obj = ['olivier', 'bredele'];
+				var results = [];
+		    //keys are array index
+		    each(obj, function(key, val){
+		    	results[key] = val;
+		    });
+		    assert.deepEqual(obj, results);
+		  });
+		});
+
+
+		describe('scope', function(){
+			it('should apply callback in passed scope', function(){
+				var obj = ['olivier', 'wietrich'];
+
+				var scope = {
+					names : []
+				};
+
+				each(obj, function(key, val){
+					this.names.push(val);
+				}, scope);
+
+				assert.deepEqual(scope.names, obj);
+			});
+		});
+
+	});
+	
 	
 });
