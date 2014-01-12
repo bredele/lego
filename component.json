@@ -6,7 +6,8 @@
   "keywords": [],
   "dependencies": {},
   "development": {
-    "component/assert": "*"
+    "component/assert": "*",
+    "component/domify": "*"
   },
   "license": "MIT",
   "main": "maple.js",
@@ -17,6 +18,8 @@
     "emitter.js",
     "binding.js",
     "lib/app.js",
+    "lib/supplant.js",    
+    "lib/subs.js",
     "lib/utils.js"
   ]
 }

@@ -14,6 +14,23 @@ describe("Utils", function() {
 		
 	});
 
+	describe("trim", function() {
+		var trim = utils.trim;
+		it('should trim string', function() {
+			assert.equal('maple is awesome', trim('    maple is awesome   '));
+		});
+	});
+
+
+	describe("indexOf", function() {
+		var indexOf = utils.indexOf;
+		it('arrays', function () {
+		  var array = ['maple','canada'];
+		  assert.equal(indexOf(array, 'canada'), 1);
+		});
+	});
+	
+
 	describe("to array", function() {
 		var toArray = utils.toArray;
 		it("transform an array-like into an array", function() {
