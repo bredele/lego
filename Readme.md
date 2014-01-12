@@ -1,13 +1,13 @@
 
-# maple
+# test
 
-  webapp toolset
+  d
 
 ## Installation
 
   Install with [component(1)](http://component.io):
 
-    $ component install bredele/maple
+    $ component install bredele/test
 
 ## API
 

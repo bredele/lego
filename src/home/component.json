@@ -1,0 +1,9 @@
+{
+  "name": "home",
+  "dependencies": {},
+  "development": {},
+  "main": "index.js",
+  "scripts": [
+    "index.js"
+  ]
+}

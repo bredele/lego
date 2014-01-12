@@ -1,25 +1,9 @@
 {
   "name": "maple",
-  "repo": "bredele/maple",
-  "description": "webapp toolset",
-  "version": "0.0.1",
-  "keywords": [],
-  "dependencies": {},
-  "development": {
-    "component/assert": "*",
-    "component/domify": "*"
-  },
-  "license": "MIT",
-  "main": "maple.js",
-  "scripts": [
-    "maple.js",
-    "view.js",
-    "store.js",
-    "emitter.js",
-    "binding.js",
-    "lib/app.js",
-    "lib/supplant.js",    
-    "lib/subs.js",
-    "lib/utils.js"
+  "paths": [
+    "src"
+  ],
+  "local": [
+    "home"
   ]
 }
