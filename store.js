@@ -112,6 +112,24 @@ Store.prototype.compute = function(name, callback) {
 
 
 /**
+ * Set format middleware.
+ * Call formatter everytime a getter is called.
+ * A formatter should always return a value.
+ * 
+ * @param {String} name
+ * @param {Function} callback
+ * @param {Object} scope
+ * @return this
+ * @api public
+ */
+
+Store.prototype.format = function(name, callback, scope) {
+  this.formatters[name] = [callback,scope];
+  return this;
+};
+
+
+/**
  * Reset store
  * @param  {Object} data 
  * @api public

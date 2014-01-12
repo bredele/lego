@@ -164,6 +164,17 @@ describe("Store", function() {
       assert.equal(isDeleted, true);
     });
   });
+
+  describe('formatter', function(){
+    it("should return the formatted data", function() {
+      var store = new Store();
+      store.format('name', function(value){
+        return value.toUpperCase();
+      });
+      store.set('name', 'olivier');
+      assert.equal(store.get('name'), 'OLIVIER');
+    });
+  });
   
   describe('computed attributes', function(){
     it("multiple attributes", function() {
