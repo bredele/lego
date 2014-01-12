@@ -165,7 +165,7 @@ describe("Store", function() {
     });
   });
 
-  describe('formatter', function(){
+  describe('formatter', function() {
     it("should return the formatted data", function() {
       var store = new Store();
       store.format('name', function(value){
@@ -176,7 +176,7 @@ describe("Store", function() {
     });
   });
   
-  describe('computed attributes', function(){
+  describe('computed attributes', function() {
     it("multiple attributes", function() {
       var store = new Store({
         firstname: 'olivier',
@@ -209,5 +209,41 @@ describe("Store", function() {
       assert.equal(hasChanged, true);   
     });
   });
+
+  describe("loop", function() {
+    it("loops through data", function() {
+      var keys = '';
+      var values = '';
+      var store = new Store({
+        name : 'olivier',
+        github: 'bredele'
+      });
+      store.loop(function(key, val) {
+        keys += key;
+        values += val;
+      });
+      assert.equal(keys, 'namegithub');
+      assert.equal(values, 'olivierbredele');
+    });
+  });
+
+  describe("Localstore", function() {
+    it("persists data in local store", function() {
+      var store = new Store({
+        name: 'olivier'
+      });
+      store.local('bredele');
+      assert.equal(localStorage.getItem('bredele'), store.toJSON());
+    });
+
+    it("should synchronize data with local store", function() {
+      var store = new Store();
+      store.local('bredele', true);
+      assert.equal(store.get('name'), 'olivier');
+    });
+    
+    
+  });
+  
   
 });

@@ -1,5 +1,6 @@
 var Emitter = require('./emitter'),
-		utils = require('./lib/utils');
+		utils = require('./lib/utils'),
+		storage = window.localStorage;
 
 /**
  * Expose 'Store'
@@ -156,4 +157,44 @@ Store.prototype.reset = function(data) {
   		this.emit('change ' + key, val, prev);
   	}
   }, this);
+};
+
+
+/**
+ * Loop through store data.
+ * @param  {Function} cb   
+ * @param  {[type]}   scope 
+ * @api public
+ */
+
+Store.prototype.loop = function(cb, scope) {
+  utils.each(this.data, cb, scope || this);
+};
+
+
+/**
+ * Synchronize with local storage.
+ * 
+ * @param  {String} name 
+ * @param  {Boolean} bool save in localstore
+ * @api public
+ */
+
+Store.prototype.local = function(name, bool) {
+  if(!bool) {
+    storage.setItem(name, this.toJSON());
+  } else {
+    this.reset(JSON.parse(storage.getItem(name)));
+  }
+};
+
+
+/**
+ * Stringify model
+ * @return {String} json
+ * @api public
+ */
+
+Store.prototype.toJSON = function() {
+  return JSON.stringify(this.data);
 };
