@@ -190,6 +190,22 @@ Store.prototype.local = function(name, bool) {
 
 
 /**
+ * Use middlewares to extend store.
+ * A middleware is a function with the store
+ * as first argument.
+ * 
+ * @param  {Function} fn 
+ * @return {this}
+ * @api public
+ */
+
+Store.prototype.use = function(fn) {
+  fn(this);
+  return this;
+};
+
+
+/**
  * Stringify model
  * @return {String} json
  * @api public
