@@ -96,6 +96,6 @@ Emitter.prototype.emit = function(event){
 	if(!listeners) return;
 	for(var i = 0, l = listeners.length; i < l; i++) {
 		var listener = listeners[i];
-		listener[0].apply(listener[1], utils.toArray(arguments, 1));
+		listener[0].apply(listener[1] || this, utils.toArray(arguments, 1));
 	}
 };

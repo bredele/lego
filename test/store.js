@@ -141,7 +141,7 @@ describe("Store", function() {
       store.reset({
         github:'bredele'
       });
-      
+
       assert.equal(undefined, store.get('name'));
       assert.equal(undefined, store.get('twitter'));
       assert.equal('bredele', store.get('github'));
@@ -165,5 +165,38 @@ describe("Store", function() {
     });
   });
   
+  describe('computed attributes', function(){
+    it("multiple attributes", function() {
+      var store = new Store({
+        firstname: 'olivier',
+        lastname: 'wietrich'
+      });
+      store.compute('name', function(){
+        return this.firstname + ' ' + this.lastname;
+      });
+      assert.equal(store.get('name'), 'olivier wietrich');
+    });
+
+    it("listens changes on a computed attribute", function() {
+      var store = new Store({
+          firstname: 'olivier',
+          lastname: 'wietrich'
+        }),
+        hasChanged = false;
+
+      store.compute('name', function(){
+        return this.firstname + ' ' + this.lastname;
+      });
+
+      store.on('change name', function(value){
+        hasChanged = true;
+
+      });
+      store.set('firstname', 'nicolas');
+
+      assert.equal(store.get('name'), 'nicolas wietrich');
+      assert.equal(hasChanged, true);   
+    });
+  });
   
 });

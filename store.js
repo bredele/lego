@@ -92,6 +92,26 @@ Store.prototype.del = function(name) {
 
 
 /**
+ * Compute store attributes
+ * @param  {String} name
+ * @return {Function} callback                
+ * @api public
+ */
+
+Store.prototype.compute = function(name, callback) {
+  var str = callback.toString();
+  var attrs = str.match(/this.[a-zA-Z0-9]*/g);
+
+  this.set(name, callback.call(this.data)); //TODO: refactor (may be use replace)
+  for(var l = attrs.length; l--;){
+    this.on('change ' + attrs[l].slice(5), function(){
+      this.set(name, callback.call(this.data));
+    });
+  }
+};
+
+
+/**
  * Reset store
  * @param  {Object} data 
  * @api public
@@ -103,7 +123,7 @@ Store.prototype.reset = function(data) {
 
 	this.data = data;
 
-	each(copy, function(key, val){
+	utils.each(copy, function(key, val){
 		if(typeof data[key] === 'undefined'){
 			this.emit('deleted', key, length);
 			this.emit('deleted ' + key, length);
@@ -111,7 +131,7 @@ Store.prototype.reset = function(data) {
 	}, this);
 
   //set new attributes
-  each(data, function(key, val){
+  utils.each(data, function(key, val){
   	var prev = copy[key];
   	if(prev !== val) {
   		this.emit('change', key, val, prev);
