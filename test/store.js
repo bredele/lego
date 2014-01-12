@@ -227,7 +227,7 @@ describe("Store", function() {
     });
   });
 
-  describe("Localstore", function() {
+  describe("local storage", function() {
     it("persists data in local store", function() {
       var store = new Store({
         name: 'olivier'
@@ -253,7 +253,7 @@ describe("Store", function() {
     });
   });
   
-  describe("Serialize", function() {
+  describe("serialize", function() {
     it('should serialize data .toJSON()', function(){
       var store = new Store({
         name : 'olivier',

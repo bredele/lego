@@ -15,6 +15,7 @@
     "view.js",
     "store.js",
     "emitter.js",
+    "binding.js",
     "lib/app.js",
     "lib/utils.js"
   ]
