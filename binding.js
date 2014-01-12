@@ -19,6 +19,28 @@ function Binding(model) {
 	this.plugins = {};
 }
 
+function parser(str) {
+	str = str.replace(/ /g,'');
+	var phrases = str ? str.split(';') : ['main'],
+	    results = [];
+  for(var i = 0, l = phrases.length; i < l; i++) {
+  	var expr = phrases[i].split(':'),
+  	    params = [],
+  	    name = expr[0];
+
+  	if(expr[1]) {
+  		params = expr[1].split(',');
+  	} else {
+  		name = 'main';
+  	}
+
+  	results.push({
+  		method: expr[0],
+  		params: params
+  	});
+  }
+  return results;
+}
 
 /**
  * Bind object as function.
@@ -59,7 +81,6 @@ Binding.prototype.add = function(name, plugin) {
 
 Binding.prototype.bindAttrs = function(node) {
   var attrs = node.attributes;
-  //reverse loop doesn't work on IE...
   for(var i = 0, l = attrs.length; i < l; i++) {
     var attr = attrs[i],
         plugin = this.plugins[attr.nodeName];
@@ -97,7 +118,6 @@ Binding.prototype.bind = function(node) {
 Binding.prototype.apply = function(node) {
   var nodes = node.childNodes;
   this.bind(node);
-  //use each?
   for (var i = 0, l = nodes.length; i < l; i++) {
     this.apply(nodes[i]);
   }

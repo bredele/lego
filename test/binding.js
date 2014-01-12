@@ -248,21 +248,6 @@ describe('data-set plugin', function(){
 	});
 });
 
-describe('depth binding', function(){
-	it("should set binding depth", function() {
-		var el = domify('<a href="{name}.github.io"><span>{name}</span></a>'),
-		span = el.firstChild;
-		var store = new Store({
-			name : 'bredele'
-		});
-		var binding = new Binding(store);
-		binding.depth = 0;
-		binding.apply(el);
-		assert('bredele.github.io' === el.getAttribute('href'));
-		assert('{name}' === span.innerText);
-	});
-
-});
 
 describe('live binding', function(){
 	it('use case 1: single attribute', function(){
@@ -328,19 +313,4 @@ describe('live binding', function(){
 
 });
 
-describe('issues', function(){
-	it("refs #4", function() {
-		var el = domify('<ul data-list="each"></ul>');
-		var cache = false;
-		var binding = new Binding();
-		binding.add('data-list', {
-			each: function(){
-				cache = true;
-			}
-		});
-		binding.apply(el);
-		assert(cache === true);
-	});
-
-});
 });

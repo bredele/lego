@@ -2,9 +2,10 @@ var supplant = require('maple/lib/supplant'),
     assert = require('assert');
 
 describe("Supplant", function() {
-  describe('string interpolation', function(){
 
-    it('should support initialization', function(){
+  describe('variabe substitution', function(){
+
+    it('supports simple substitution', function(){
       var str = "This is an {test} interpolation";
       var result = supplant(str, {
         test : 'awesome'
@@ -12,7 +13,7 @@ describe("Supplant", function() {
       assert.equal('This is an awesome interpolation', result);
     });
 
-    it('should return an empty string if the interpolation doesn\'t exist', function(){
+    it("returns an empty string if variable not found", function(){
       var str = "This is an {something} interpolation";
       var result = supplant(str, {
         test : 'awesome'
@@ -20,7 +21,7 @@ describe("Supplant", function() {
       assert.equal('This is an  interpolation', result);
     });
 
-    it('should ignore whitespace', function(){
+    it('trim whitespace', function(){
       var str = "This is an { test   } interpolation";
       var result = supplant(str, {
         test : 'awesome'
@@ -28,7 +29,7 @@ describe("Supplant", function() {
       assert.equal('This is an awesome interpolation', result);
     });
 
-    it('should support mutiple interpolation', function(){
+    it('supports mutiple interpolation', function(){
       var str = "This is an {test} interpolation made by {name}";
       var result = supplant(str, {
         test : 'awesome',
@@ -39,9 +40,9 @@ describe("Supplant", function() {
   });
 
 
-  describe('interpolation attrs utils', function(){
+  describe('substitution attributes', function(){
 
-    it('should return an array of the store attributes', function(){
+    it('returns an array', function(){
 
       var str = "{welcome} My name is {firstname} {lastname} and I love {country}";
       var props = supplant.attrs(str,{
@@ -53,7 +54,7 @@ describe("Supplant", function() {
       assert.equal('["welcome","firstname","lastname","country"]', JSON.stringify(props));
     });
 
-    it('should return a uniq array', function(){
+    it('returns a uniq array', function(){
       var str = "My github is {github} {github} and I love {country}";
       var props = supplant.attrs(str, {
         firstname : 'olivier',
