@@ -129,5 +129,41 @@ describe("Store", function() {
     });
     
   });
+
+  describe("reset", function() {
+
+    it('should reset store', function(){
+      var store = new Store({
+        name: 'olivier',
+        twitter: 'bredeleca'
+      });
+
+      store.reset({
+        github:'bredele'
+      });
+      
+      assert.equal(undefined, store.get('name'));
+      assert.equal(undefined, store.get('twitter'));
+      assert.equal('bredele', store.get('github'));
+    });
+
+    it('should notify on change', function(){
+      var store = new Store({
+          name: 'olivier',
+          twitter: 'bredeleca'
+        }),
+        isDeleted = false;
+
+      store.on('deleted name', function(){
+        isDeleted = true;
+      }); 
+      store.reset({
+        github:'bredele'
+      });
+
+      assert.equal(isDeleted, true);
+    });
+  });
+  
   
 });

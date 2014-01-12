@@ -27,5 +27,25 @@ describe("Utils", function() {
 		});
 		
 	});
+
+	describe('clone', function(){
+		var clone = utils.clone;
+	  it("should clone an Array", function() {
+	    var copy = clone(['olivier', 'bredele']);
+	    assert.equal('olivier', copy[0]);
+	    assert.equal('bredele', copy[1]);
+	  });
+
+	  it("should clone an Object", function() {
+	    var copy = clone({
+	      name : 'olivier',
+	      github : {
+	        name : 'olivier'
+	      }
+	    });
+	    assert.equal('olivier', copy.name);
+	    assert.equal('olivier', copy.github.name);    
+	  });
+	});
 	
 });

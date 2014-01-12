@@ -1,4 +1,5 @@
-var Emitter = require('./emitter');
+var Emitter = require('./emitter'),
+		utils = require('./lib/utils');
 
 /**
  * Expose 'Store'
@@ -87,4 +88,34 @@ Store.prototype.del = function(name) {
     this.emit('deleted', name, name);
     this.emit('deleted ' + name, name);
   }
+};
+
+
+/**
+ * Reset store
+ * @param  {Object} data 
+ * @api public
+ */
+
+Store.prototype.reset = function(data) {
+	var copy = utils.clone(this.data),
+	    length = data.length;
+
+	this.data = data;
+
+	each(copy, function(key, val){
+		if(typeof data[key] === 'undefined'){
+			this.emit('deleted', key, length);
+			this.emit('deleted ' + key, length);
+		}
+	}, this);
+
+  //set new attributes
+  each(data, function(key, val){
+  	var prev = copy[key];
+  	if(prev !== val) {
+  		this.emit('change', key, val, prev);
+  		this.emit('change ' + key, val, prev);
+  	}
+  }, this);
 };
