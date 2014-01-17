@@ -1,0 +1,67 @@
+.container {
+	width:1170px;
+}
+
+.header {
+	position:relative;
+	min-height: 800px;
+	height: 100%;
+}
+
+.nav {
+	padding-top:100px;
+}
+
+.next {
+	padding-bottom:80px;
+	position:absolute;
+	width:100%;
+	bottom:0;
+}
+
+.scroll {
+	border:0; outline:0;
+	width:50px; height:50px;
+	border-radius: 50%;
+	background:rgb(233, 233, 233);
+}
+
+.link {
+	font-size: 1.1em;
+	text-transform: uppercase;
+	padding:10px 20px;
+	letter-spacing: 2px;
+	color: #bdc3c7;
+}
+
+.active, .link:hover {
+	color:#e74c3c;
+}
+
+.title {
+	color:#2c3e50;
+	font-weight: normal;
+}
+.logo {
+	font-size: 1.4em;
+}
+
+.logo-title {
+	color:#bdc3c7;
+	margin-top:0;
+}
+.slogan {
+	font-size: 1.6em;
+	font-weight: 300;
+}
+
+.logo-img {
+	width:200px;
+	height:198px;
+	margin:80px auto 20px auto;
+	display: block;
+}
+
+section {
+	margin-top:200px;
+}

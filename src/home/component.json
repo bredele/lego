@@ -3,6 +3,7 @@
   "dependencies": {},
   "development": {},
   "main": "index.js",
+  "styles" : ["reset.css", "home.css"],
   "scripts": [
     "index.js"
   ]
