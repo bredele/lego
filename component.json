@@ -6,8 +6,8 @@
   "keywords": [],
   "dependencies": {},
   "development": {
-    "component/assert": "*",
-    "component/domify": "*"
+    "component/assert" : "*",
+    "component/domify" : "*"
   },
   "license": "MIT",
   "main": "maple.js",

@@ -79,7 +79,7 @@ var assert = require('assert'),
 
     		it('should add attribute binding', function(){
     			var view = new View();
-    			var plugin = {};
+    			var plugin = function(){};
     			view.attr('class', plugin);
 
     			assert.equal(view.binding.plugins['class'], plugin);
@@ -87,7 +87,7 @@ var assert = require('assert'),
 
     		it('should add data attribute binding', function() {
     			var view = new View();
-    			var plugin = {};
+    			var plugin = function(){};
     			view.data('test', plugin);
 
     			assert.equal(view.binding.plugins['data-test'], plugin);
