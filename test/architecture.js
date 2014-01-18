@@ -3,13 +3,9 @@ maple = require('maple');
 
 describe("Architecture", function() {
 	describe("config", function() {
-		var app = null;
-
-		beforeEach(function(){
-			app = maple();
-		});
 
 		it("shoud set config object: .config(obj)", function() {
+			var app = maple();
 			app.config({
 				domain: 'github',
 				async: false
@@ -19,6 +15,7 @@ describe("Architecture", function() {
 		});
 
 		it("should set config property: .config(key,value)", function() {
+			var app = maple();
 			app.config({
 				domain: 'github',
 				async: false
@@ -29,6 +26,7 @@ describe("Architecture", function() {
 		});
 
 		it('should return app config: .config()', function() {
+			var app = maple();
 			var config = {
 				domain: 'github',
 				async: false
@@ -41,38 +39,40 @@ describe("Architecture", function() {
 		describe("Config emitter", function() {
 
 			it("should listen changes in config prop", function() {
+				var app = maple();
 				var val = false;
-	                        //to refactor with app.on
-	                        app.sandbox.on('change type', function() {
-	                        	val = true;
-	                        });
-	                        app.config('type', 'worker');
-	                        assert.equal(val, true);
-	                      });
+				//to refactor with app.on
+				app.sandbox.on('change type', function() {
+					val = true;
+				});
+				app.config('type', 'worker');
+				assert.equal(val, true);
+			});
 
 			it("should listen reset in config", function() {
+				var app = maple();
 				var added = false,
 				deleted = false;
 				app.config({
 					type:'worker'
 				});
 
-	                        //to refactor with app.on
-	                        app.sandbox.on('change environment', function() {
-	                        	added = true;
-	                        });
+				//to refactor with app.on
+				app.sandbox.on('change environment', function() {
+					added = true;
+				});
 
-	                        //to refactor with app.on
-	                        app.sandbox.on('deleted type', function() {
-	                        	deleted = true;
-	                        });
+				//to refactor with app.on
+				app.sandbox.on('deleted type', function() {
+					deleted = true;
+				});
 
-	                        app.config({
-	                        	environment : 'prod'
-	                        });
-	                        assert.equal(added, true);
-	                        assert.equal(deleted, true);
-	                      });
+				app.config({
+					environment : 'prod'
+				});
+				assert.equal(added, true);
+				assert.equal(deleted, true);
+			});
 
 
 		});
@@ -81,13 +81,9 @@ describe("Architecture", function() {
 });
 
 describe("communication bus", function() {
-	var app = null;
-
-	beforeEach(function(){
-		app = maple();
-	});
 
 	it("should prefix events with app's name", function() {
+		var app = maple();
 		var r = false;
 		app.name = 'bredele';
 		app.on('bredele/test', function(val){
@@ -98,6 +94,7 @@ describe("communication bus", function() {
 	});
 
 	it("should remove event listener", function() {
+		var app = maple();
 		var idx = 0,
 		fn = function(){
 			idx++;
@@ -111,6 +108,7 @@ describe("communication bus", function() {
 	});
 
 	it("should emit event once", function() {
+		var app = maple();
 		var idx = 0;
 		app.name = 'bredele';
 		app.once('bredele/test', function(){
@@ -125,27 +123,23 @@ describe("communication bus", function() {
 
 describe("hooks", function() {
 
-	var app = null,
-	hub = null;
-
-	beforeEach(function(){
-		app = maple();
-		hub = maple();
-	});
-
 	describe("init and .use(app)", function() {
 
 		it("should emit an init event in sandbox", function() {
+			var app = maple();
+			var hub = maple();
 			var called = false;
-                        //TODO: should we merge app.on and app.sandbox.on?
-                        app.sandbox.on('init', function(){
-                        	called = true;
-                        });
-                        hub.use('app', app);
-                        assert.equal(called, true);                
-                      });
+			//TODO: should we merge app.on and app.sandbox.on?
+			app.sandbox.on('init', function(){
+				called = true;
+			});
+			hub.use('app', app);
+			assert.equal(called, true);                
+		});
 
 		it('should emit an init event in hub app', function() {
+			var app = maple();
+			var hub = maple();
 			var called = false;
 			hub.sandbox.on('init app', function() {
 				called = true;
@@ -156,6 +150,8 @@ describe("hooks", function() {
 
 		describe("init handler", function() {
 			it('should define init callback', function() {
+				var app = maple();
+				var hub = maple();
 				var called = false;
 				app.init(function() {
 					called = true;
@@ -165,6 +161,8 @@ describe("hooks", function() {
 			});
 
 			it('should emit an init event', function() {
+				var app = maple();
+				var hub = maple();
 				var called = false;
 				app.init(function() {
 					called = true;
@@ -173,12 +171,12 @@ describe("hooks", function() {
 				assert.equal(called, true);
 			});
 		});
-		
+
 	});
 
 describe("app stop", function() {
 	it("should emit a stop event");
-	
+
 });
 
 describe("destroy", function() {
@@ -187,34 +185,33 @@ describe("destroy", function() {
 });
 
 describe("middleware/hub", function() {
-	var app = null,
-	child = null;
-
-	beforeEach(function(){
-		app = maple();
-		child = maple();
-	});
 
 	it("should initialize an app by name", function() {
+		var app = maple();
+		var child = maple();
 		app.use('mail', child);
 		assert.equal(child.name, 'mail');
 	});
 
 	it("should initialize an app", function() {
+		var app = maple();
+		var child = maple();
 		child.name = 'test';
 		app.use(child);
 		assert.equal(child.name, 'test');                
 	});
 
 	it("should pass app to function middleware", function() {
+		var app = maple();
+		var child = maple();
 		var ref = null;
 		app.use(function(param) {
 			ref = param;
 		});
 		assert.equal(app, ref);
 	});
-	
-	
-	
+
+
+
 });
 });
