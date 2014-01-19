@@ -19,28 +19,33 @@ function Binding(model) {
 	this.plugins = {};
 }
 
+//todo: make better parser and more efficient
 function parser(str) {
-	str = str.replace(/ /g,'');
-	var phrases = str ? str.split(';') : ['main'],
-	    results = [];
-  for(var i = 0, l = phrases.length; i < l; i++) {
-  	var expr = phrases[i].split(':'),
-  	    params = [],
-  	    name = expr[0];
+    //str = str.replace(/ /g,'');
+    var phrases = str ? str.split(';') : ['main'];
+    var results = [];
+    for(var i = 0, l = phrases.length; i < l; i++) {
+      var expr = phrases[i].split(':');
 
-  	if(expr[1]) {
-  		params = expr[1].split(',');
-  	} else {
-  		name = 'main';
-  	}
+      var params = [];
+      var name = expr[0];
 
-  	results.push({
-  		method: expr[0],
-  		params: params
-  	});
+      if(expr[1]) {
+        var args = expr[1].split(',');
+        for(var j = 0, h = args.length; j < h; j++) {
+          params.push(trim(args[j]));
+        }
+      } else {
+        name = 'main'; //doesn't do anything
+      }
+
+      results.push({
+        method: trim(expr[0]),
+        params: params
+      });
+    }
+    return results;
   }
-  return results;
-}
 
 /**
  * Bind object as function.
