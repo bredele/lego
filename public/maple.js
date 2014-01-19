@@ -2606,12 +2606,10 @@ var View = require('maple/view'),\n\
 \n\
 var app = new View();\n\
 var todos = new List([]);\n\
-// todos.store.local('todos', true);\n\
-store = new Store({\n\
+var store = new Store({\n\
 \titems: 0,\n\
 \tpending: 0\n\
 }); //second arguments could be compute\n\
-// store.local('stats', true);\n\
 \n\
 store.compute('completed', function() {\n\
 \treturn this.items - this.pending;\n\
@@ -2676,7 +2674,18 @@ var controller = {\n\
 \n\
 \tdel : stats(function(node) {\n\
 \t\ttodos.del(node);\n\
-\t})\n\
+\t}),\n\
+\n\
+\tbenchmark: function() {\n\
+\t\tvar start = new Date();\n\
+\t\tfor(var l = 200; l--;) {\n\
+\t\t\ttodos.add({\n\
+\t\t\t\tstatus: 'pending',\n\
+\t\t\t\tlabel: 'foo'\n\
+\t\t\t});\n\
+\t\t}\n\
+\t\tconsole.log(new Date() - start);\n\
+\t}\n\
 };\n\
 \n\
 //bindings\n\
@@ -2734,6 +2743,7 @@ event.attach(document.querySelector('.btn'), 'click', function() {\n\
 
 require.register("todo/todo.html", Function("exports, require, module",
 "module.exports = '<section id=\"todoapp\">\\n\
+  <button class=\"benchmark\" events=\"on:click,benchmark\">200</button>\\n\
   <header id=\"header\">\\n\
     <input id=\"new-todo\" placeholder=\"What needs to be done?\" events=\"on:keypress > 13,add\" autofocus>\\n\
   </header>\\n\

@@ -11,12 +11,10 @@ var View = require('maple/view'),
 
 var app = new View();
 var todos = new List([]);
-// todos.store.local('todos', true);
-store = new Store({
+var store = new Store({
 	items: 0,
 	pending: 0
 }); //second arguments could be compute
-// store.local('stats', true);
 
 store.compute('completed', function() {
 	return this.items - this.pending;
@@ -81,7 +79,18 @@ var controller = {
 
 	del : stats(function(node) {
 		todos.del(node);
-	})
+	}),
+
+	benchmark: function() {
+		var start = new Date();
+		for(var l = 200; l--;) {
+			todos.add({
+				status: 'pending',
+				label: 'foo'
+			});
+		}
+		console.log(new Date() - start);
+	}
 };
 
 //bindings
