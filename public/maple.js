@@ -2732,16 +2732,6 @@ event.attach(document.querySelector('.btn'), 'click', function() {\n\
 
 
 
-
-
-
-
-
-
-
-
-
-
 require.register("todo/todo.html", Function("exports, require, module",
 "module.exports = '<section id=\"todoapp\">\\n\
   <header id=\"header\">\\n\

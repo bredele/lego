@@ -1,0 +1,16 @@
+{
+  "name": "todo",
+  "dependencies": {
+  	"bredele/maple" : "*",
+    "bredele/event-plugin" : "*",
+    "bredele/hidden-plugin" : "*",
+    "bredele/list" : "*"
+  },
+  "development": {},
+  "templates" : ["todo.html"],
+  "main": "index.js",
+  "styles" : ["todo.styl"],
+  "scripts": [
+    "index.js"
+  ]
+}

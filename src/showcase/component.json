@@ -1,14 +1,17 @@
 {
   "name": "showcase",
   "dependencies": {
-  	"bredele/maple" : "*",
+    "bredele/maple" : "*",
     "bredele/event" : "*",
     "bredele/event-plugin" : "*"
   },
   "development": {},
+  "local": [
+    "todo"
+  ],
   "templates" : ["showcase.html"],
+  "styles" : ["showcase.styl"],
   "main": "index.js",
-  "styles" : ["showcase.css"],
   "scripts": [
     "index.js"
   ]

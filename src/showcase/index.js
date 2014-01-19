@@ -18,9 +18,13 @@ view.attr('event', new Plugin({
 		fragment.appendChild(view.dom); //use insert instead
 	}
 }));
+
 view.insert(fragment);
 
 //do view for click
 event.attach(document.querySelector('.btn'), 'click', function() {
 	view.insert(document.body);
+
+  //temporary
+  require('todo')(view.dom);
 });
