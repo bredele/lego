@@ -1,4 +1,5 @@
 var Store = require('./store'),
+    trim = require('./lib/utils').trim,
     subs = require('./lib/subs');
 
 /**
