@@ -82,7 +82,7 @@ caption,
 details,
 figure {
   margin: .75em 0 0;
-  line-height: 1.5;
+  line-height: 1.7;
 }
 
 h1,
@@ -90,7 +90,7 @@ h2,
 h3,
 h4 {
   color: #2c3e50;
-  font-weight: 600;
+  font-weight: normal;
 }
 
 h1 {
@@ -339,6 +339,7 @@ img.right {
 .autogrid2 > * {
   width: 49%;
   padding: 20px 40px;
+  //font-weight: 300;
 }
 
 .autogrid3 > * {
@@ -605,6 +606,8 @@ img.right {
   padding: 10px 20px;
   letter-spacing: 2px;
   color: #bdc3c7;
+  -webkit-transition: .1s color ease-in;
+  transition: .1s color ease-in;
 }
 
 .active,
@@ -647,12 +650,16 @@ img.right {
   font-size: 1.3em;
   color: white;
   padding: 10px 14px;
+  -webkit-transition: .1s background ease-out;
+  transition: .1s background ease-out;
 }
 
 .btn:hover {
   cursor: pointer;
-  background: rgb(233, 233, 233);
+  background: #7f8c8d;
 }
+
+
 
 
 

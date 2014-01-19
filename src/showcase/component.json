@@ -3,7 +3,8 @@
   "dependencies": {
     "bredele/maple" : "*",
     "bredele/event" : "*",
-    "bredele/event-plugin" : "*"
+    "bredele/event-plugin" : "*",
+    "component/scroll-to" : "*"
   },
   "development": {},
   "local": [

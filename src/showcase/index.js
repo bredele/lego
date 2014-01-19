@@ -6,6 +6,7 @@
 var View = require('maple/view'),
     event = require('event'), //do with plugin
     Plugin = require('event-plugin'),
+    scrollTo = require('scroll-to'),
     html = require('./showcase.html');
 
 var fragment = document.createDocumentFragment(); //may be have a hide function
@@ -27,4 +28,11 @@ event.attach(document.querySelector('.btn'), 'click', function() {
 
   //temporary
   require('todo')(view.dom);
+});
+
+event.attach(document.querySelector('.scroll'), 'click', function() {
+	scrollTo(0, 800, {
+	  ease: 'in-out-expo',
+	  duration: 800
+	});
 });
