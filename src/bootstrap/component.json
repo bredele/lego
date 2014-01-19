@@ -1,0 +1,8 @@
+{
+  "name": "bootstrap",
+  "fonts" : ["fonts"],
+  "styles" : [
+  "reset.css",
+  "fonts.css",
+  "home.css"]
+}

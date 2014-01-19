@@ -28,6 +28,17 @@ body {
 	-o-font-smoothing: antialiased;
 	font-smoothing: antialiased;
 }
+
+::selection {
+	background: #e74c3c;
+	color:white;
+	}
+::-moz-selection {
+	background: #e74c3c;
+	color:white;
+}
+
+
 ul,
 ol {
 	padding-left: 2em;
@@ -282,6 +293,7 @@ img.left, img.right {
 
 .autogrid2 > * {
   width: 49%;
+  padding:20px 40px;
 }
 
 .autogrid3 > * {
@@ -429,14 +441,56 @@ img.left, img.right {
 	}
 	thead { display: none; }
 }
+@font-face {
+	font-family: 'maple';
+	src:url("/bootstrap/fonts/maple.eot");
+	src:url("/bootstrap/fonts/maple.eot?#iefix") format('embedded-opentype'),
+		url("/bootstrap/fonts/maple.woff") format('woff'),
+		url("/bootstrap/fonts/maple.ttf") format('truetype'),
+		url("/bootstrap/fonts/maple.svg#maple") format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+	font-family: 'maple';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.icon-down:before {
+	content: "\e600";
+}
+.icon-cross:before {
+	content: "\e601";
+}
+.icon-list:before {
+	content: "\e602";
+}
 .container {
 	width:1170px;
+}
+
+.content {
+	padding:60px;
 }
 
 .header {
 	position:relative;
 	min-height: 800px;
 	height: 100%;
+}
+
+.footer {
+	padding:140px 0;
 }
 
 .nav {
@@ -494,5 +548,48 @@ img.left, img.right {
 }
 
 section {
-	margin-top:200px;
+	margin-top:20px;
+}
+
+.btn {
+	margin:60px 0;
+	background:  #e74c3c;
+	border:0; outline:0;
+	border-radius:6px;
+
+	font-size: 1.3em;
+	color:white;
+	padding: 10px 14px;
+}
+
+.btn:hover {
+	cursor:pointer;
+	background:rgb(233, 233, 233);
+}
+
+
+.showcase {
+	position:fixed;
+	top:0; left:0;
+	width:100%; height:100%;
+	background:#121212;
+	overflow: hidden;
+}
+
+.toolbar {
+	height:42px;
+	background:#1E1E1E;
+}
+
+.toolbar-btn {
+	color:#cccbd0;
+	line-height:42px;
+	padding:0 16px;
+	background:rgba(255, 255, 255, .05);
+}
+
+
+.toolbar-btn:hover {
+	cursor:pointer;
+	color:white;
 }

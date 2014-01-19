@@ -28,6 +28,17 @@ body {
 	-o-font-smoothing: antialiased;
 	font-smoothing: antialiased;
 }
+
+::selection {
+	background: #e74c3c;
+	color:white;
+	}
+::-moz-selection {
+	background: #e74c3c;
+	color:white;
+}
+
+
 ul,
 ol {
 	padding-left: 2em;
@@ -282,6 +293,7 @@ img.left, img.right {
 
 .autogrid2 > * {
   width: 49%;
+  padding:20px 40px;
 }
 
 .autogrid3 > * {

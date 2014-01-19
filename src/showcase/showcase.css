@@ -1,0 +1,25 @@
+.showcase {
+	position:fixed;
+	top:0; left:0;
+	width:100%; height:100%;
+	background:#121212;
+	overflow: hidden;
+}
+
+.toolbar {
+	height:42px;
+	background:#1E1E1E;
+}
+
+.toolbar-btn {
+	color:#cccbd0;
+	line-height:42px;
+	padding:0 16px;
+	background:rgba(255, 255, 255, .05);
+}
+
+
+.toolbar-btn:hover {
+	cursor:pointer;
+	color:white;
+}

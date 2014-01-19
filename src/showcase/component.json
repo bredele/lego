@@ -1,0 +1,14 @@
+{
+  "name": "showcase",
+  "dependencies": {
+  	"bredele/maple" : "*",
+    "bredele/event" : "*"
+  },
+  "development": {},
+  "templates" : ["showcase.html"],
+  "main": "index.js",
+  "styles" : ["showcase.css"],
+  "scripts": [
+    "index.js"
+  ]
+}

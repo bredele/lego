@@ -4,6 +4,7 @@
     "src"
   ],
   "local": [
-    "home"
+    "bootstrap",
+    "showcase"
   ]
 }
