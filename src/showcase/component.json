@@ -2,7 +2,8 @@
   "name": "showcase",
   "dependencies": {
   	"bredele/maple" : "*",
-    "bredele/event" : "*"
+    "bredele/event" : "*",
+    "bredele/event-plugin" : "*"
   },
   "development": {},
   "templates" : ["showcase.html"],

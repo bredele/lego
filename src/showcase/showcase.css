@@ -12,6 +12,7 @@
 }
 
 .toolbar-btn {
+	cursor:pointer;
 	color:#cccbd0;
 	line-height:42px;
 	padding:0 16px;

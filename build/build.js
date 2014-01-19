@@ -706,6 +706,7 @@ Emitter.prototype.emit = function(event){\n\
 ));
 require.register("bredele-maple/binding.js", Function("exports, require, module",
 "var Store = require('./store'),\n\
+    trim = require('./lib/utils').trim,\n\
     subs = require('./lib/subs');\n\
 \n\
 /**\n\
@@ -726,28 +727,33 @@ function Binding(model) {\n\
 \tthis.plugins = {};\n\
 }\n\
 \n\
+//todo: make better parser and more efficient\n\
 function parser(str) {\n\
-\tstr = str.replace(/ /g,'');\n\
-\tvar phrases = str ? str.split(';') : ['main'],\n\
-\t    results = [];\n\
-  for(var i = 0, l = phrases.length; i < l; i++) {\n\
-  \tvar expr = phrases[i].split(':'),\n\
-  \t    params = [],\n\
-  \t    name = expr[0];\n\
+    //str = str.replace(/ /g,'');\n\
+    var phrases = str ? str.split(';') : ['main'];\n\
+    var results = [];\n\
+    for(var i = 0, l = phrases.length; i < l; i++) {\n\
+      var expr = phrases[i].split(':');\n\
 \n\
-  \tif(expr[1]) {\n\
-  \t\tparams = expr[1].split(',');\n\
-  \t} else {\n\
-  \t\tname = 'main';\n\
-  \t}\n\
+      var params = [];\n\
+      var name = expr[0];\n\
 \n\
-  \tresults.push({\n\
-  \t\tmethod: expr[0],\n\
-  \t\tparams: params\n\
-  \t});\n\
+      if(expr[1]) {\n\
+        var args = expr[1].split(',');\n\
+        for(var j = 0, h = args.length; j < h; j++) {\n\
+          params.push(trim(args[j]));\n\
+        }\n\
+      } else {\n\
+        name = 'main'; //doesn't do anything\n\
+      }\n\
+\n\
+      results.push({\n\
+        method: trim(expr[0]),\n\
+        params: params\n\
+      });\n\
+    }\n\
+    return results;\n\
   }\n\
-  return results;\n\
-}\n\
 \n\
 /**\n\
  * Bind object as function.\n\
@@ -1255,6 +1261,95 @@ function matches(el, target, selector) {\n\
  };\n\
 //@ sourceURL=bredele-event/index.js"
 ));
+require.register("bredele-event-plugin/index.js", Function("exports, require, module",
+"/**\n\
+ * Dependencies\n\
+ */\n\
+\n\
+var ev = require('event');\n\
+\n\
+/**\n\
+ * Map touch events.\n\
+ * @type {Object}\n\
+ * @api private\n\
+ */\n\
+\n\
+var mapper = {\n\
+\t'click' : 'touchend',\n\
+\t'mousedown' : 'touchstart',\n\
+\t'mouseup' : 'touchend',\n\
+\t'mousemove' : 'touchmove'\n\
+};\n\
+\n\
+\n\
+/**\n\
+ * Expose 'Event plugin'\n\
+ */\n\
+\n\
+module.exports = Events;\n\
+\n\
+\n\
+/**\n\
+ * Event plugin constructor\n\
+ * @param {Object} view event plugin scope\n\
+ * @param {Boolean} isTouch optional\n\
+ * @api public\n\
+ */\n\
+\n\
+function Events(view, isTouch){\n\
+  this.view = view;\n\
+  this.listeners = [];\n\
+  this.isTouch = isTouch || (window.ontouchstart !== undefined);\n\
+}\n\
+\n\
+\n\
+\n\
+/**\n\
+ * Listen events.\n\
+ * @param {HTMLElement} node \n\
+ * @param {String} type event's type\n\
+ * @param {String} fn view's callback name\n\
+ * @param {String} capture useCapture\n\
+ * @api private\n\
+ */\n\
+\n\
+Events.prototype.on = function(node, type, fn, capture) {\n\
+  var _this = this,\n\
+     cb = function(target, e) {\n\
+      _this.view[fn].call(_this.view, e, node); //we should pass target\n\
+     };\n\
+  //todo: event should return the node as well...it's too complicated\n\
+  this.listeners.push([node].concat(ev.attach(node, type, cb, (capture === 'true'))));\n\
+};\n\
+\n\
+\n\
+\n\
+/**\n\
+ * Map events (desktop and mobile)\n\
+ * @param  {String} type event's name\n\
+ * @return {String} mapped event\n\
+ */\n\
+\n\
+Events.prototype.map = function(type) {\n\
+\treturn this.isTouch ? (mapper[type] || type) : type;\n\
+};\n\
+\n\
+\n\
+/**\n\
+ * Remove all listeners.\n\
+ * @api public\n\
+ */\n\
+\n\
+Events.prototype.destroy = function() {\n\
+  for(var l = this.listeners.length; l--;) {\n\
+    var listener = this.listeners[l];\n\
+    ev.detach(listener[0], listener[1], listener[2], listener[3]);\n\
+  }\n\
+  this.listeners = [];\n\
+};\n\
+\n\
+//@ sourceURL=bredele-event-plugin/index.js"
+));
 require.register("showcase/index.js", Function("exports, require, module",
 "\n\
 /**\n\
@@ -1263,11 +1358,20 @@ require.register("showcase/index.js", Function("exports, require, module",
 \n\
 var View = require('maple/view'),\n\
     event = require('event'), //do with plugin\n\
+    Plugin = require('event-plugin'),\n\
     html = require('./showcase.html');\n\
+\n\
+var fragment = document.createDocumentFragment(); //may be have a hide function\n\
 \n\
 //init\n\
 var view = new View(); //do factory for view\n\
 view.html(html);\n\
+view.attr('event', new Plugin({\n\
+\tclose: function() {\n\
+\t\tfragment.appendChild(view.dom); //use insert instead\n\
+\t}\n\
+}));\n\
+view.insert(fragment);\n\
 \n\
 //do view for click\n\
 event.attach(document.querySelector('.btn'), 'click', function() {\n\
@@ -1280,10 +1384,13 @@ event.attach(document.querySelector('.btn'), 'click', function() {\n\
 
 
 
+
+
 require.register("showcase/showcase.html", Function("exports, require, module",
 "module.exports = '<div class=\"showcase\">\\n\
 \t<header class=\"toolbar\">\\n\
-\t\t<div class=\"right icon-list toolbar-btn\"></div>\\n\
+\t\t<div class=\"left icon-list toolbar-btn\"></div>\\n\
+\t\t<div class=\"right icon-cross toolbar-btn\" event=\"on:click,close\"></div>\\n\
 \t</header>\\n\
 \t<section></section>\\n\
 </div>';//@ sourceURL=showcase/showcase.html"
@@ -1306,4 +1413,10 @@ require.alias("bredele-maple/maple.js", "bredele-maple/index.js");
 require.alias("bredele-event/index.js", "showcase/deps/event/index.js");
 require.alias("bredele-event/index.js", "showcase/deps/event/index.js");
 require.alias("bredele-event/index.js", "bredele-event/index.js");
+require.alias("bredele-event-plugin/index.js", "showcase/deps/event-plugin/index.js");
+require.alias("bredele-event-plugin/index.js", "showcase/deps/event-plugin/index.js");
+require.alias("bredele-event/index.js", "bredele-event-plugin/deps/event/index.js");
+require.alias("bredele-event/index.js", "bredele-event-plugin/deps/event/index.js");
+require.alias("bredele-event/index.js", "bredele-event/index.js");
+require.alias("bredele-event-plugin/index.js", "bredele-event-plugin/index.js");
 require.alias("showcase/index.js", "showcase/index.js");
