@@ -257,7 +257,7 @@ describe("Binding", function() {
 
 	describe('live binding', function() {
 
-		it('use case 1: single attribute', function() {
+		it('single attribute', function() {
 			var el = domify('<span>{name}</span>');
 			var store = new Store({
 				name : 'olivier'
@@ -270,7 +270,7 @@ describe("Binding", function() {
 			assert('bruno' === el.innerHTML);
 		});
 
-		it('use case 2: multiple attributes on different nodes', function() {
+		it('multiple attributes on different nodes', function() {
 			var el = domify('<a href={link}>{label}</a>');
 			var store = new Store({
 				label : 'bredele'
@@ -286,7 +286,7 @@ describe("Binding", function() {
 
 		});
 
-		it('use case 3: multiple attributes on the same node', function() {
+		it('multiple attributes on the same node', function() {
 			var el = domify('<a href={link}/repo/{name}></a>');
 			var store = new Store({
 				link : 'http://github.com/bredele',
@@ -302,7 +302,7 @@ describe("Binding", function() {
 			assert('http://github.com/repo/bredele' === el.getAttribute('href'));
 		});
 
-		it('use case 4: nested attributes', function() {
+		it('nested attributes', function() {
 			var el = domify('<a href="{link}"><span>{label}</span></a>');
 			var store = new Store({
 				link: 'http://github.com/bredele',
@@ -387,5 +387,18 @@ describe("Binding", function() {
 
 	});
 
+  describe("issues fixes", function() {
+
+  	// it("displays empty string for undefined store attributes #12", function() {
+  	// 	var el = domify('<span>my name is {name}</span>');
+  	// 	Binding()
+  	// 	  .apply(el);
+
+  	// 	assert.equal(el.innerHTML, 'my name is ');
+  	// });
+  	
+  	
+  });
+  
 
 });
