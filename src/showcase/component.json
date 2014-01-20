@@ -11,12 +11,14 @@
   "development": {},
   "local": [
     "hello",
+    "computed",
     "todo"
   ],
   "templates" : ["showcase.html"],
   "styles" : ["showcase.styl"],
   "main": "index.js",
   "scripts": [
-    "index.js"
+    "index.js",
+    "examples.js"
   ]
 }

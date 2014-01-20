@@ -1,0 +1,13 @@
+{
+  "name": "computed",
+  "dependencies": {
+    "bredele/maple" : "*",
+    "bredele/event-plugin" : "*"
+  },
+  "development": {},
+  "templates" : ["computed.html"],
+  "main": "index.js",
+  "scripts": [
+    "index.js"
+  ]
+}

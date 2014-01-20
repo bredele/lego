@@ -672,6 +672,7 @@ img.right {
 
 
 
+
 .button,
 .todo-btn,
 input[type="checkbox"] {
@@ -686,7 +687,6 @@ input[type="checkbox"] {
 #todoapp {
   position: relative;
   width: 600px;
-  margin: 0 auto;
   background: #fff;
   position: relative;
   border-top-left-radius: 2px;
@@ -1212,6 +1212,7 @@ hr {
 
 .toolbar {
   height: 52px;
+  margin-bottom: 52px;
   background: #1E1E1E;
 }
 
@@ -1229,17 +1230,43 @@ hr {
   color: white;
 }
 
-.stack {
+.examples {
   height: 100%;
-  width: 70%;
-  padding-top: 100px;
 }
 
-.examples-content {
+.example {
   height: 100%;
+  width: 70%;
 }
 
 .examples-list {
-  width: 30%;
+  list-style: none;
+  width: 20%;
+  margin-right: 10%;
   height: 100%;
+}
+
+.example-link {
+  display: block;
+  padding: 0 14px;
+  color: grey;
+  line-height: 42px;
+}
+
+.example-link.selected {
+  color: white;
+  font-size: 1.3em;
+}
+
+.example-link:hover {
+  font-size: 1.3em;
+  background: rgba(255, 255, 255, .05);
+}
+
+.example-title {
+  color: white;
+}
+
+.stack {
+  padding-top: 100px;
 }

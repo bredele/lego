@@ -2907,6 +2907,40 @@ view.alive();\n\
 \n\
 module.exports = view.dom;//@ sourceURL=hello/index.js"
 ));
+require.register("computed/index.js", Function("exports, require, module",
+"var View = require('maple/view'),\n\
+    Store = require('maple/store'),\n\
+    Events = require('event-plugin');\n\
+\n\
+//do double way binding and advances expression\n\
+\n\
+//PROGRAMATIC\n\
+//\n\
+var view = new View();\n\
+var store = new Store({\n\
+\tfirstName: '',\n\
+\tlastName: ''\n\
+}); //or view.model()? instead view.html(html, data)\n\
+store.compute('name',function(){\n\
+\treturn this.firstName + ' ' + this.lastName; \n\
+});\n\
+\n\
+view.html(require('./computed.html'), store); //if html empty there is an error binding and childnodes doesn't exist\n\
+\n\
+view.attr('events', new Events({\n\
+\tfirst: function(ev){\n\
+\t\tstore.set('firstName', ev.target.value);\n\
+\t},\n\
+\tlast: function(ev) {\n\
+\t\tstore.set('lastName', ev.target.value);\n\
+\t}\n\
+}));\n\
+view.alive();\n\
+\n\
+module.exports = view.dom;\n\
+\n\
+//DO SECOND EXample declarative//@ sourceURL=computed/index.js"
+));
 require.register("component-classes/index.js", Function("exports, require, module",
 "/**\n\
  * Module dependencies.\n\
@@ -3228,35 +3262,46 @@ require.register("showcase/index.js", Function("exports, require, module",
  */\n\
 \n\
 var View = require('maple/view'),\n\
+\t\tStore = require('maple/store'),\n\
     Stack = require('stack'),\n\
     event = require('event'), //do with plugin\n\
     Events = require('event-plugin'),\n\
     List = require('list'),\n\
     scrollTo = require('scroll-to'),\n\
-    html = require('./showcase.html');\n\
+    html = require('./showcase.html'),\n\
+    utils = require('maple/lib/utils'),\n\
+    apps = require('./examples');\n\
 \n\
 \n\
 var fragment = document.createDocumentFragment(); //may be have a hide function\n\
 //init\n\
 var view = new View(); //do factory for view\n\
 var examples = new List([]);\n\
+var store = new Store(); //should we have a default store in view?\n\
 var stack = new Stack();\n\
-view.html(html);\n\
+view.html(html, store);\n\
 view.attr('event', new Events({\n\
 \tclose: function() {\n\
 \t\tfragment.appendChild(view.dom); //use insert instead\n\
 \t},\n\
-\tselect : function(ev) {\n\
+\tselect : function(ev, node) {\n\
+\t\tvar target = ev.target,\n\
+\t\t\t\tselected = node.querySelector('.selected');\n\
+\t\t//doesn't work on ie8\n\
+\t\tselected && selected.classList.remove('selected');\n\
+\t\ttarget.classList.add('selected');\n\
+\n\
 \t\t//todo: pass target, more convenint and cross browser\n\
-\t\tvar name = ev.target.getAttribute('href').substring(1);\n\
+\t\tvar name = target.getAttribute('href').substring(1);\n\
 \t\tstack.show(name);\n\
+\t\tstore.reset(apps[name]);\n\
 \t}\n\
 }));\n\
 view.attr('examples', examples);\n\
 view.insert(fragment);\n\
 stack.parent = view.dom.querySelector('.stack');\n\
 \n\
-function add(name, bool) {\n\
+function add(name) {\n\
 \texamples.add({\n\
 \t\tname: name\n\
 \t});\n\
@@ -3276,9 +3321,34 @@ event.attach(document.querySelector('.scroll'), 'click', function() {\n\
 \t});\n\
 });\n\
 \n\
-add('hello');\n\
-add('todo');\n\
+utils.each(apps, function(name) {\n\
+\tadd(name);\n\
+});\n\
+\n\
 stack.show('todo');//@ sourceURL=showcase/index.js"
+));
+require.register("showcase/examples.js", Function("exports, require, module",
+"module.exports = {\n\
+\t\"hello\" : {\n\
+\t\tname: \"hello\",\n\
+\t\ttitle: \"Hello World\",\n\
+\t\tgithub: \"\",\n\
+\t\tdescription: \"hello dsdsd\"\n\
+\t},\n\
+\t\"computed\": {\n\
+\t\tname: \"computed\",\n\
+\t\ttitle: \"Computed properties\",\n\
+\t\tgithub: \"\",\n\
+\t\tdescription: \"sdsd\"\n\
+\t},\n\
+\t\"todo\" : {\n\
+\t\tname: \"todo\",\n\
+\t\ttitle: \"Todo MVC\",\n\
+\t\tgithub: \"\",\n\
+\t\tdescription: \"sds\"\n\
+\t}\n\
+};\n\
+//@ sourceURL=showcase/examples.js"
 ));
 
 
@@ -3297,6 +3367,18 @@ require.register("hello/hello.html", Function("exports, require, module",
 "module.exports = '<div class=\"hello\">\\n\
 \t<input type=\"text\" events=\"on:input, text\">\\n\
 </div>';//@ sourceURL=hello/hello.html"
+));
+require.register("computed/computed.html", Function("exports, require, module",
+"module.exports = '<div class=\"computed\">\\n\
+\t<label>First Name:</label>\\n\
+\t<input placeholder=\"Enter your first name\" events=\"on:input,first\" type=\"text\">\\n\
+\t<label>Last Name:</label>\\n\
+\t<input placeholder=\"Enter your last name\" events=\"on:input,last\" type=\"text\">\\n\
+\t<div class=\"text\">\\n\
+\t\t<h1>My name is {name} and I want to learn maple!\\n\
+\t\t</div>\\n\
+\t</div>\\n\
+</div>';//@ sourceURL=computed/computed.html"
 ));
 
 require.register("todo/todo.html", Function("exports, require, module",
@@ -3330,21 +3412,25 @@ require.register("todo/todo.html", Function("exports, require, module",
 require.register("showcase/showcase.html", Function("exports, require, module",
 "module.exports = '<div class=\"showcase\">\\n\
 \t<header class=\"toolbar\">\\n\
-\t\t<div class=\"left icon-list toolbar-btn\"></div>\\n\
 \t\t<div class=\"right icon-cross toolbar-btn\" event=\"on:click,close\"></div>\\n\
 \t</header>\\n\
-\t<section class=\"examples-content\">\\n\
+\t<section class=\"examples\">\\n\
 \t\t<ul class=\"examples-list left\" event=\"on:click .example-link,select\" examples>\\n\
 \t\t\t<li>\\n\
 \t\t\t\t<a class=\"example-link\" href=\"#{name}\">{name}</a>\\n\
 \t\t\t</li>\\n\
 \t\t</ul>\\n\
-\t\t<div class=\"stack left\"></div>\\n\
+\t\t<div class=\"example left\">\\n\
+\t\t\t<h3 class=\"example-title\">{title}</h3>\\n\
+\t\t\t<p class=\"example-description\">{description}</p>\\n\
+\t\t\t<div class=\"stack\"></div>\\n\
+\t\t</div>\\n\
 \t</section>\\n\
 </div>';//@ sourceURL=showcase/showcase.html"
 ));
 
 require.alias("showcase/index.js", "maple/deps/showcase/index.js");
+require.alias("showcase/examples.js", "maple/deps/showcase/examples.js");
 require.alias("showcase/index.js", "maple/deps/showcase/index.js");
 require.alias("showcase/index.js", "showcase/index.js");
 require.alias("bredele-maple/maple.js", "showcase/deps/maple/maple.js");
@@ -3451,6 +3537,26 @@ require.alias("bredele-event/index.js", "bredele-event-plugin/deps/event/index.j
 require.alias("bredele-event/index.js", "bredele-event/index.js");
 require.alias("bredele-event-plugin/index.js", "bredele-event-plugin/index.js");
 require.alias("hello/index.js", "hello/index.js");
+require.alias("computed/index.js", "showcase/deps/computed/index.js");
+require.alias("computed/index.js", "showcase/deps/computed/index.js");
+require.alias("bredele-maple/maple.js", "computed/deps/maple/maple.js");
+require.alias("bredele-maple/view.js", "computed/deps/maple/view.js");
+require.alias("bredele-maple/store.js", "computed/deps/maple/store.js");
+require.alias("bredele-maple/emitter.js", "computed/deps/maple/emitter.js");
+require.alias("bredele-maple/binding.js", "computed/deps/maple/binding.js");
+require.alias("bredele-maple/lib/app.js", "computed/deps/maple/lib/app.js");
+require.alias("bredele-maple/lib/supplant.js", "computed/deps/maple/lib/supplant.js");
+require.alias("bredele-maple/lib/subs.js", "computed/deps/maple/lib/subs.js");
+require.alias("bredele-maple/lib/utils.js", "computed/deps/maple/lib/utils.js");
+require.alias("bredele-maple/maple.js", "computed/deps/maple/index.js");
+require.alias("bredele-maple/maple.js", "bredele-maple/index.js");
+require.alias("bredele-event-plugin/index.js", "computed/deps/event-plugin/index.js");
+require.alias("bredele-event-plugin/index.js", "computed/deps/event-plugin/index.js");
+require.alias("bredele-event/index.js", "bredele-event-plugin/deps/event/index.js");
+require.alias("bredele-event/index.js", "bredele-event-plugin/deps/event/index.js");
+require.alias("bredele-event/index.js", "bredele-event/index.js");
+require.alias("bredele-event-plugin/index.js", "bredele-event-plugin/index.js");
+require.alias("computed/index.js", "computed/index.js");
 require.alias("todo/index.js", "showcase/deps/todo/index.js");
 require.alias("todo/index.js", "showcase/deps/todo/index.js");
 require.alias("bredele-maple/maple.js", "todo/deps/maple/maple.js");

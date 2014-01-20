@@ -1,14 +1,17 @@
 <div class="showcase">
 	<header class="toolbar">
-		<div class="left icon-list toolbar-btn"></div>
 		<div class="right icon-cross toolbar-btn" event="on:click,close"></div>
 	</header>
-	<section class="examples-content">
+	<section class="examples">
 		<ul class="examples-list left" event="on:click .example-link,select" examples>
 			<li>
 				<a class="example-link" href="#{name}">{name}</a>
 			</li>
 		</ul>
-		<div class="stack left"></div>
+		<div class="example left">
+			<h3 class="example-title">{title}</h3>
+			<p class="example-description">{description}</p>
+			<div class="stack"></div>
+		</div>
 	</section>
 </div>

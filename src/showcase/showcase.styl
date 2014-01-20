@@ -8,6 +8,7 @@
 
 .toolbar {
 	height:52px;
+	margin-bottom:52px;
 	background:#1E1E1E;
 }
 
@@ -26,17 +27,45 @@
 	color:white;
 }
 
-.stack {
-	height: 100%;
-	width: 70%;
-	padding-top:100px;
+.examples {
+	height:100%;
 }
 
-.examples-content {
-	height:100%;
+
+.example {
+	height: 100%;
+	width: 70%;
 }
 
 .examples-list {
-	width:30%;
+	list-style:none;
+	width:20%;
+	margin-right:10%;
 	height:100%;
+}
+
+.example-link {
+	display:block;
+	padding:0 14px;
+	color:grey;
+	line-height:42px;
+}
+
+.example-link.selected {
+	color:white;
+	font-size:1.3em;
+}
+
+
+.example-link:hover {
+	font-size:1.3em;
+	background:rgba(255, 255, 255, .05);
+}
+
+.example-title {
+	color:white;
+}
+
+.stack {
+	padding-top:100px;
 }
