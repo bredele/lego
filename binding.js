@@ -48,6 +48,7 @@ function parser(str) {
     return results;
   }
 
+
 /**
  * Bind object as function.
  * @api private
@@ -126,5 +127,21 @@ Binding.prototype.apply = function(node) {
   this.bind(node);
   for (var i = 0, l = nodes.length; i < l; i++) {
     this.apply(nodes[i]);
+  }
+  return this;
+};
+
+
+/**
+ * Destroy binding's plugins and unsubscribe
+ * to emitter.
+ * 
+ * @api public
+ */
+
+Binding.prototype.destroy = function() {
+  for(var name in this.plugins) {
+    var plugin = this.plugins[name];
+    plugin.destroy && plugin.destroy();
   }
 };

@@ -114,89 +114,88 @@ describe("Binding", function() {
 			});
 
 		});
+		describe('Object binding', function(){
+		it('shoud apply Object as binding', function(){
+			var el = domify('<a data-model="bind:innerHTML,prop"></a>');
 
-describe('Object binding', function(){
-	it('shoud apply Object as binding', function(){
-		var el = domify('<a data-model="bind:innerHTML,prop"></a>');
-
-		var binding = new Binding();
-		var Plugin = function(model){
-			this.bind = function(el, attr, prop){
-				el[attr] = model.prop;
+			var binding = new Binding();
+			var Plugin = function(model){
+				this.bind = function(el, attr, prop){
+					el[attr] = model.prop;
+				};
 			};
-		};
 
-		binding.add('data-model', new Plugin({
-			prop : 'http://github.com/bredele'
-		}));
+			binding.add('data-model', new Plugin({
+				prop : 'http://github.com/bredele'
+			}));
 
-		binding.apply(el);
-		assert('http://github.com/bredele' === el.innerHTML);
-	});
-
-	it('should apply nested bindings', function(){
-		var el = domify('<ul><li class="first" data-model="bind:innerHTML,firstname"></li>' + 
-			'<li class="last" data-model="bind:innerHTML,lastname"></li>' +
-			'</ul>');
-
-		var binding = new Binding();
-		var Plugin = function(model){
-			this.bind = function(el, attr, prop){
-				el[attr] = model[prop];
-			};
-		};
-
-		binding.add('data-model', new Plugin({
-			firstname : 'Olivier',
-			lastname : 'Wietrich'
-		}));
-
-		binding.apply(el);
-		assert('Olivier' === el.querySelector('.first').innerHTML);
-		assert('Wietrich' === el.querySelector('.last').innerHTML);
-	});
-
-	it('should apply bindings and inteprolation', function(){
-		var el = domify('<a class="{className}" data-model="bind:innerHTML,prop"></a>');
-		var store = new Store({
-			prop : 'http://github.com/bredele',
-			className : 'bredele'
+			binding.apply(el);
+			assert('http://github.com/bredele' === el.innerHTML);
 		});
-		var binding = new Binding(store);
 
-		var Plugin = function(model){
-			this.bind = function(el, attr, prop){
-				el[attr] = model.get(prop);
+		it('should apply nested bindings', function(){
+			var el = domify('<ul><li class="first" data-model="bind:innerHTML,firstname"></li>' + 
+				'<li class="last" data-model="bind:innerHTML,lastname"></li>' +
+				'</ul>');
+
+			var binding = new Binding();
+			var Plugin = function(model){
+				this.bind = function(el, attr, prop){
+					el[attr] = model[prop];
+				};
 			};
-		};
 
-		binding.add('data-model', new Plugin(store));
+			binding.add('data-model', new Plugin({
+				firstname : 'Olivier',
+				lastname : 'Wietrich'
+			}));
 
-		binding.apply(el);
-		assert('http://github.com/bredele' === el.innerHTML);
-		assert('bredele' === el.className);
+			binding.apply(el);
+			assert('Olivier' === el.querySelector('.first').innerHTML);
+			assert('Wietrich' === el.querySelector('.last').innerHTML);
+		});
+
+		it('should apply bindings and inteprolation', function(){
+			var el = domify('<a class="{className}" data-model="bind:innerHTML,prop"></a>');
+			var store = new Store({
+				prop : 'http://github.com/bredele',
+				className : 'bredele'
+			});
+			var binding = new Binding(store);
+
+			var Plugin = function(model){
+				this.bind = function(el, attr, prop){
+					el[attr] = model.get(prop);
+				};
+			};
+
+			binding.add('data-model', new Plugin(store));
+
+			binding.apply(el);
+			assert('http://github.com/bredele' === el.innerHTML);
+			assert('bredele' === el.className);
+		});
+
+		it('should call default binding method', function(){
+			var el = domify('<input required>');
+
+			var binding = new Binding();
+			var Plugin = function(){
+				this.main = function(el){
+					el.value = 'bredele';
+				};
+			};
+
+			binding.add('required', new Plugin());
+
+			binding.apply(el);
+			assert('bredele' === el.value);
+		});
+		});
 	});
 
-	it('should call default binding method', function(){
-		var el = domify('<input required>');
 
-		var binding = new Binding();
-		var Plugin = function(){
-			this.main = function(el){
-				el.value = 'bredele';
-			};
-		};
-
-		binding.add('required', new Plugin());
-
-		binding.apply(el);
-		assert('bredele' === el.value);
-	});
-});
-});
-
-
-describe('nested node dataset binding', function(){
+	describe('nested node dataset binding', function(){
 	it('shoud apply bindings on different dom nodes', function(){
 		var el = domify('<a data-plug1><span data-plug2>test</span></a>');
 		var binding = new Binding();
@@ -227,9 +226,9 @@ describe('nested node dataset binding', function(){
 		assert('http://github.com/bredele' === el.getAttribute('href'));
 		assert('bredele' === el.querySelector('span').innerText);
 	});
-});
+	});
 
-describe('data-set plugin', function(){
+	describe('data-set plugin', function(){
 	it('should call data set plugin and pass the node and its content', function(){
 		var el = domify('<span data-bind="name"></span>');
 		var store = new Store({
@@ -246,10 +245,10 @@ describe('data-set plugin', function(){
 		assert('name' === value);
 		assert.equal(node, el);
 	});
-});
+	});
 
 
-describe('live binding', function(){
+	describe('live binding', function(){
 	it('use case 1: single attribute', function(){
 		var el = domify('<span>{name}</span>');
 		var store = new Store({
@@ -311,6 +310,26 @@ describe('live binding', function(){
 		assert('olivier' === el.firstChild.innerHTML);
 	});
 
-});
+	});
+
+	describe("destroy", function() {
+		it("should destroy plugins", function() {
+			var el = document.createElement('div'),
+			    plugin = {
+				    called:false,
+				    destroy:function() {
+				  	  this.called = true;
+				    }
+			    };
+
+			var view = Binding()
+			  .add('plug', plugin)
+			  .apply(el);
+
+			view.destroy();
+			assert.equal(plugin.called, true);
+		});
+	});
+	
 
 });
