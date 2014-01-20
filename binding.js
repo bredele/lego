@@ -11,6 +11,7 @@ module.exports = Binding;
 
 /**
  * Binding constructor.
+ * 
  * @api public
  */
 
@@ -19,6 +20,7 @@ function Binding(model) {
 	this.model = new Store(model);
 	this.plugins = {};
 }
+
 
 //todo: make better parser and more efficient
 function parser(str) {
@@ -51,11 +53,12 @@ function parser(str) {
 
 /**
  * Bind object as function.
+ * 
  * @api private
  */
 
 function binder(obj) {
-  return function(el, expr) {
+  var fn = function(el, expr) {
     var formats = parser(expr);
     for(var i = 0, l = formats.length; i < l; i++) {
       var format = formats[i];
@@ -63,13 +66,20 @@ function binder(obj) {
       obj[format.method].apply(obj, format.params);
     }
   };
+  //TODO: find something better
+  fn.destroy = function() {
+    obj.destroy && obj.destroy();
+  };
+  return fn;
 }
 
 
 /**
  * Add binding by name
+ * 
  * @param {String} name  
  * @param {Object} plugin 
+ * @return {Binding}
  * @api public
  */
 
@@ -82,6 +92,7 @@ Binding.prototype.add = function(name, plugin) {
 
 /**
  * Attribute binding.
+ * 
  * @param  {HTMLElement} node 
  * @api private
  */
@@ -103,6 +114,7 @@ Binding.prototype.bindAttrs = function(node) {
 
 /**
  * Apply bindings on a single node
+ * 
  * @param  {DomElement} node 
  * @api private
  */
@@ -118,7 +130,9 @@ Binding.prototype.bind = function(node) {
 
 /**
  * Apply bindings on nested DOM element.
- * @param  {DomElement} node 
+ * 
+ * @param  {DomElement} node
+ * @return {Binding}
  * @api public
  */
 

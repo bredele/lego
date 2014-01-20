@@ -322,13 +322,37 @@ describe("Binding", function() {
 				    }
 			    };
 
-			var view = Binding()
+			var binding = Binding()
 			  .add('plug', plugin)
 			  .apply(el);
 
-			view.destroy();
+			binding.destroy();
 			assert.equal(plugin.called, true);
 		});
+
+		it("should unsubscribe to store", function() {
+			var el = domify('<span>{label}</span>'),
+			    store = new Store({
+			    	label: 'maple'
+			    }),
+			    changed = false;
+
+			store.on('change github', function() {
+				changed = true;
+			});
+
+			Binding(store)
+			  .apply(el)
+			  .destroy();
+
+      store.set('label', 'bredele');
+      assert.equal(el.innerHTML, 'maple');
+
+      store.set('github', 'http://github.com/leafs');
+      assert.equal(changed, true);
+
+		});
+
 	});
 	
 
