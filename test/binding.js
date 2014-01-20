@@ -97,7 +97,7 @@ describe("Binding", function() {
 			});
 
 			it('should binding and interpolation', function(){
-				var el = domify('<a href="{link}" data-other>{title}</a>');
+				var el = domify('<a href="{ link }" data-other>{    title}</a>');
 
 				var store = new Store({
 					link : 'http://github.com/bredele',

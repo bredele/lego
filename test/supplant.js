@@ -22,7 +22,7 @@ describe("Supplant", function() {
     });
 
     it('trim whitespace', function(){
-      var str = "This is an { test   } interpolation";
+      var str = "This is an {        test   } interpolation";
       var result = supplant(str, {
         test : 'awesome'
       });
