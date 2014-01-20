@@ -136,7 +136,8 @@ Binding.prototype.bind = function(node) {
  * @api public
  */
 
-Binding.prototype.apply = function(node) {
+Binding.prototype.apply = function(node, bool) { //TODO: change api, call bind
+  if(bool) return this.query(node);
   var nodes = node.childNodes;
   this.bind(node);
   for (var i = 0, l = nodes.length; i < l; i++) {
@@ -147,13 +148,36 @@ Binding.prototype.apply = function(node) {
 
 
 /**
+ * Query plugins and execute them.
+ * 
+ * @param  {Element} el 
+ * @api private
+ */
+
+Binding.prototype.query = function(el) {
+  //TODO: refactor
+  var parent = el.parentElement;
+  if(!parent) {
+    parent = document.createDocumentFragment();
+    parent.appendChild(el);
+  }
+  for(var name in this.plugins) {
+    var nodes = parent.querySelectorAll('[' + name + ']');
+    for(var i = 0, l = nodes.length; i < l; i++) {
+      var node = nodes[i];
+      this.plugins[name].call(this.model, node, node.getAttribute(name));
+    }
+  }
+};
+
+/**
  * Destroy binding's plugins and unsubscribe
  * to emitter.
  * 
  * @api public
  */
 
-Binding.prototype.destroy = function() {
+Binding.prototype.unbind = function() {
   for(var name in this.plugins) {
     var plugin = this.plugins[name];
     plugin.destroy && plugin.destroy();

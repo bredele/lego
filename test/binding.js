@@ -312,7 +312,31 @@ describe("Binding", function() {
 
 	});
 
-	describe("destroy", function() {
+  describe("Query", function() {
+  	it('should only query select the plugins (no interpolation)', function() {
+  		var el = domify('<span data-query1="hello world" data-query2="test:hello">{label}</span>'),
+  		    query1 = false,
+  		    query2 = false;
+
+  		 Binding()
+  		   .add('data-query1', function(el, str) {
+  		   	  query1 = true;
+  		   })
+  		   .add('data-query2', {
+	  		   	test: function(el, arg) {
+	  		   		query2 = true;
+	  		   	}
+  		   })
+  		   .apply(el, true);
+
+  		 assert.equal(query1, true);
+  		 assert.equal(query2, true);
+  		 assert.equal(el.innerHTML, '{label}');
+  	});
+  });
+  
+
+	describe("unbind", function() {
 		it("should destroy plugins", function() {
 			var el = document.createElement('div'),
 			    plugin = {
@@ -326,7 +350,7 @@ describe("Binding", function() {
 			  .add('plug', plugin)
 			  .apply(el);
 
-			binding.destroy();
+			binding.unbind();
 			assert.equal(plugin.called, true);
 		});
 
@@ -343,14 +367,13 @@ describe("Binding", function() {
 
 			Binding(store)
 			  .apply(el)
-			  .destroy();
+			  .unbind();
 
       store.set('label', 'bredele');
       assert.equal(el.innerHTML, 'maple');
 
       store.set('github', 'http://github.com/leafs');
       assert.equal(changed, true);
-
 		});
 
 	});

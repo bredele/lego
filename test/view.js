@@ -112,12 +112,13 @@ var assert = require('assert'),
 
 
     	describe('destroy', function() {
-    		it('should call the destroy function of every regstered plugin', function(){
+    		it('should call the destroy function of every regstered plugin', function() {
     			var view = new View(),
-    			idx = 0,
-    			destroy = function() {
-    				++idx;
-    			};
+                    idx = 0,
+        			destroy = function() {
+        				++idx;
+        			};
+                    
     			view.attr('test', {
     				destroy: destroy
     			});
@@ -127,7 +128,9 @@ var assert = require('assert'),
     			view.data('another', {});
     			view.alive(document.createElement('div'));
     			view.destroy();
-    			assert(idx === 2);
+
+
+    			assert.equal(idx, 2);
     		});
     	});
     });
