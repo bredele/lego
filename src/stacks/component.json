@@ -1,0 +1,12 @@
+{
+  "name": "stacks",
+  "dependencies": {
+    "bredele/maple" : "*"
+  },
+  "development": {},
+  "templates" : ["stack.html"],
+  "main": "index.js",
+  "scripts": [
+    "index.js"
+  ]
+}

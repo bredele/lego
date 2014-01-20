@@ -2941,6 +2941,31 @@ module.exports = view.dom;\n\
 \n\
 //DO SECOND EXample declarative//@ sourceURL=computed/index.js"
 ));
+require.register("events/index.js", Function("exports, require, module",
+"var View = require('maple/view');\n\
+\n\
+var view = new View();\n\
+view.html(require('./events.html')); \n\
+view.alive();\n\
+\n\
+module.exports = view.dom;//@ sourceURL=events/index.js"
+));
+require.register("repeat/index.js", Function("exports, require, module",
+"var View = require('maple/view');\n\
+var view = new View();\n\
+view.html(require('./list.html'));\n\
+view.alive();\n\
+\n\
+module.exports = view.dom;//@ sourceURL=repeat/index.js"
+));
+require.register("stacks/index.js", Function("exports, require, module",
+"var View = require('maple/view');\n\
+var view = new View();\n\
+view.html(require('./stack.html'));\n\
+view.alive();\n\
+\n\
+module.exports = view.dom;//@ sourceURL=stacks/index.js"
+));
 require.register("component-classes/index.js", Function("exports, require, module",
 "/**\n\
  * Module dependencies.\n\
@@ -3341,6 +3366,24 @@ require.register("showcase/examples.js", Function("exports, require, module",
 \t\tgithub: \"\",\n\
 \t\tdescription: \"sdsd\"\n\
 \t},\n\
+\t\"events\" : {\n\
+\t\tname: \"events\",\n\
+\t\ttitle: \"Events and delegation\",\n\
+\t\tgithub: \"\",\n\
+\t\tdescription: \"mettre dans section plugin\"\n\
+\t},\n\
+\t\"repeat\" : {\n\
+\t\tname: \"repeat\",\n\
+\t\ttitle: \"Repeat item\",\n\
+\t\tgithub: \"\",\n\
+\t\tdescription: \"mettre dans section plugin\"\n\
+\t},\n\
+\t\"stacks\" : {\n\
+\t\tname: \"stacks\",\n\
+\t\ttitle: \"Stack\",\n\
+\t\tgithub: \"\",\n\
+\t\tdescription: \"mettre dans section plugin\"\n\
+\t},\n\
 \t\"todo\" : {\n\
 \t\tname: \"todo\",\n\
 \t\ttitle: \"Todo MVC\",\n\
@@ -3379,6 +3422,23 @@ require.register("computed/computed.html", Function("exports, require, module",
 \t\t</div>\\n\
 \t</div>\\n\
 </div>';//@ sourceURL=computed/computed.html"
+));
+require.register("events/events.html", Function("exports, require, module",
+"module.exports = '<div class=\"events\">\\n\
+<h4>Simple</h4>\\n\
+<h4>Delegation</h4>\\n\
+<h4>filter</h4>\\n\
+</div>';//@ sourceURL=events/events.html"
+));
+require.register("repeat/list.html", Function("exports, require, module",
+"module.exports = '<ul>\\n\
+\t<li>item</li>\\n\
+</ul>';//@ sourceURL=repeat/list.html"
+));
+require.register("stacks/stack.html", Function("exports, require, module",
+"module.exports = '<div class=\"stack-plugin\">\\n\
+\tstackkk\\n\
+</div>';//@ sourceURL=stacks/stack.html"
 ));
 
 require.register("todo/todo.html", Function("exports, require, module",
@@ -3557,6 +3617,60 @@ require.alias("bredele-event/index.js", "bredele-event-plugin/deps/event/index.j
 require.alias("bredele-event/index.js", "bredele-event/index.js");
 require.alias("bredele-event-plugin/index.js", "bredele-event-plugin/index.js");
 require.alias("computed/index.js", "computed/index.js");
+require.alias("events/index.js", "showcase/deps/events/index.js");
+require.alias("events/index.js", "showcase/deps/events/index.js");
+require.alias("bredele-maple/maple.js", "events/deps/maple/maple.js");
+require.alias("bredele-maple/view.js", "events/deps/maple/view.js");
+require.alias("bredele-maple/store.js", "events/deps/maple/store.js");
+require.alias("bredele-maple/emitter.js", "events/deps/maple/emitter.js");
+require.alias("bredele-maple/binding.js", "events/deps/maple/binding.js");
+require.alias("bredele-maple/lib/app.js", "events/deps/maple/lib/app.js");
+require.alias("bredele-maple/lib/supplant.js", "events/deps/maple/lib/supplant.js");
+require.alias("bredele-maple/lib/subs.js", "events/deps/maple/lib/subs.js");
+require.alias("bredele-maple/lib/utils.js", "events/deps/maple/lib/utils.js");
+require.alias("bredele-maple/maple.js", "events/deps/maple/index.js");
+require.alias("bredele-maple/maple.js", "bredele-maple/index.js");
+require.alias("bredele-event-plugin/index.js", "events/deps/event-plugin/index.js");
+require.alias("bredele-event-plugin/index.js", "events/deps/event-plugin/index.js");
+require.alias("bredele-event/index.js", "bredele-event-plugin/deps/event/index.js");
+require.alias("bredele-event/index.js", "bredele-event-plugin/deps/event/index.js");
+require.alias("bredele-event/index.js", "bredele-event/index.js");
+require.alias("bredele-event-plugin/index.js", "bredele-event-plugin/index.js");
+require.alias("events/index.js", "events/index.js");
+require.alias("repeat/index.js", "showcase/deps/repeat/index.js");
+require.alias("repeat/index.js", "showcase/deps/repeat/index.js");
+require.alias("bredele-maple/maple.js", "repeat/deps/maple/maple.js");
+require.alias("bredele-maple/view.js", "repeat/deps/maple/view.js");
+require.alias("bredele-maple/store.js", "repeat/deps/maple/store.js");
+require.alias("bredele-maple/emitter.js", "repeat/deps/maple/emitter.js");
+require.alias("bredele-maple/binding.js", "repeat/deps/maple/binding.js");
+require.alias("bredele-maple/lib/app.js", "repeat/deps/maple/lib/app.js");
+require.alias("bredele-maple/lib/supplant.js", "repeat/deps/maple/lib/supplant.js");
+require.alias("bredele-maple/lib/subs.js", "repeat/deps/maple/lib/subs.js");
+require.alias("bredele-maple/lib/utils.js", "repeat/deps/maple/lib/utils.js");
+require.alias("bredele-maple/maple.js", "repeat/deps/maple/index.js");
+require.alias("bredele-maple/maple.js", "bredele-maple/index.js");
+require.alias("bredele-event-plugin/index.js", "repeat/deps/event-plugin/index.js");
+require.alias("bredele-event-plugin/index.js", "repeat/deps/event-plugin/index.js");
+require.alias("bredele-event/index.js", "bredele-event-plugin/deps/event/index.js");
+require.alias("bredele-event/index.js", "bredele-event-plugin/deps/event/index.js");
+require.alias("bredele-event/index.js", "bredele-event/index.js");
+require.alias("bredele-event-plugin/index.js", "bredele-event-plugin/index.js");
+require.alias("repeat/index.js", "repeat/index.js");
+require.alias("stacks/index.js", "showcase/deps/stacks/index.js");
+require.alias("stacks/index.js", "showcase/deps/stacks/index.js");
+require.alias("bredele-maple/maple.js", "stacks/deps/maple/maple.js");
+require.alias("bredele-maple/view.js", "stacks/deps/maple/view.js");
+require.alias("bredele-maple/store.js", "stacks/deps/maple/store.js");
+require.alias("bredele-maple/emitter.js", "stacks/deps/maple/emitter.js");
+require.alias("bredele-maple/binding.js", "stacks/deps/maple/binding.js");
+require.alias("bredele-maple/lib/app.js", "stacks/deps/maple/lib/app.js");
+require.alias("bredele-maple/lib/supplant.js", "stacks/deps/maple/lib/supplant.js");
+require.alias("bredele-maple/lib/subs.js", "stacks/deps/maple/lib/subs.js");
+require.alias("bredele-maple/lib/utils.js", "stacks/deps/maple/lib/utils.js");
+require.alias("bredele-maple/maple.js", "stacks/deps/maple/index.js");
+require.alias("bredele-maple/maple.js", "bredele-maple/index.js");
+require.alias("stacks/index.js", "stacks/index.js");
 require.alias("todo/index.js", "showcase/deps/todo/index.js");
 require.alias("todo/index.js", "showcase/deps/todo/index.js");
 require.alias("bredele-maple/maple.js", "todo/deps/maple/maple.js");

@@ -12,6 +12,9 @@
   "local": [
     "hello",
     "computed",
+    "events",
+    "repeat",
+    "stacks",
     "todo"
   ],
   "templates" : ["showcase.html"],

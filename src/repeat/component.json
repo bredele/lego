@@ -1,0 +1,13 @@
+{
+  "name": "repeat",
+  "dependencies": {
+    "bredele/maple" : "*",
+    "bredele/event-plugin" : "*"
+  },
+  "development": {},
+  "templates" : ["list.html"],
+  "main": "index.js",
+  "scripts": [
+    "index.js"
+  ]
+}
