@@ -669,6 +669,9 @@ img.right {
 
 
 
+
+
+
 .button,
 .todo-btn,
 input[type="checkbox"] {
@@ -1227,5 +1230,16 @@ hr {
 }
 
 .stack {
+  height: 100%;
+  width: 70%;
   padding-top: 100px;
+}
+
+.examples-content {
+  height: 100%;
+}
+
+.examples-list {
+  width: 30%;
+  height: 100%;
 }

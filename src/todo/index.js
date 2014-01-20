@@ -98,7 +98,5 @@ app.html(html, store);
 app.attr('todos', todos);
 app.attr('events', new Events(controller)); // could be greate to do events(controller) and events.off, etc
 app.attr('visible', require('hidden-plugin')); //TODO: do our own
-
-module.exports = function(dom) {
-	app.insert(dom.querySelector('.stack')); //if null it should stay in dom's view TODO
-};
+app.alive();
+module.exports = app.dom;

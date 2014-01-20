@@ -3,5 +3,12 @@
 		<div class="left icon-list toolbar-btn"></div>
 		<div class="right icon-cross toolbar-btn" event="on:click,close"></div>
 	</header>
-	<section class="stack"></section>
+	<section class="examples-content">
+		<ul class="examples-list left" event="on:click .example-link,select" examples>
+			<li>
+				<a class="example-link" href="#{name}">{name}</a>
+			</li>
+		</ul>
+		<div class="stack left"></div>
+	</section>
 </div>

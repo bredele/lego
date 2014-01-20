@@ -4,10 +4,13 @@
     "bredele/maple" : "*",
     "bredele/event" : "*",
     "bredele/event-plugin" : "*",
+    "bredele/list" : "*",
+    "bredele/stack" : "*",
     "component/scroll-to" : "*"
   },
   "development": {},
   "local": [
+    "hello",
     "todo"
   ],
   "templates" : ["showcase.html"],

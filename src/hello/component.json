@@ -1,0 +1,13 @@
+{
+  "name": "hello",
+  "dependencies": {
+    "bredele/maple" : "*",
+    "bredele/event-plugin" : "*"
+  },
+  "development": {},
+  "templates" : ["hello.html"],
+  "main": "index.js",
+  "scripts": [
+    "index.js"
+  ]
+}

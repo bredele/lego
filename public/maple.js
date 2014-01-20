@@ -1350,23 +1350,337 @@ Events.prototype.destroy = function() {\n\
 \n\
 //@ sourceURL=bredele-event-plugin/index.js"
 ));
-require.register("component-raf/index.js", Function("exports, require, module",
+require.register("bredele-trim/index.js", Function("exports, require, module",
 "\n\
-module.exports = window.requestAnimationFrame\n\
-  || window.webkitRequestAnimationFrame\n\
-  || window.mozRequestAnimationFrame\n\
-  || window.oRequestAnimationFrame\n\
-  || window.msRequestAnimationFrame\n\
-  || fallback;\n\
+/**\n\
+ * Expose 'trim'\n\
+ * @param  {String} str\n\
+ * @api public\n\
+ */\n\
+module.exports = function(str){\n\
+  if(str.trim) return str.trim();\n\
+  return str.replace(/^\\s*|\\s*$/g, '');\n\
+};//@ sourceURL=bredele-trim/index.js"
+));
+require.register("bredele-supplant/index.js", Function("exports, require, module",
+"var indexOf = require('indexof'),\n\
+    trim = require('trim'),\n\
+    props = require('./lib/props');\n\
 \n\
-var prev = new Date().getTime();\n\
-function fallback(fn) {\n\
-  var curr = new Date().getTime();\n\
-  var ms = Math.max(0, 16 - (curr - prev));\n\
-  setTimeout(fn, ms);\n\
-  prev = curr;\n\
+\n\
+var cache = {};\n\
+\n\
+function scope(statement){\n\
+  var result = props(statement, 'model.');\n\
+  return new Function('model', 'return ' + result);\n\
+};\n\
+\n\
+/**\n\
+ * Variable substitution on the string.\n\
+ *\n\
+ * @param {String} str\n\
+ * @param {Object} model\n\
+ * @return {String} interpolation's result\n\
+ */\n\
+\n\
+ module.exports = function(text, model){\n\
+\t//TODO:  cache the function the entire text or just the expression?\n\
+  return text.replace(/\\{([^}]+)\\}/g, function(_, expr) {\n\
+  \tif(/[.'[+(]/.test(expr)) {\n\
+  \t\tvar fn = cache[expr] = cache[expr] || scope(expr);\n\
+  \t\treturn fn(model) || '';\n\
+  \t}\n\
+    return model[trim(expr)] || '';\n\
+  });\n\
+};\n\
+\n\
+\n\
+module.exports.attrs = function(text) {\n\
+  var exprs = [];\n\
+  text.replace(/\\{([^}]+)\\}/g, function(_, expr){\n\
+    var val = trim(expr);\n\
+    if(!~indexOf(exprs, val)) exprs.push(val);\n\
+  });\n\
+  return exprs;\n\
+};//@ sourceURL=bredele-supplant/index.js"
+));
+require.register("bredele-supplant/lib/props.js", Function("exports, require, module",
+"var indexOf = require('indexof');\n\
+\n\
+/**\n\
+ * Global Names\n\
+ */\n\
+\n\
+var globals = /\\b(Array|Date|Object|Math|JSON)\\b/g;\n\
+\n\
+/**\n\
+ * Return immediate identifiers parsed from `str`.\n\
+ *\n\
+ * @param {String} str\n\
+ * @param {String|Function} map function or prefix\n\
+ * @return {Array}\n\
+ * @api public\n\
+ */\n\
+\n\
+module.exports = function(str, fn){\n\
+  var p = unique(props(str));\n\
+  if (fn && 'string' == typeof fn) fn = prefixed(fn);\n\
+  if (fn) return map(str, p, fn);\n\
+  return p;\n\
+};\n\
+\n\
+/**\n\
+ * Return immediate identifiers in `str`.\n\
+ *\n\
+ * @param {String} str\n\
+ * @return {Array}\n\
+ * @api private\n\
+ */\n\
+\n\
+function props(str) {\n\
+  return str\n\
+    .replace(/\\.\\w+|\\w+ *\\(|\"[^\"]*\"|'[^']*'|\\/([^/]+)\\//g, '')\n\
+    .replace(globals, '')\n\
+    .match(/[a-zA-Z_]\\w*/g)\n\
+    || [];\n\
 }\n\
-//@ sourceURL=component-raf/index.js"
+\n\
+/**\n\
+ * Return `str` with `props` mapped with `fn`.\n\
+ *\n\
+ * @param {String} str\n\
+ * @param {Array} props\n\
+ * @param {Function} fn\n\
+ * @return {String}\n\
+ * @api private\n\
+ */\n\
+\n\
+function map(str, props, fn) {\n\
+  var re = /\\.\\w+|\\w+ *\\(|\"[^\"]*\"|'[^']*'|\\/([^/]+)\\/|[a-zA-Z_]\\w*/g;\n\
+  return str.replace(re, function(_){\n\
+    if ('(' == _[_.length - 1]) return fn(_);\n\
+    if (!~indexOf(props, _)) return _;\n\
+    return fn(_);\n\
+  });\n\
+}\n\
+\n\
+/**\n\
+ * Return unique array.\n\
+ *\n\
+ * @param {Array} arr\n\
+ * @return {Array}\n\
+ * @api private\n\
+ */\n\
+\n\
+function unique(arr) {\n\
+  var ret = [];\n\
+\n\
+  for (var i = 0; i < arr.length; i++) {\n\
+    if (~indexOf(ret, arr[i])) continue;\n\
+    ret.push(arr[i]);\n\
+  }\n\
+\n\
+  return ret;\n\
+}\n\
+\n\
+/**\n\
+ * Map with prefix `str`.\n\
+ */\n\
+\n\
+function prefixed(str) {\n\
+  return function(_){\n\
+    return str + _;\n\
+  };\n\
+}//@ sourceURL=bredele-supplant/lib/props.js"
+));
+require.register("bredele-plugin-parser/index.js", Function("exports, require, module",
+"var trim = require('trim');\n\
+\n\
+/**\n\
+ * Plugin constructor.\n\
+ * @api public\n\
+ */\n\
+\n\
+module.exports = function(str) {\n\
+\t//str = str.replace(/ /g,'');\n\
+\tvar phrases = str ? str.split(';') : ['main'];\n\
+  var results = [];\n\
+  for(var i = 0, l = phrases.length; i < l; i++) {\n\
+    var expr = phrases[i].split(':');\n\
+\n\
+    var params = [];\n\
+    var name = expr[0];\n\
+\n\
+    if(expr[1]) {\n\
+      var args = expr[1].split(',');\n\
+      for(var j = 0, h = args.length; j < h; j++) {\n\
+        params.push(trim(args[j]));\n\
+      }\n\
+    } else {\n\
+      name = 'main'; //doesn't do anything\n\
+    }\n\
+\n\
+    results.push({\n\
+      method: trim(expr[0]),\n\
+      params: params\n\
+    });\n\
+  }\n\
+  return results;\n\
+ };//@ sourceURL=bredele-plugin-parser/index.js"
+));
+require.register("bredele-binding/index.js", Function("exports, require, module",
+"var subs = require('./lib/attr'),\n\
+    Store = require('store'),\n\
+    parser = require('plugin-parser');\n\
+\n\
+\n\
+/**\n\
+ * Expose 'data binding'\n\
+ */\n\
+\n\
+module.exports = Binding;\n\
+\n\
+\n\
+/**\n\
+ * Intitialize a binding.\n\
+ * @param {Object} model \n\
+ */\n\
+\n\
+function Binding(model){\n\
+  if(!(this instanceof Binding)) return new Binding(model);\n\
+  //TODO: remove store of dependencies\n\
+  this.model = new Store(model);\n\
+  this.plugins = {};\n\
+}\n\
+\n\
+\n\
+/**\n\
+ * Bind object as function.\n\
+ * @api private\n\
+ */\n\
+\n\
+function binder(obj) {\n\
+  return function(el, expr) {\n\
+    var formats = parser(expr);\n\
+    for(var i = 0, l = formats.length; i < l; i++) {\n\
+      var format = formats[i];\n\
+      format.params.splice(0, 0, el);\n\
+      obj[format.method].apply(obj, format.params);\n\
+    }\n\
+  };\n\
+}\n\
+\n\
+\n\
+/**\n\
+ * Add binding by name\n\
+ * @param {String} name  \n\
+ * @param {Object} plugin \n\
+ * @api public\n\
+ */\n\
+\n\
+Binding.prototype.add = function(name, plugin) {\n\
+  if(typeof plugin === 'object') plugin = binder(plugin);\n\
+  this.plugins[name] = plugin;\n\
+  return this;\n\
+};\n\
+\n\
+\n\
+/**\n\
+ * Attribute binding.\n\
+ * @param  {HTMLElement} node \n\
+ * @api private\n\
+ */\n\
+\n\
+Binding.prototype.bindAttrs = function(node) {\n\
+  var attrs = node.attributes;\n\
+  //reverse loop doesn't work on IE...\n\
+  for(var i = 0, l = attrs.length; i < l; i++) {\n\
+    var attr = attrs[i],\n\
+        plugin = this.plugins[attr.nodeName];\n\
+\n\
+    if(plugin) {\n\
+      plugin.call(this.model, node, attr.nodeValue);\n\
+    } else {\n\
+      subs(attr, this.model);\n\
+    }\n\
+  }\n\
+};\n\
+\n\
+\n\
+/**\n\
+ * Apply bindings on a single node\n\
+ * @param  {DomElement} node \n\
+ * @api private\n\
+ */\n\
+\n\
+Binding.prototype.bind = function(node) {\n\
+  var type = node.nodeType;\n\
+  //dom element\n\
+  if (type === 1) return this.bindAttrs(node);\n\
+  // text node\n\
+  if (type === 3) subs(node, this.model);\n\
+};\n\
+\n\
+\n\
+/**\n\
+ * Apply bindings on nested DOM element.\n\
+ * @param  {DomElement} node \n\
+ * @api public\n\
+ */\n\
+\n\
+Binding.prototype.apply = function(node) {\n\
+  var nodes = node.childNodes;\n\
+  this.bind(node);\n\
+  //use each?\n\
+  for (var i = 0, l = nodes.length; i < l; i++) {\n\
+    this.apply(nodes[i]);\n\
+  }\n\
+};\n\
+//@ sourceURL=bredele-binding/index.js"
+));
+require.register("bredele-binding/lib/attr.js", Function("exports, require, module",
+"var supplant = require('supplant'), //don't use supplant for attributes (remove attrs)\n\
+    indexOf = require('indexof'),\n\
+    props = require('supplant/lib/props'); //TODO: make component props or supplant middleware\n\
+\n\
+\n\
+/**\n\
+ * Node text substitution constructor.\n\
+ * @param {HTMLElement} node type 3\n\
+ * @param {Store} store \n\
+ */\n\
+\n\
+module.exports = function(node, store) {\n\
+  var text = node.nodeValue;\n\
+\n\
+  //TODO: it seems faster if index in index.js??\n\
+  //is it enought to say that's an interpolation?\n\
+  if(!~ indexOf(text, '{')) return;\n\
+\n\
+  var exprs = getProps(text),\n\
+      handle = function() {\n\
+        node.nodeValue = supplant(text, store.data);\n\
+      };\n\
+\n\
+  for(var l = exprs.length; l--;) {\n\
+    //when destroy binding, we should do off store\n\
+    store.on('change ' + exprs[l], handle);\n\
+  }\n\
+\n\
+  handle();\n\
+};\n\
+\n\
+\n\
+function getProps(text) {\n\
+  var exprs = [];\n\
+  \n\
+  //is while and test faster?\n\
+  text.replace(/\\{([^}]+)\\}/g, function(_, expr){\n\
+    if(!~indexOf(exprs, expr)) exprs = exprs.concat(props(expr));\n\
+  });\n\
+\n\
+  return exprs;\n\
+}//@ sourceURL=bredele-binding/lib/attr.js"
 ));
 require.register("component-emitter/index.js", Function("exports, require, module",
 "\n\
@@ -1526,6 +1840,626 @@ Emitter.prototype.hasListeners = function(event){\n\
   return !! this.listeners(event).length;\n\
 };\n\
 //@ sourceURL=component-emitter/index.js"
+));
+require.register("bredele-clone/index.js", Function("exports, require, module",
+"\n\
+/**\n\
+ * Expose 'clone'\n\
+ * @param  {Object} obj \n\
+ * @api public\n\
+ */\n\
+\n\
+module.exports = function(obj) {\n\
+  if(obj instanceof Array) {\n\
+    return obj.slice(0);\n\
+  }\n\
+  return clone(obj);\n\
+};\n\
+\n\
+\n\
+/**\n\
+ * Clone object.\n\
+ * @param  {Object} obj \n\
+ * @api private\n\
+ */\n\
+\n\
+function clone(obj){\n\
+  if(typeof obj === 'object') {\n\
+    var copy = {};\n\
+    for (var key in obj) {\n\
+      if (obj.hasOwnProperty(key)) {\n\
+        copy[key] = clone(obj[key]);\n\
+      }\n\
+    }\n\
+    return copy;\n\
+  }\n\
+  return obj;\n\
+}//@ sourceURL=bredele-clone/index.js"
+));
+require.register("bredele-store/index.js", Function("exports, require, module",
+"var Emitter = require('emitter'),\n\
+    clone = require('clone'),\n\
+    each = require('each'),\n\
+    storage = window.localStorage;\n\
+\n\
+/**\n\
+ * Expose 'Store'\n\
+ */\n\
+\n\
+module.exports = Store;\n\
+\n\
+\n\
+/**\n\
+ * Store constructor\n\
+ * @api public\n\
+ */\n\
+\n\
+function Store(data) {\n\
+  if(data instanceof Store) return data;\n\
+  this.data = data || {};\n\
+  this.formatters = {};\n\
+}\n\
+\n\
+\n\
+Emitter(Store.prototype);\n\
+\n\
+/**\n\
+ * Set store attribute.\n\
+ * @param {String} name\n\
+ * @param {Everything} value\n\
+ * @api public\n\
+ */\n\
+\n\
+Store.prototype.set = function(name, value, plugin) { //add object options\n\
+  var prev = this.data[name];\n\
+  if(prev !== value) {\n\
+    this.data[name] = value;\n\
+    this.emit('change', name, value, prev);\n\
+    this.emit('change ' + name, value, prev);\n\
+  }\n\
+};\n\
+\n\
+\n\
+/**\n\
+ * Get store attribute.\n\
+ * @param {String} name\n\
+ * @return {Everything}\n\
+ * @api public\n\
+ */\n\
+\n\
+Store.prototype.get = function(name) {\n\
+  var formatter = this.formatters[name];\n\
+  var value = this.data[name];\n\
+  if(formatter) {\n\
+    value = formatter[0].call(formatter[1], value);\n\
+  }\n\
+  return value;\n\
+};\n\
+\n\
+/**\n\
+ * Get store attribute.\n\
+ * @param {String} name\n\
+ * @return {Everything}\n\
+ * @api private\n\
+ */\n\
+\n\
+Store.prototype.has = function(name) {\n\
+  //NOTE: I don't know if it should be public\n\
+  return this.data.hasOwnProperty(name);\n\
+};\n\
+\n\
+\n\
+/**\n\
+ * Delete store attribute.\n\
+ * @param {String} name\n\
+ * @return {Everything}\n\
+ * @api public\n\
+ */\n\
+\n\
+Store.prototype.del = function(name) {\n\
+  //TODO:refactor this is ugly\n\
+  if(this.has(name)){\n\
+    if(this.data instanceof Array){\n\
+      this.data.splice(name, 1);\n\
+    } else {\n\
+      delete this.data[name]; //NOTE: do we need to return something?\n\
+    }\n\
+    this.emit('deleted', name, name);\n\
+    this.emit('deleted ' + name, name);\n\
+  }\n\
+};\n\
+\n\
+\n\
+/**\n\
+ * Set format middleware.\n\
+ * Call formatter everytime a getter is called.\n\
+ * A formatter should always return a value.\n\
+ * @param {String} name\n\
+ * @param {Function} callback\n\
+ * @param {Object} scope\n\
+ * @return this\n\
+ * @api public\n\
+ */\n\
+\n\
+Store.prototype.format = function(name, callback, scope) {\n\
+  this.formatters[name] = [callback,scope];\n\
+  return this;\n\
+};\n\
+\n\
+\n\
+/**\n\
+ * Compute store attributes\n\
+ * @param  {String} name\n\
+ * @return {Function} callback                \n\
+ * @api public\n\
+ */\n\
+\n\
+Store.prototype.compute = function(name, callback) {\n\
+  //NOTE: I want something clean instaead passing the computed \n\
+  //attribute in the function\n\
+  var str = callback.toString();\n\
+  var attrs = str.match(/this.[a-zA-Z0-9]*/g);\n\
+\n\
+  this.set(name, callback.call(this.data)); //TODO: refactor (may be use replace)\n\
+  for(var l = attrs.length; l--;){\n\
+    this.on('change ' + attrs[l].slice(5), function(){\n\
+      this.set(name, callback.call(this.data));\n\
+    });\n\
+  }\n\
+};\n\
+\n\
+\n\
+/**\n\
+ * Reset store\n\
+ * @param  {Object} data \n\
+ * @api public\n\
+ */\n\
+\n\
+Store.prototype.reset = function(data) {\n\
+  var copy = clone(this.data),\n\
+      length = data.length;\n\
+  this.data = data;\n\
+\n\
+\n\
+    //remove undefined attributes\n\
+    //TODO: we don't need to go through each items for array (only difference)\n\
+    each(copy, function(key, val){\n\
+      if(typeof data[key] === 'undefined'){\n\
+        this.emit('deleted', key, length);\n\
+        this.emit('deleted ' + key, length);\n\
+      }\n\
+    }, this);\n\
+\n\
+  //set new attributes\n\
+  each(data, function(key, val){\n\
+    //TODO:refactor with this.set\n\
+    var prev = copy[key];\n\
+    if(prev !== val) {\n\
+      this.emit('change', key, val, prev);\n\
+      this.emit('change ' + key, val, prev);\n\
+    }\n\
+  }, this);\n\
+};\n\
+\n\
+\n\
+/**\n\
+ * Loop through store data.\n\
+ * @param  {Function} cb   \n\
+ * @param  {[type]}   scope \n\
+ * @api public\n\
+ */\n\
+\n\
+Store.prototype.loop = function(cb, scope) {\n\
+  each(this.data, cb, scope || this);\n\
+};\n\
+\n\
+\n\
+/**\n\
+ * Synchronize with local storage.\n\
+ * \n\
+ * @param  {String} name \n\
+ * @param  {Boolean} bool save in localstore\n\
+ * @api public\n\
+ */\n\
+\n\
+Store.prototype.local = function(name, bool) {\n\
+  //TODO: should we do a clear for .local()?\n\
+  if(!bool) {\n\
+    storage.setItem(name, this.toJSON());\n\
+  } else {\n\
+    this.reset(JSON.parse(storage.getItem(name)));\n\
+  }\n\
+  //TODO: should we return this?\n\
+};\n\
+\n\
+\n\
+/**\n\
+ * Use middlewares to extend store.\n\
+ * A middleware is a function with the store\n\
+ * as first argument.\n\
+ * \n\
+ * @param  {Function} fn \n\
+ * @return {this}\n\
+ * @api public\n\
+ */\n\
+\n\
+Store.prototype.use = function(fn) {\n\
+  fn(this);\n\
+  return this;\n\
+};\n\
+\n\
+\n\
+/**\n\
+ * Stringify model\n\
+ * @return {String} json\n\
+ * @api public\n\
+ */\n\
+\n\
+Store.prototype.toJSON = function() {\n\
+  return JSON.stringify(this.data);\n\
+};\n\
+\n\
+//TODO: localstorage middleware like//@ sourceURL=bredele-store/index.js"
+));
+require.register("component-indexof/index.js", Function("exports, require, module",
+"module.exports = function(arr, obj){\n\
+  if (arr.indexOf) return arr.indexOf(obj);\n\
+  for (var i = 0; i < arr.length; ++i) {\n\
+    if (arr[i] === obj) return i;\n\
+  }\n\
+  return -1;\n\
+};//@ sourceURL=component-indexof/index.js"
+));
+require.register("bredele-each/index.js", Function("exports, require, module",
+"\n\
+/**\n\
+ * Expose 'each'\n\
+ */\n\
+\n\
+module.exports = function(obj, fn, scope){\n\
+  if( obj instanceof Array) {\n\
+    array(obj, fn, scope);\n\
+  } else if(typeof obj === 'object') {\n\
+    object(obj, fn, scope);\n\
+  }\n\
+};\n\
+\n\
+\n\
+/**\n\
+ * Object iteration.\n\
+ * @param  {Object}   obj   \n\
+ * @param  {Function} fn    \n\
+ * @param  {Object}   scope \n\
+ * @api private\n\
+ */\n\
+\n\
+function object(obj, fn, scope) {\n\
+  for (var i in obj) {\n\
+    if (obj.hasOwnProperty(i)) {\n\
+      fn.call(scope, i, obj[i]);\n\
+    }\n\
+  }\n\
+}\n\
+\n\
+\n\
+/**\n\
+ * Array iteration.\n\
+ * @param  {Array}   obj   \n\
+ * @param  {Function} fn    \n\
+ * @param  {Object}   scope \n\
+ * @api private\n\
+ */\n\
+\n\
+function array(obj, fn, scope){\n\
+  for(var i = 0, l = obj.length; i < l; i++){\n\
+    fn.call(scope, i, obj[i]);\n\
+  }\n\
+}//@ sourceURL=bredele-each/index.js"
+));
+require.register("bredele-list/index.js", Function("exports, require, module",
+"var Binding = require('binding'),\n\
+    Store = require('store'),\n\
+    each = require('each'),\n\
+    index = require('indexof');\n\
+\n\
+\n\
+\n\
+/**\n\
+ * Expose 'List'\n\
+ */\n\
+\n\
+module.exports = List;\n\
+\n\
+\n\
+/**\n\
+ * List constructor.\n\
+ * \n\
+ * @param {HTMLelement} el\n\
+ * @param {Object} model\n\
+ * @api public\n\
+ */\n\
+\n\
+function List(store){\n\
+  this.store = new Store(store);\n\
+  this.items = [];\n\
+}\n\
+\n\
+\n\
+/**\n\
+ * Bind HTML element with store.\n\
+ * Takes the first child as an item renderer.\n\
+ * \n\
+ * @param  {HTMLElement} node \n\
+ * @api public\n\
+ */\n\
+\n\
+List.prototype.main =  \n\
+List.prototype.list = function(node) {\n\
+  var first = node.children[0],\n\
+      _this = this;\n\
+\n\
+  this.node = node;\n\
+  this.clone = first.cloneNode(true);\n\
+  node.removeChild(first);\n\
+\n\
+\n\
+  this.store.on('change', function(key, value){\n\
+    var item = _this.items[key];\n\
+    if(item) {\n\
+      //NOTE: should we unbind in store when we reset?\n\
+      item.reset(value); //do our own emitter to have scope\n\
+    } else {\n\
+      //create item renderer\n\
+      _this.addItem(key, value);\n\
+    }\n\
+  });\n\
+\n\
+  this.store.on('deleted', function(key, idx){\n\
+    _this.delItem(idx);\n\
+  });\n\
+\n\
+  this.store.loop(this.addItem, this);\n\
+};\n\
+\n\
+/**\n\
+ * Return index of node in list.\n\
+ * @param  {HTMLelement} node \n\
+ * @return {Number}  \n\
+ * @api public\n\
+ */\n\
+\n\
+List.prototype.indexOf = function(node) {\n\
+  return index(this.node.children, node);\n\
+};\n\
+\n\
+\n\
+/**\n\
+ * Loop over the list items.\n\
+ * Execute callback and pass store item.\n\
+ * \n\
+ * @param  {Function} cb    \n\
+ * @param  {Object}   scope \n\
+ * @api public\n\
+ */\n\
+\n\
+List.prototype.loop = function(cb, scope) {\n\
+  each(this.items, function(idx, item){\n\
+    cb.call(scope, item.store);\n\
+  });\n\
+};\n\
+\n\
+\n\
+/**\n\
+ * Add list item.\n\
+ * \n\
+ * @param {Object} obj\n\
+ * @api public\n\
+ */\n\
+\n\
+List.prototype.add = function(obj) {\n\
+  //store push?\n\
+  //in the future, we could use a position\n\
+  this.store.set(this.store.data.length, obj);\n\
+};\n\
+\n\
+\n\
+/**\n\
+ * Set list item.\n\
+ * \n\
+ * @param {HTMLElement|Number} idx \n\
+ * @param {Object} obj\n\
+ * @api public\n\
+ */\n\
+\n\
+List.prototype.set = function(idx, obj) {\n\
+  if(idx instanceof Element) idx = this.indexOf(idx);  \n\
+  // if(idx instanceof HTMLElement) idx = this.indexOf(idx);\n\
+  var item = this.items[idx].store;\n\
+  each(obj, function(key, val){\n\
+    item.set(key, val);\n\
+  });\n\
+};\n\
+\n\
+\n\
+/**\n\
+ * Delete item(s) in list.\n\
+ * \n\
+ * @api public\n\
+ */\n\
+\n\
+List.prototype.del = function(arg, scope) {\n\
+  //we should optimize store reset\n\
+  if(arg === undefined) return this.store.reset([]);\n\
+  if(typeof arg === 'function') {\n\
+    //could we handle that with inverse loop and store loop?\n\
+    var l = this.store.data.length;\n\
+    while(l--) {\n\
+      if(arg.call(scope, this.items[l].store)){\n\
+        this.store.del(l);\n\
+      }\n\
+    }\n\
+  }\n\
+\n\
+  //ie8 doesn't support HTMLElement and instanceof with left assignment != object\n\
+  this.store.del(typeof arg === 'number' ? arg : this.indexOf(arg));\n\
+  //this.store.del(arg instanceof HTMLElement ? this.indexOf(arg): arg);\n\
+};\n\
+\n\
+\n\
+/**\n\
+ * Create item renderer from data.\n\
+ * @param  {Object} data \n\
+ * @api private\n\
+ */\n\
+\n\
+List.prototype.addItem = function(key, data) {\n\
+  var item = new ItemRenderer(this.clone, data);\n\
+  this.items[key] = item;\n\
+  this.node.appendChild(item.dom);\n\
+};\n\
+\n\
+\n\
+/**\n\
+ * Delete item.\n\
+ * @param  {Number} idx index\n\
+ * @api private\n\
+ */\n\
+\n\
+List.prototype.delItem = function(idx) {\n\
+    var item = this.items[idx];\n\
+    item.unbind(this.node);\n\
+    this.items.splice(idx, 1);\n\
+    item = null; //for garbage collection\n\
+};\n\
+\n\
+\n\
+/**\n\
+ * Item renderer.\n\
+ * Represents the item that going to be repeated.\n\
+ * @param {HTMLElement} node \n\
+ * @param {Store} data \n\
+ * @api private\n\
+ */\n\
+\n\
+function ItemRenderer(node, data){\n\
+  //NOTE: is it more perfomant to work with string?\n\
+  this.dom = node.cloneNode(true);\n\
+  this.store = new Store(data);\n\
+  this.binding = new Binding(this.store); //we have to have a boolean parameter to apply interpolation &|| plugins\n\
+  this.binding.apply(this.dom);\n\
+}\n\
+\n\
+\n\
+/**\n\
+ * Unbind an item renderer from its ancestor.\n\
+ * @param  {HTMLElement} node \n\
+ * @api private\n\
+ */\n\
+\n\
+ItemRenderer.prototype.unbind = function(node) {\n\
+  //NOTE: is there something else to do to clean the memory?\n\
+  this.store.off();\n\
+  node.removeChild(this.dom);\n\
+};\n\
+\n\
+\n\
+/**\n\
+ * Reset iten renderer.\n\
+ * @param  {Object} data \n\
+ * @api private\n\
+ */\n\
+\n\
+ItemRenderer.prototype.reset = function(data) {\n\
+  this.store.reset(data);\n\
+};\n\
+\n\
+//@ sourceURL=bredele-list/index.js"
+));
+require.register("bredele-stack/index.js", Function("exports, require, module",
+"\n\
+/**\n\
+ * Expose 'Stack'\n\
+ */\n\
+\n\
+module.exports = Stack;\n\
+\n\
+\n\
+/**\n\
+ * Initialize a new Stack\n\
+ *\n\
+ * @param {DomElement} parent the DOM element to stack\n\
+ * @param {DomElement} doc optional document's fragment parent\n\
+ * @api public\n\
+ */\n\
+\n\
+function Stack(parent, doc) {\n\
+  this.parent = parent;\n\
+  this.fragment = document.createDocumentFragment();\n\
+  this.directory = [];\n\
+  this.current = null;\n\
+}\n\
+\n\
+\n\
+/**\n\
+ * Add dom in stack.\n\
+ *\n\
+ * @param {String} dom name\n\
+ * @param {DomElement} dom element\n\
+ * @param {Boolean} current visible dom (optional)\n\
+ * @api public\n\
+ */\n\
+\n\
+Stack.prototype.add = function(name, dom, bool) {\n\
+  if(!bool) {\n\
+    this.directory.push(name);\n\
+    this.fragment.appendChild(dom);\n\
+    return;\n\
+  }\n\
+  \n\
+  if(this.current) {\n\
+    this.add(this.current[0], this.current[1]);\n\
+  }\n\
+  this.current = [name, dom];\n\
+};\n\
+\n\
+\n\
+/**\n\
+ * Set visible element from stack.\n\
+ *\n\
+ * @param {String} [name] dom name\n\
+ * @api public\n\
+ */\n\
+\n\
+Stack.prototype.show = function(name) {\n\
+  var index = this.directory.indexOf(name);\n\
+  if(index > -1) {\n\
+    var dom = this.fragment.childNodes[index];\n\
+    this.parent.appendChild(dom);\n\
+    this.directory.splice(index, 1);\n\
+\n\
+    this.add(name, dom, true);\n\
+  }\n\
+};\n\
+\n\
+//@ sourceURL=bredele-stack/index.js"
+));
+require.register("component-raf/index.js", Function("exports, require, module",
+"\n\
+module.exports = window.requestAnimationFrame\n\
+  || window.webkitRequestAnimationFrame\n\
+  || window.mozRequestAnimationFrame\n\
+  || window.oRequestAnimationFrame\n\
+  || window.msRequestAnimationFrame\n\
+  || fallback;\n\
+\n\
+var prev = new Date().getTime();\n\
+function fallback(fn) {\n\
+  var curr = new Date().getTime();\n\
+  var ms = Math.max(0, 16 - (curr - prev));\n\
+  setTimeout(fn, ms);\n\
+  prev = curr;\n\
+}\n\
+//@ sourceURL=component-raf/index.js"
 ));
 require.register("component-ease/index.js", Function("exports, require, module",
 "\n\
@@ -1944,14 +2878,34 @@ function scroll() {\n\
 }\n\
 //@ sourceURL=component-scroll-to/index.js"
 ));
-require.register("component-indexof/index.js", Function("exports, require, module",
-"module.exports = function(arr, obj){\n\
-  if (arr.indexOf) return arr.indexOf(obj);\n\
-  for (var i = 0; i < arr.length; ++i) {\n\
-    if (arr[i] === obj) return i;\n\
-  }\n\
-  return -1;\n\
-};//@ sourceURL=component-indexof/index.js"
+require.register("hello/index.js", Function("exports, require, module",
+"var View = require('maple/view'),\n\
+    Store = require('maple/store'),\n\
+    Events = require('event-plugin');\n\
+\n\
+var view = new View();\n\
+var store = new Store(); //or view.model()? instead view.html(html, data)\n\
+\n\
+view.html(require('./hello.html'), store); //if html empty there is an error binding and childnodes doesn't exist\n\
+\n\
+for(var l = 500; l--;) {\n\
+\t//create a component like domify or domify('span', 'text');\n\
+\tvar span = document.createElement('span');\n\
+\tvar val = Math.random() + Math.round(Math.random());\n\
+\t//we should do a random style\n\
+\tspan.innerHTML = '{value} ';\n\
+\tspan.setAttribute('style', 'font-size:' + val + 'em');\n\
+\tview.dom.appendChild(span);\n\
+}\n\
+\n\
+view.attr('events', new Events({\n\
+\ttext: function(ev){\n\
+\t\tstore.set('value', ev.target.value);\n\
+\t}\n\
+}));\n\
+view.alive();\n\
+\n\
+module.exports = view.dom;//@ sourceURL=hello/index.js"
 ));
 require.register("component-classes/index.js", Function("exports, require, module",
 "/**\n\
@@ -2162,863 +3116,6 @@ module.exports = function(node, attr) {\n\
 };\n\
 //@ sourceURL=bredele-hidden-plugin/index.js"
 ));
-require.register("bredele-trim/index.js", Function("exports, require, module",
-"\n\
-/**\n\
- * Expose 'trim'\n\
- * @param  {String} str\n\
- * @api public\n\
- */\n\
-module.exports = function(str){\n\
-  if(str.trim) return str.trim();\n\
-  return str.replace(/^\\s*|\\s*$/g, '');\n\
-};//@ sourceURL=bredele-trim/index.js"
-));
-require.register("bredele-supplant/index.js", Function("exports, require, module",
-"var indexOf = require('indexof'),\n\
-    trim = require('trim'),\n\
-    props = require('./lib/props');\n\
-\n\
-\n\
-var cache = {};\n\
-\n\
-function scope(statement){\n\
-  var result = props(statement, 'model.');\n\
-  return new Function('model', 'return ' + result);\n\
-};\n\
-\n\
-/**\n\
- * Variable substitution on the string.\n\
- *\n\
- * @param {String} str\n\
- * @param {Object} model\n\
- * @return {String} interpolation's result\n\
- */\n\
-\n\
- module.exports = function(text, model){\n\
-\t//TODO:  cache the function the entire text or just the expression?\n\
-  return text.replace(/\\{([^}]+)\\}/g, function(_, expr) {\n\
-  \tif(/[.'[+(]/.test(expr)) {\n\
-  \t\tvar fn = cache[expr] = cache[expr] || scope(expr);\n\
-  \t\treturn fn(model) || '';\n\
-  \t}\n\
-    return model[trim(expr)] || '';\n\
-  });\n\
-};\n\
-\n\
-\n\
-module.exports.attrs = function(text) {\n\
-  var exprs = [];\n\
-  text.replace(/\\{([^}]+)\\}/g, function(_, expr){\n\
-    var val = trim(expr);\n\
-    if(!~indexOf(exprs, val)) exprs.push(val);\n\
-  });\n\
-  return exprs;\n\
-};//@ sourceURL=bredele-supplant/index.js"
-));
-require.register("bredele-supplant/lib/props.js", Function("exports, require, module",
-"var indexOf = require('indexof');\n\
-\n\
-/**\n\
- * Global Names\n\
- */\n\
-\n\
-var globals = /\\b(Array|Date|Object|Math|JSON)\\b/g;\n\
-\n\
-/**\n\
- * Return immediate identifiers parsed from `str`.\n\
- *\n\
- * @param {String} str\n\
- * @param {String|Function} map function or prefix\n\
- * @return {Array}\n\
- * @api public\n\
- */\n\
-\n\
-module.exports = function(str, fn){\n\
-  var p = unique(props(str));\n\
-  if (fn && 'string' == typeof fn) fn = prefixed(fn);\n\
-  if (fn) return map(str, p, fn);\n\
-  return p;\n\
-};\n\
-\n\
-/**\n\
- * Return immediate identifiers in `str`.\n\
- *\n\
- * @param {String} str\n\
- * @return {Array}\n\
- * @api private\n\
- */\n\
-\n\
-function props(str) {\n\
-  return str\n\
-    .replace(/\\.\\w+|\\w+ *\\(|\"[^\"]*\"|'[^']*'|\\/([^/]+)\\//g, '')\n\
-    .replace(globals, '')\n\
-    .match(/[a-zA-Z_]\\w*/g)\n\
-    || [];\n\
-}\n\
-\n\
-/**\n\
- * Return `str` with `props` mapped with `fn`.\n\
- *\n\
- * @param {String} str\n\
- * @param {Array} props\n\
- * @param {Function} fn\n\
- * @return {String}\n\
- * @api private\n\
- */\n\
-\n\
-function map(str, props, fn) {\n\
-  var re = /\\.\\w+|\\w+ *\\(|\"[^\"]*\"|'[^']*'|\\/([^/]+)\\/|[a-zA-Z_]\\w*/g;\n\
-  return str.replace(re, function(_){\n\
-    if ('(' == _[_.length - 1]) return fn(_);\n\
-    if (!~indexOf(props, _)) return _;\n\
-    return fn(_);\n\
-  });\n\
-}\n\
-\n\
-/**\n\
- * Return unique array.\n\
- *\n\
- * @param {Array} arr\n\
- * @return {Array}\n\
- * @api private\n\
- */\n\
-\n\
-function unique(arr) {\n\
-  var ret = [];\n\
-\n\
-  for (var i = 0; i < arr.length; i++) {\n\
-    if (~indexOf(ret, arr[i])) continue;\n\
-    ret.push(arr[i]);\n\
-  }\n\
-\n\
-  return ret;\n\
-}\n\
-\n\
-/**\n\
- * Map with prefix `str`.\n\
- */\n\
-\n\
-function prefixed(str) {\n\
-  return function(_){\n\
-    return str + _;\n\
-  };\n\
-}//@ sourceURL=bredele-supplant/lib/props.js"
-));
-require.register("bredele-plugin-parser/index.js", Function("exports, require, module",
-"var trim = require('trim');\n\
-\n\
-/**\n\
- * Plugin constructor.\n\
- * @api public\n\
- */\n\
-\n\
-module.exports = function(str) {\n\
-\t//str = str.replace(/ /g,'');\n\
-\tvar phrases = str ? str.split(';') : ['main'];\n\
-  var results = [];\n\
-  for(var i = 0, l = phrases.length; i < l; i++) {\n\
-    var expr = phrases[i].split(':');\n\
-\n\
-    var params = [];\n\
-    var name = expr[0];\n\
-\n\
-    if(expr[1]) {\n\
-      var args = expr[1].split(',');\n\
-      for(var j = 0, h = args.length; j < h; j++) {\n\
-        params.push(trim(args[j]));\n\
-      }\n\
-    } else {\n\
-      name = 'main'; //doesn't do anything\n\
-    }\n\
-\n\
-    results.push({\n\
-      method: trim(expr[0]),\n\
-      params: params\n\
-    });\n\
-  }\n\
-  return results;\n\
- };//@ sourceURL=bredele-plugin-parser/index.js"
-));
-require.register("bredele-binding/index.js", Function("exports, require, module",
-"var subs = require('./lib/attr'),\n\
-    Store = require('store'),\n\
-    parser = require('plugin-parser');\n\
-\n\
-\n\
-/**\n\
- * Expose 'data binding'\n\
- */\n\
-\n\
-module.exports = Binding;\n\
-\n\
-\n\
-/**\n\
- * Intitialize a binding.\n\
- * @param {Object} model \n\
- */\n\
-\n\
-function Binding(model){\n\
-  if(!(this instanceof Binding)) return new Binding(model);\n\
-  //TODO: remove store of dependencies\n\
-  this.model = new Store(model);\n\
-  this.plugins = {};\n\
-}\n\
-\n\
-\n\
-/**\n\
- * Bind object as function.\n\
- * @api private\n\
- */\n\
-\n\
-function binder(obj) {\n\
-  return function(el, expr) {\n\
-    var formats = parser(expr);\n\
-    for(var i = 0, l = formats.length; i < l; i++) {\n\
-      var format = formats[i];\n\
-      format.params.splice(0, 0, el);\n\
-      obj[format.method].apply(obj, format.params);\n\
-    }\n\
-  };\n\
-}\n\
-\n\
-\n\
-/**\n\
- * Add binding by name\n\
- * @param {String} name  \n\
- * @param {Object} plugin \n\
- * @api public\n\
- */\n\
-\n\
-Binding.prototype.add = function(name, plugin) {\n\
-  if(typeof plugin === 'object') plugin = binder(plugin);\n\
-  this.plugins[name] = plugin;\n\
-  return this;\n\
-};\n\
-\n\
-\n\
-/**\n\
- * Attribute binding.\n\
- * @param  {HTMLElement} node \n\
- * @api private\n\
- */\n\
-\n\
-Binding.prototype.bindAttrs = function(node) {\n\
-  var attrs = node.attributes;\n\
-  //reverse loop doesn't work on IE...\n\
-  for(var i = 0, l = attrs.length; i < l; i++) {\n\
-    var attr = attrs[i],\n\
-        plugin = this.plugins[attr.nodeName];\n\
-\n\
-    if(plugin) {\n\
-      plugin.call(this.model, node, attr.nodeValue);\n\
-    } else {\n\
-      subs(attr, this.model);\n\
-    }\n\
-  }\n\
-};\n\
-\n\
-\n\
-/**\n\
- * Apply bindings on a single node\n\
- * @param  {DomElement} node \n\
- * @api private\n\
- */\n\
-\n\
-Binding.prototype.bind = function(node) {\n\
-  var type = node.nodeType;\n\
-  //dom element\n\
-  if (type === 1) return this.bindAttrs(node);\n\
-  // text node\n\
-  if (type === 3) subs(node, this.model);\n\
-};\n\
-\n\
-\n\
-/**\n\
- * Apply bindings on nested DOM element.\n\
- * @param  {DomElement} node \n\
- * @api public\n\
- */\n\
-\n\
-Binding.prototype.apply = function(node) {\n\
-  var nodes = node.childNodes;\n\
-  this.bind(node);\n\
-  //use each?\n\
-  for (var i = 0, l = nodes.length; i < l; i++) {\n\
-    this.apply(nodes[i]);\n\
-  }\n\
-};\n\
-//@ sourceURL=bredele-binding/index.js"
-));
-require.register("bredele-binding/lib/attr.js", Function("exports, require, module",
-"var supplant = require('supplant'), //don't use supplant for attributes (remove attrs)\n\
-    indexOf = require('indexof'),\n\
-    props = require('supplant/lib/props'); //TODO: make component props or supplant middleware\n\
-\n\
-\n\
-/**\n\
- * Node text substitution constructor.\n\
- * @param {HTMLElement} node type 3\n\
- * @param {Store} store \n\
- */\n\
-\n\
-module.exports = function(node, store) {\n\
-  var text = node.nodeValue;\n\
-\n\
-  //TODO: it seems faster if index in index.js??\n\
-  //is it enought to say that's an interpolation?\n\
-  if(!~ indexOf(text, '{')) return;\n\
-\n\
-  var exprs = getProps(text),\n\
-      handle = function() {\n\
-        node.nodeValue = supplant(text, store.data);\n\
-      };\n\
-\n\
-  for(var l = exprs.length; l--;) {\n\
-    //when destroy binding, we should do off store\n\
-    store.on('change ' + exprs[l], handle);\n\
-  }\n\
-\n\
-  handle();\n\
-};\n\
-\n\
-\n\
-function getProps(text) {\n\
-  var exprs = [];\n\
-  \n\
-  //is while and test faster?\n\
-  text.replace(/\\{([^}]+)\\}/g, function(_, expr){\n\
-    if(!~indexOf(exprs, expr)) exprs = exprs.concat(props(expr));\n\
-  });\n\
-\n\
-  return exprs;\n\
-}//@ sourceURL=bredele-binding/lib/attr.js"
-));
-require.register("bredele-clone/index.js", Function("exports, require, module",
-"\n\
-/**\n\
- * Expose 'clone'\n\
- * @param  {Object} obj \n\
- * @api public\n\
- */\n\
-\n\
-module.exports = function(obj) {\n\
-  if(obj instanceof Array) {\n\
-    return obj.slice(0);\n\
-  }\n\
-  return clone(obj);\n\
-};\n\
-\n\
-\n\
-/**\n\
- * Clone object.\n\
- * @param  {Object} obj \n\
- * @api private\n\
- */\n\
-\n\
-function clone(obj){\n\
-  if(typeof obj === 'object') {\n\
-    var copy = {};\n\
-    for (var key in obj) {\n\
-      if (obj.hasOwnProperty(key)) {\n\
-        copy[key] = clone(obj[key]);\n\
-      }\n\
-    }\n\
-    return copy;\n\
-  }\n\
-  return obj;\n\
-}//@ sourceURL=bredele-clone/index.js"
-));
-require.register("bredele-store/index.js", Function("exports, require, module",
-"var Emitter = require('emitter'),\n\
-    clone = require('clone'),\n\
-    each = require('each'),\n\
-    storage = window.localStorage;\n\
-\n\
-/**\n\
- * Expose 'Store'\n\
- */\n\
-\n\
-module.exports = Store;\n\
-\n\
-\n\
-/**\n\
- * Store constructor\n\
- * @api public\n\
- */\n\
-\n\
-function Store(data) {\n\
-  if(data instanceof Store) return data;\n\
-  this.data = data || {};\n\
-  this.formatters = {};\n\
-}\n\
-\n\
-\n\
-Emitter(Store.prototype);\n\
-\n\
-/**\n\
- * Set store attribute.\n\
- * @param {String} name\n\
- * @param {Everything} value\n\
- * @api public\n\
- */\n\
-\n\
-Store.prototype.set = function(name, value, plugin) { //add object options\n\
-  var prev = this.data[name];\n\
-  if(prev !== value) {\n\
-    this.data[name] = value;\n\
-    this.emit('change', name, value, prev);\n\
-    this.emit('change ' + name, value, prev);\n\
-  }\n\
-};\n\
-\n\
-\n\
-/**\n\
- * Get store attribute.\n\
- * @param {String} name\n\
- * @return {Everything}\n\
- * @api public\n\
- */\n\
-\n\
-Store.prototype.get = function(name) {\n\
-  var formatter = this.formatters[name];\n\
-  var value = this.data[name];\n\
-  if(formatter) {\n\
-    value = formatter[0].call(formatter[1], value);\n\
-  }\n\
-  return value;\n\
-};\n\
-\n\
-/**\n\
- * Get store attribute.\n\
- * @param {String} name\n\
- * @return {Everything}\n\
- * @api private\n\
- */\n\
-\n\
-Store.prototype.has = function(name) {\n\
-  //NOTE: I don't know if it should be public\n\
-  return this.data.hasOwnProperty(name);\n\
-};\n\
-\n\
-\n\
-/**\n\
- * Delete store attribute.\n\
- * @param {String} name\n\
- * @return {Everything}\n\
- * @api public\n\
- */\n\
-\n\
-Store.prototype.del = function(name) {\n\
-  //TODO:refactor this is ugly\n\
-  if(this.has(name)){\n\
-    if(this.data instanceof Array){\n\
-      this.data.splice(name, 1);\n\
-    } else {\n\
-      delete this.data[name]; //NOTE: do we need to return something?\n\
-    }\n\
-    this.emit('deleted', name, name);\n\
-    this.emit('deleted ' + name, name);\n\
-  }\n\
-};\n\
-\n\
-\n\
-/**\n\
- * Set format middleware.\n\
- * Call formatter everytime a getter is called.\n\
- * A formatter should always return a value.\n\
- * @param {String} name\n\
- * @param {Function} callback\n\
- * @param {Object} scope\n\
- * @return this\n\
- * @api public\n\
- */\n\
-\n\
-Store.prototype.format = function(name, callback, scope) {\n\
-  this.formatters[name] = [callback,scope];\n\
-  return this;\n\
-};\n\
-\n\
-\n\
-/**\n\
- * Compute store attributes\n\
- * @param  {String} name\n\
- * @return {Function} callback                \n\
- * @api public\n\
- */\n\
-\n\
-Store.prototype.compute = function(name, callback) {\n\
-  //NOTE: I want something clean instaead passing the computed \n\
-  //attribute in the function\n\
-  var str = callback.toString();\n\
-  var attrs = str.match(/this.[a-zA-Z0-9]*/g);\n\
-\n\
-  this.set(name, callback.call(this.data)); //TODO: refactor (may be use replace)\n\
-  for(var l = attrs.length; l--;){\n\
-    this.on('change ' + attrs[l].slice(5), function(){\n\
-      this.set(name, callback.call(this.data));\n\
-    });\n\
-  }\n\
-};\n\
-\n\
-\n\
-/**\n\
- * Reset store\n\
- * @param  {Object} data \n\
- * @api public\n\
- */\n\
-\n\
-Store.prototype.reset = function(data) {\n\
-  var copy = clone(this.data),\n\
-      length = data.length;\n\
-  this.data = data;\n\
-\n\
-\n\
-    //remove undefined attributes\n\
-    //TODO: we don't need to go through each items for array (only difference)\n\
-    each(copy, function(key, val){\n\
-      if(typeof data[key] === 'undefined'){\n\
-        this.emit('deleted', key, length);\n\
-        this.emit('deleted ' + key, length);\n\
-      }\n\
-    }, this);\n\
-\n\
-  //set new attributes\n\
-  each(data, function(key, val){\n\
-    //TODO:refactor with this.set\n\
-    var prev = copy[key];\n\
-    if(prev !== val) {\n\
-      this.emit('change', key, val, prev);\n\
-      this.emit('change ' + key, val, prev);\n\
-    }\n\
-  }, this);\n\
-};\n\
-\n\
-\n\
-/**\n\
- * Loop through store data.\n\
- * @param  {Function} cb   \n\
- * @param  {[type]}   scope \n\
- * @api public\n\
- */\n\
-\n\
-Store.prototype.loop = function(cb, scope) {\n\
-  each(this.data, cb, scope || this);\n\
-};\n\
-\n\
-\n\
-/**\n\
- * Synchronize with local storage.\n\
- * \n\
- * @param  {String} name \n\
- * @param  {Boolean} bool save in localstore\n\
- * @api public\n\
- */\n\
-\n\
-Store.prototype.local = function(name, bool) {\n\
-  //TODO: should we do a clear for .local()?\n\
-  if(!bool) {\n\
-    storage.setItem(name, this.toJSON());\n\
-  } else {\n\
-    this.reset(JSON.parse(storage.getItem(name)));\n\
-  }\n\
-  //TODO: should we return this?\n\
-};\n\
-\n\
-\n\
-/**\n\
- * Use middlewares to extend store.\n\
- * A middleware is a function with the store\n\
- * as first argument.\n\
- * \n\
- * @param  {Function} fn \n\
- * @return {this}\n\
- * @api public\n\
- */\n\
-\n\
-Store.prototype.use = function(fn) {\n\
-  fn(this);\n\
-  return this;\n\
-};\n\
-\n\
-\n\
-/**\n\
- * Stringify model\n\
- * @return {String} json\n\
- * @api public\n\
- */\n\
-\n\
-Store.prototype.toJSON = function() {\n\
-  return JSON.stringify(this.data);\n\
-};\n\
-\n\
-//TODO: localstorage middleware like//@ sourceURL=bredele-store/index.js"
-));
-require.register("bredele-each/index.js", Function("exports, require, module",
-"\n\
-/**\n\
- * Expose 'each'\n\
- */\n\
-\n\
-module.exports = function(obj, fn, scope){\n\
-  if( obj instanceof Array) {\n\
-    array(obj, fn, scope);\n\
-  } else if(typeof obj === 'object') {\n\
-    object(obj, fn, scope);\n\
-  }\n\
-};\n\
-\n\
-\n\
-/**\n\
- * Object iteration.\n\
- * @param  {Object}   obj   \n\
- * @param  {Function} fn    \n\
- * @param  {Object}   scope \n\
- * @api private\n\
- */\n\
-\n\
-function object(obj, fn, scope) {\n\
-  for (var i in obj) {\n\
-    if (obj.hasOwnProperty(i)) {\n\
-      fn.call(scope, i, obj[i]);\n\
-    }\n\
-  }\n\
-}\n\
-\n\
-\n\
-/**\n\
- * Array iteration.\n\
- * @param  {Array}   obj   \n\
- * @param  {Function} fn    \n\
- * @param  {Object}   scope \n\
- * @api private\n\
- */\n\
-\n\
-function array(obj, fn, scope){\n\
-  for(var i = 0, l = obj.length; i < l; i++){\n\
-    fn.call(scope, i, obj[i]);\n\
-  }\n\
-}//@ sourceURL=bredele-each/index.js"
-));
-require.register("bredele-list/index.js", Function("exports, require, module",
-"var Binding = require('binding'),\n\
-    Store = require('store'),\n\
-    each = require('each'),\n\
-    index = require('indexof');\n\
-\n\
-\n\
-\n\
-/**\n\
- * Expose 'List'\n\
- */\n\
-\n\
-module.exports = List;\n\
-\n\
-\n\
-/**\n\
- * List constructor.\n\
- * \n\
- * @param {HTMLelement} el\n\
- * @param {Object} model\n\
- * @api public\n\
- */\n\
-\n\
-function List(store){\n\
-  this.store = new Store(store);\n\
-  this.items = [];\n\
-}\n\
-\n\
-\n\
-/**\n\
- * Bind HTML element with store.\n\
- * Takes the first child as an item renderer.\n\
- * \n\
- * @param  {HTMLElement} node \n\
- * @api public\n\
- */\n\
-\n\
-List.prototype.main =  \n\
-List.prototype.list = function(node) {\n\
-  var first = node.children[0],\n\
-      _this = this;\n\
-\n\
-  this.node = node;\n\
-  this.clone = first.cloneNode(true);\n\
-  node.removeChild(first);\n\
-\n\
-\n\
-  this.store.on('change', function(key, value){\n\
-    var item = _this.items[key];\n\
-    if(item) {\n\
-      //NOTE: should we unbind in store when we reset?\n\
-      item.reset(value); //do our own emitter to have scope\n\
-    } else {\n\
-      //create item renderer\n\
-      _this.addItem(key, value);\n\
-    }\n\
-  });\n\
-\n\
-  this.store.on('deleted', function(key, idx){\n\
-    _this.delItem(idx);\n\
-  });\n\
-\n\
-  this.store.loop(this.addItem, this);\n\
-};\n\
-\n\
-/**\n\
- * Return index of node in list.\n\
- * @param  {HTMLelement} node \n\
- * @return {Number}  \n\
- * @api public\n\
- */\n\
-\n\
-List.prototype.indexOf = function(node) {\n\
-  return index(this.node.children, node);\n\
-};\n\
-\n\
-\n\
-/**\n\
- * Loop over the list items.\n\
- * Execute callback and pass store item.\n\
- * \n\
- * @param  {Function} cb    \n\
- * @param  {Object}   scope \n\
- * @api public\n\
- */\n\
-\n\
-List.prototype.loop = function(cb, scope) {\n\
-  each(this.items, function(idx, item){\n\
-    cb.call(scope, item.store);\n\
-  });\n\
-};\n\
-\n\
-\n\
-/**\n\
- * Add list item.\n\
- * \n\
- * @param {Object} obj\n\
- * @api public\n\
- */\n\
-\n\
-List.prototype.add = function(obj) {\n\
-  //store push?\n\
-  //in the future, we could use a position\n\
-  this.store.set(this.store.data.length, obj);\n\
-};\n\
-\n\
-\n\
-/**\n\
- * Set list item.\n\
- * \n\
- * @param {HTMLElement|Number} idx \n\
- * @param {Object} obj\n\
- * @api public\n\
- */\n\
-\n\
-List.prototype.set = function(idx, obj) {\n\
-  if(idx instanceof Element) idx = this.indexOf(idx);  \n\
-  // if(idx instanceof HTMLElement) idx = this.indexOf(idx);\n\
-  var item = this.items[idx].store;\n\
-  each(obj, function(key, val){\n\
-    item.set(key, val);\n\
-  });\n\
-};\n\
-\n\
-\n\
-/**\n\
- * Delete item(s) in list.\n\
- * \n\
- * @api public\n\
- */\n\
-\n\
-List.prototype.del = function(arg, scope) {\n\
-  //we should optimize store reset\n\
-  if(arg === undefined) return this.store.reset([]);\n\
-  if(typeof arg === 'function') {\n\
-    //could we handle that with inverse loop and store loop?\n\
-    var l = this.store.data.length;\n\
-    while(l--) {\n\
-      if(arg.call(scope, this.items[l].store)){\n\
-        this.store.del(l);\n\
-      }\n\
-    }\n\
-  }\n\
-\n\
-  //ie8 doesn't support HTMLElement and instanceof with left assignment != object\n\
-  this.store.del(typeof arg === 'number' ? arg : this.indexOf(arg));\n\
-  //this.store.del(arg instanceof HTMLElement ? this.indexOf(arg): arg);\n\
-};\n\
-\n\
-\n\
-/**\n\
- * Create item renderer from data.\n\
- * @param  {Object} data \n\
- * @api private\n\
- */\n\
-\n\
-List.prototype.addItem = function(key, data) {\n\
-  var item = new ItemRenderer(this.clone, data);\n\
-  this.items[key] = item;\n\
-  this.node.appendChild(item.dom);\n\
-};\n\
-\n\
-\n\
-/**\n\
- * Delete item.\n\
- * @param  {Number} idx index\n\
- * @api private\n\
- */\n\
-\n\
-List.prototype.delItem = function(idx) {\n\
-    var item = this.items[idx];\n\
-    item.unbind(this.node);\n\
-    this.items.splice(idx, 1);\n\
-    item = null; //for garbage collection\n\
-};\n\
-\n\
-\n\
-/**\n\
- * Item renderer.\n\
- * Represents the item that going to be repeated.\n\
- * @param {HTMLElement} node \n\
- * @param {Store} data \n\
- * @api private\n\
- */\n\
-\n\
-function ItemRenderer(node, data){\n\
-  //NOTE: is it more perfomant to work with string?\n\
-  this.dom = node.cloneNode(true);\n\
-  this.store = new Store(data);\n\
-  this.binding = new Binding(this.store); //we have to have a boolean parameter to apply interpolation &|| plugins\n\
-  this.binding.apply(this.dom);\n\
-}\n\
-\n\
-\n\
-/**\n\
- * Unbind an item renderer from its ancestor.\n\
- * @param  {HTMLElement} node \n\
- * @api private\n\
- */\n\
-\n\
-ItemRenderer.prototype.unbind = function(node) {\n\
-  //NOTE: is there something else to do to clean the memory?\n\
-  this.store.off();\n\
-  node.removeChild(this.dom);\n\
-};\n\
-\n\
-\n\
-/**\n\
- * Reset iten renderer.\n\
- * @param  {Object} data \n\
- * @api private\n\
- */\n\
-\n\
-ItemRenderer.prototype.reset = function(data) {\n\
-  this.store.reset(data);\n\
-};\n\
-\n\
-//@ sourceURL=bredele-list/index.js"
-));
 require.register("todo/index.js", Function("exports, require, module",
 "\n\
 //dependencies\n\
@@ -3120,10 +3217,8 @@ app.html(html, store);\n\
 app.attr('todos', todos);\n\
 app.attr('events', new Events(controller)); // could be greate to do events(controller) and events.off, etc\n\
 app.attr('visible', require('hidden-plugin')); //TODO: do our own\n\
-\n\
-module.exports = function(dom) {\n\
-\tapp.insert(dom.querySelector('.stack')); //if null it should stay in dom's view TODO\n\
-};\n\
+app.alive();\n\
+module.exports = app.dom;\n\
 //@ sourceURL=todo/index.js"
 ));
 require.register("showcase/index.js", Function("exports, require, module",
@@ -3133,30 +3228,45 @@ require.register("showcase/index.js", Function("exports, require, module",
  */\n\
 \n\
 var View = require('maple/view'),\n\
+    Stack = require('stack'),\n\
     event = require('event'), //do with plugin\n\
-    Plugin = require('event-plugin'),\n\
+    Events = require('event-plugin'),\n\
+    List = require('list'),\n\
     scrollTo = require('scroll-to'),\n\
     html = require('./showcase.html');\n\
 \n\
-var fragment = document.createDocumentFragment(); //may be have a hide function\n\
 \n\
+var fragment = document.createDocumentFragment(); //may be have a hide function\n\
 //init\n\
 var view = new View(); //do factory for view\n\
+var examples = new List([]);\n\
+var stack = new Stack();\n\
 view.html(html);\n\
-view.attr('event', new Plugin({\n\
+view.attr('event', new Events({\n\
 \tclose: function() {\n\
 \t\tfragment.appendChild(view.dom); //use insert instead\n\
+\t},\n\
+\tselect : function(ev) {\n\
+\t\t//todo: pass target, more convenint and cross browser\n\
+\t\tvar name = ev.target.getAttribute('href').substring(1);\n\
+\t\tstack.show(name);\n\
 \t}\n\
 }));\n\
-\n\
+view.attr('examples', examples);\n\
 view.insert(fragment);\n\
+stack.parent = view.dom.querySelector('.stack');\n\
+\n\
+function add(name, bool) {\n\
+\texamples.add({\n\
+\t\tname: name\n\
+\t});\n\
+\tstack.add(name, require(name));\n\
+}\n\
 \n\
 //do view for click\n\
 event.attach(document.querySelector('.btn'), 'click', function() {\n\
-\tview.insert(document.body);\n\
-\n\
-  //temporary\n\
-  require('todo')(view.dom);\n\
+\tdocument.body.appendChild(view.dom); //there is an issue with insert it apply again\n\
+\t//view.insert(document.body);\n\
 });\n\
 \n\
 event.attach(document.querySelector('.scroll'), 'click', function() {\n\
@@ -3164,7 +3274,11 @@ event.attach(document.querySelector('.scroll'), 'click', function() {\n\
 \t  ease: 'in-out-expo',\n\
 \t  duration: 800\n\
 \t});\n\
-});//@ sourceURL=showcase/index.js"
+});\n\
+\n\
+add('hello');\n\
+add('todo');\n\
+stack.show('todo');//@ sourceURL=showcase/index.js"
 ));
 
 
@@ -3177,6 +3291,13 @@ event.attach(document.querySelector('.scroll'), 'click', function() {\n\
 
 
 
+
+
+require.register("hello/hello.html", Function("exports, require, module",
+"module.exports = '<div class=\"hello\">\\n\
+\t<input type=\"text\" events=\"on:input, text\">\\n\
+</div>';//@ sourceURL=hello/hello.html"
+));
 
 require.register("todo/todo.html", Function("exports, require, module",
 "module.exports = '<section id=\"todoapp\">\\n\
@@ -3212,7 +3333,14 @@ require.register("showcase/showcase.html", Function("exports, require, module",
 \t\t<div class=\"left icon-list toolbar-btn\"></div>\\n\
 \t\t<div class=\"right icon-cross toolbar-btn\" event=\"on:click,close\"></div>\\n\
 \t</header>\\n\
-\t<section class=\"stack\"></section>\\n\
+\t<section class=\"examples-content\">\\n\
+\t\t<ul class=\"examples-list left\" event=\"on:click .example-link,select\" examples>\\n\
+\t\t\t<li>\\n\
+\t\t\t\t<a class=\"example-link\" href=\"#{name}\">{name}</a>\\n\
+\t\t\t</li>\\n\
+\t\t</ul>\\n\
+\t\t<div class=\"stack left\"></div>\\n\
+\t</section>\\n\
 </div>';//@ sourceURL=showcase/showcase.html"
 ));
 
@@ -3239,6 +3367,60 @@ require.alias("bredele-event/index.js", "bredele-event-plugin/deps/event/index.j
 require.alias("bredele-event/index.js", "bredele-event-plugin/deps/event/index.js");
 require.alias("bredele-event/index.js", "bredele-event/index.js");
 require.alias("bredele-event-plugin/index.js", "bredele-event-plugin/index.js");
+require.alias("bredele-list/index.js", "showcase/deps/list/index.js");
+require.alias("bredele-list/index.js", "showcase/deps/list/index.js");
+require.alias("bredele-binding/index.js", "bredele-list/deps/binding/index.js");
+require.alias("bredele-binding/lib/attr.js", "bredele-list/deps/binding/lib/attr.js");
+require.alias("bredele-binding/index.js", "bredele-list/deps/binding/index.js");
+require.alias("bredele-supplant/index.js", "bredele-binding/deps/supplant/index.js");
+require.alias("bredele-supplant/lib/props.js", "bredele-binding/deps/supplant/lib/props.js");
+require.alias("bredele-supplant/index.js", "bredele-binding/deps/supplant/index.js");
+require.alias("component-indexof/index.js", "bredele-supplant/deps/indexof/index.js");
+
+require.alias("bredele-trim/index.js", "bredele-supplant/deps/trim/index.js");
+require.alias("bredele-trim/index.js", "bredele-supplant/deps/trim/index.js");
+require.alias("bredele-trim/index.js", "bredele-trim/index.js");
+require.alias("bredele-supplant/index.js", "bredele-supplant/index.js");
+require.alias("bredele-plugin-parser/index.js", "bredele-binding/deps/plugin-parser/index.js");
+require.alias("bredele-plugin-parser/index.js", "bredele-binding/deps/plugin-parser/index.js");
+require.alias("bredele-trim/index.js", "bredele-plugin-parser/deps/trim/index.js");
+require.alias("bredele-trim/index.js", "bredele-plugin-parser/deps/trim/index.js");
+require.alias("bredele-trim/index.js", "bredele-trim/index.js");
+require.alias("bredele-plugin-parser/index.js", "bredele-plugin-parser/index.js");
+require.alias("bredele-store/index.js", "bredele-binding/deps/store/index.js");
+require.alias("bredele-store/index.js", "bredele-binding/deps/store/index.js");
+require.alias("component-emitter/index.js", "bredele-store/deps/emitter/index.js");
+
+require.alias("bredele-each/index.js", "bredele-store/deps/each/index.js");
+require.alias("bredele-each/index.js", "bredele-store/deps/each/index.js");
+require.alias("bredele-each/index.js", "bredele-each/index.js");
+require.alias("bredele-clone/index.js", "bredele-store/deps/clone/index.js");
+require.alias("bredele-clone/index.js", "bredele-store/deps/clone/index.js");
+require.alias("bredele-clone/index.js", "bredele-clone/index.js");
+require.alias("bredele-store/index.js", "bredele-store/index.js");
+require.alias("component-indexof/index.js", "bredele-binding/deps/indexof/index.js");
+
+require.alias("bredele-binding/index.js", "bredele-binding/index.js");
+require.alias("bredele-store/index.js", "bredele-list/deps/store/index.js");
+require.alias("bredele-store/index.js", "bredele-list/deps/store/index.js");
+require.alias("component-emitter/index.js", "bredele-store/deps/emitter/index.js");
+
+require.alias("bredele-each/index.js", "bredele-store/deps/each/index.js");
+require.alias("bredele-each/index.js", "bredele-store/deps/each/index.js");
+require.alias("bredele-each/index.js", "bredele-each/index.js");
+require.alias("bredele-clone/index.js", "bredele-store/deps/clone/index.js");
+require.alias("bredele-clone/index.js", "bredele-store/deps/clone/index.js");
+require.alias("bredele-clone/index.js", "bredele-clone/index.js");
+require.alias("bredele-store/index.js", "bredele-store/index.js");
+require.alias("component-indexof/index.js", "bredele-list/deps/indexof/index.js");
+
+require.alias("bredele-each/index.js", "bredele-list/deps/each/index.js");
+require.alias("bredele-each/index.js", "bredele-list/deps/each/index.js");
+require.alias("bredele-each/index.js", "bredele-each/index.js");
+require.alias("bredele-list/index.js", "bredele-list/index.js");
+require.alias("bredele-stack/index.js", "showcase/deps/stack/index.js");
+require.alias("bredele-stack/index.js", "showcase/deps/stack/index.js");
+require.alias("bredele-stack/index.js", "bredele-stack/index.js");
 require.alias("component-scroll-to/index.js", "showcase/deps/scroll-to/index.js");
 require.alias("component-scroll-to/index.js", "showcase/deps/scroll-to/index.js");
 require.alias("component-raf/index.js", "component-scroll-to/deps/raf/index.js");
@@ -3249,6 +3431,26 @@ require.alias("component-emitter/index.js", "component-tween/deps/emitter/index.
 require.alias("component-ease/index.js", "component-tween/deps/ease/index.js");
 
 require.alias("component-scroll-to/index.js", "component-scroll-to/index.js");
+require.alias("hello/index.js", "showcase/deps/hello/index.js");
+require.alias("hello/index.js", "showcase/deps/hello/index.js");
+require.alias("bredele-maple/maple.js", "hello/deps/maple/maple.js");
+require.alias("bredele-maple/view.js", "hello/deps/maple/view.js");
+require.alias("bredele-maple/store.js", "hello/deps/maple/store.js");
+require.alias("bredele-maple/emitter.js", "hello/deps/maple/emitter.js");
+require.alias("bredele-maple/binding.js", "hello/deps/maple/binding.js");
+require.alias("bredele-maple/lib/app.js", "hello/deps/maple/lib/app.js");
+require.alias("bredele-maple/lib/supplant.js", "hello/deps/maple/lib/supplant.js");
+require.alias("bredele-maple/lib/subs.js", "hello/deps/maple/lib/subs.js");
+require.alias("bredele-maple/lib/utils.js", "hello/deps/maple/lib/utils.js");
+require.alias("bredele-maple/maple.js", "hello/deps/maple/index.js");
+require.alias("bredele-maple/maple.js", "bredele-maple/index.js");
+require.alias("bredele-event-plugin/index.js", "hello/deps/event-plugin/index.js");
+require.alias("bredele-event-plugin/index.js", "hello/deps/event-plugin/index.js");
+require.alias("bredele-event/index.js", "bredele-event-plugin/deps/event/index.js");
+require.alias("bredele-event/index.js", "bredele-event-plugin/deps/event/index.js");
+require.alias("bredele-event/index.js", "bredele-event/index.js");
+require.alias("bredele-event-plugin/index.js", "bredele-event-plugin/index.js");
+require.alias("hello/index.js", "hello/index.js");
 require.alias("todo/index.js", "showcase/deps/todo/index.js");
 require.alias("todo/index.js", "showcase/deps/todo/index.js");
 require.alias("bredele-maple/maple.js", "todo/deps/maple/maple.js");
