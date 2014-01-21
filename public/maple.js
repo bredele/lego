@@ -360,7 +360,7 @@ View.prototype.insert = function(node, bool) {\n\
 View.prototype.alive = function(node, bool) {\n\
   //do we want to apply multiple times? no\n\
   if(node) this.dom = node;\n\
-  this.binding.apply(this.dom);\n\
+  this.binding.apply(this.dom, bool);\n\
 };\n\
 \n\
 \n\
@@ -3476,25 +3476,6 @@ require.register("showcase/examples.js", Function("exports, require, module",
 };\n\
 //@ sourceURL=showcase/examples.js"
 ));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
