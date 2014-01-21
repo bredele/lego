@@ -108,7 +108,7 @@ View.prototype.insert = function(node, bool) {
 View.prototype.alive = function(node, bool) {
   //do we want to apply multiple times? no
   if(node) this.dom = node;
-  this.binding.apply(this.dom);
+  this.binding.apply(this.dom, bool);
 };
 
 
