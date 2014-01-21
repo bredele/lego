@@ -3368,7 +3368,7 @@ view.data('event', new Event({\n\
 \t\tbody.appendChild(showcase);\n\
 \t}\n\
 }));\n\
-debugger\n\
+\n\
 view.alive(body, true);\n\
 //@ sourceURL=showcase/index.js"
 ));
@@ -3476,6 +3476,25 @@ require.register("showcase/examples.js", Function("exports, require, module",
 };\n\
 //@ sourceURL=showcase/examples.js"
 ));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
