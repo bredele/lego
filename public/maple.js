@@ -371,13 +371,8 @@ View.prototype.alive = function(node) {\n\
  */\n\
 \n\
 View.prototype.destroy = function() {\n\
-  var plugins = this.binding.plugins,\n\
-      parent = this.dom.parentNode;\n\
-  //has own properties?\n\
-  for(var name in plugins) {\n\
-    var plugin = plugins[name];\n\
-    plugin.destroy && plugin.destroy();\n\
-  }\n\
+  var parent = this.dom.parentNode;\n\
+  this.binding.unbind();\n\
   if(parent) parent.removeChild(this.dom);\n\
 \n\
 };//@ sourceURL=bredele-maple/view.js"
@@ -718,6 +713,7 @@ module.exports = Binding;\n\
 \n\
 /**\n\
  * Binding constructor.\n\
+ * \n\
  * @api public\n\
  */\n\
 \n\
@@ -726,6 +722,7 @@ function Binding(model) {\n\
 \tthis.model = new Store(model);\n\
 \tthis.plugins = {};\n\
 }\n\
+\n\
 \n\
 //todo: make better parser and more efficient\n\
 function parser(str) {\n\
@@ -755,13 +752,15 @@ function parser(str) {\n\
     return results;\n\
   }\n\
 \n\
+\n\
 /**\n\
  * Bind object as function.\n\
+ * \n\
  * @api private\n\
  */\n\
 \n\
 function binder(obj) {\n\
-  return function(el, expr) {\n\
+  var fn = function(el, expr) {\n\
     var formats = parser(expr);\n\
     for(var i = 0, l = formats.length; i < l; i++) {\n\
       var format = formats[i];\n\
@@ -769,13 +768,20 @@ function binder(obj) {\n\
       obj[format.method].apply(obj, format.params);\n\
     }\n\
   };\n\
+  //TODO: find something better\n\
+  fn.destroy = function() {\n\
+    obj.destroy && obj.destroy();\n\
+  };\n\
+  return fn;\n\
 }\n\
 \n\
 \n\
 /**\n\
  * Add binding by name\n\
+ * \n\
  * @param {String} name  \n\
  * @param {Object} plugin \n\
+ * @return {Binding}\n\
  * @api public\n\
  */\n\
 \n\
@@ -788,6 +794,7 @@ Binding.prototype.add = function(name, plugin) {\n\
 \n\
 /**\n\
  * Attribute binding.\n\
+ * \n\
  * @param  {HTMLElement} node \n\
  * @api private\n\
  */\n\
@@ -809,6 +816,7 @@ Binding.prototype.bindAttrs = function(node) {\n\
 \n\
 /**\n\
  * Apply bindings on a single node\n\
+ * \n\
  * @param  {DomElement} node \n\
  * @api private\n\
  */\n\
@@ -824,17 +832,60 @@ Binding.prototype.bind = function(node) {\n\
 \n\
 /**\n\
  * Apply bindings on nested DOM element.\n\
- * @param  {DomElement} node \n\
+ * \n\
+ * @param  {DomElement} node\n\
+ * @return {Binding}\n\
  * @api public\n\
  */\n\
 \n\
-Binding.prototype.apply = function(node) {\n\
+Binding.prototype.apply = function(node, bool) { //TODO: change api, call bind\n\
+  if(bool) return this.query(node);\n\
   var nodes = node.childNodes;\n\
   this.bind(node);\n\
   for (var i = 0, l = nodes.length; i < l; i++) {\n\
     this.apply(nodes[i]);\n\
   }\n\
-};//@ sourceURL=bredele-maple/binding.js"
+  return this;\n\
+};\n\
+\n\
+\n\
+/**\n\
+ * Query plugins and execute them.\n\
+ * \n\
+ * @param  {Element} el \n\
+ * @api private\n\
+ */\n\
+\n\
+Binding.prototype.query = function(el) {\n\
+  //TODO: refactor\n\
+  var parent = el.parentElement;\n\
+  if(!parent) {\n\
+    parent = document.createDocumentFragment();\n\
+    parent.appendChild(el);\n\
+  }\n\
+  for(var name in this.plugins) {\n\
+    var nodes = parent.querySelectorAll('[' + name + ']');\n\
+    for(var i = 0, l = nodes.length; i < l; i++) {\n\
+      var node = nodes[i];\n\
+      this.plugins[name].call(this.model, node, node.getAttribute(name));\n\
+    }\n\
+  }\n\
+};\n\
+\n\
+/**\n\
+ * Destroy binding's plugins and unsubscribe\n\
+ * to emitter.\n\
+ * \n\
+ * @api public\n\
+ */\n\
+\n\
+Binding.prototype.unbind = function() {\n\
+  for(var name in this.plugins) {\n\
+    var plugin = this.plugins[name];\n\
+    plugin.destroy && plugin.destroy();\n\
+  }\n\
+};\n\
+//@ sourceURL=bredele-maple/binding.js"
 ));
 require.register("bredele-maple/lib/app.js", Function("exports, require, module",
 "\n\
@@ -1724,7 +1775,8 @@ function mixin(obj) {\n\
  * @api public\n\
  */\n\
 \n\
-Emitter.prototype.on = function(event, fn){\n\
+Emitter.prototype.on =\n\
+Emitter.prototype.addEventListener = function(event, fn){\n\
   this._callbacks = this._callbacks || {};\n\
   (this._callbacks[event] = this._callbacks[event] || [])\n\
     .push(fn);\n\
@@ -1750,7 +1802,7 @@ Emitter.prototype.once = function(event, fn){\n\
     fn.apply(this, arguments);\n\
   }\n\
 \n\
-  fn._off = on;\n\
+  on.fn = fn;\n\
   this.on(event, on);\n\
   return this;\n\
 };\n\
@@ -1767,7 +1819,8 @@ Emitter.prototype.once = function(event, fn){\n\
 \n\
 Emitter.prototype.off =\n\
 Emitter.prototype.removeListener =\n\
-Emitter.prototype.removeAllListeners = function(event, fn){\n\
+Emitter.prototype.removeAllListeners =\n\
+Emitter.prototype.removeEventListener = function(event, fn){\n\
   this._callbacks = this._callbacks || {};\n\
 \n\
   // all\n\
@@ -1787,8 +1840,14 @@ Emitter.prototype.removeAllListeners = function(event, fn){\n\
   }\n\
 \n\
   // remove specific handler\n\
-  var i = callbacks.indexOf(fn._off || fn);\n\
-  if (~i) callbacks.splice(i, 1);\n\
+  var cb;\n\
+  for (var i = 0; i < callbacks.length; i++) {\n\
+    cb = callbacks[i];\n\
+    if (cb === fn || cb.fn === fn) {\n\
+      callbacks.splice(i, 1);\n\
+      break;\n\
+    }\n\
+  }\n\
   return this;\n\
 };\n\
 \n\
@@ -3282,75 +3341,98 @@ module.exports = app.dom;\n\
 ));
 require.register("showcase/index.js", Function("exports, require, module",
 "\n\
-/**\n\
- * Dependencies\n\
- */\n\
+//dependencies\n\
 \n\
 var View = require('maple/view'),\n\
-\t\tStore = require('maple/store'),\n\
-    Stack = require('stack'),\n\
-    event = require('event'), //do with plugin\n\
-    Events = require('event-plugin'),\n\
-    List = require('list'),\n\
-    scrollTo = require('scroll-to'),\n\
-    html = require('./showcase.html'),\n\
-    utils = require('maple/lib/utils'),\n\
-    apps = require('./examples');\n\
+\t\tEvent = require('event-plugin'),\n\
+\t\tshowcase = require('./showcase'),\n\
+\t\tslide = require('scroll-to');\n\
 \n\
 \n\
-var fragment = document.createDocumentFragment(); //may be have a hide function\n\
 //init\n\
-var view = new View(); //do factory for view\n\
-var examples = new List([]);\n\
-var store = new Store(); //should we have a default store in view?\n\
-var stack = new Stack();\n\
-view.html(html, store);\n\
-view.attr('event', new Events({\n\
-\tclose: function() {\n\
-\t\tfragment.appendChild(view.dom); //use insert instead\n\
-\t},\n\
-\tselect : function(ev, node) {\n\
-\t\tvar target = ev.target,\n\
-\t\t\t\tselected = node.querySelector('.selected');\n\
-\t\t//doesn't work on ie8\n\
-\t\tselected && selected.classList.remove('selected');\n\
-\t\ttarget.classList.add('selected');\n\
 \n\
-\t\t//todo: pass target, more convenint and cross browser\n\
-\t\tvar name = target.getAttribute('href').substring(1);\n\
-\t\tstack.show(name);\n\
-\t\tstore.reset(apps[name]);\n\
+var view = new View(),\n\
+    body = document.body;\n\
+\n\
+\n\
+//bindings\n\
+\n\
+view.data('event', new Event({\n\
+\tscroll: function() {\n\
+\t\tslide(0, 800, {\n\
+\t\t\tease: 'in-out-expo',\n\
+\t\t\tduration: 800\n\
+\t\t});\n\
+\t},\n\
+\tshowcase: function() {\n\
+\t\tbody.appendChild(showcase.dom);\n\
 \t}\n\
 }));\n\
-view.attr('examples', examples);\n\
-view.insert(fragment);\n\
+view.alive(body, true);\n\
+//@ sourceURL=showcase/index.js"
+));
+require.register("showcase/showcase.js", Function("exports, require, module",
+"\n\
+//dependencies\n\
+\n\
+var View = require('maple/view'),\n\
+    Store = require('maple/store'),\n\
+    Event = require('event-plugin'),\n\
+    Stack = require('stack'),\n\
+\t\tList = require('list'),\n\
+\t\tutils = require('maple/lib/utils'),\n\
+\t\texamples = require('./examples');\n\
+\n\
+\n\
+//init\n\
+\n\
+var view = new View(),\n\
+    store = new Store(),\n\
+    stack = new Stack();\n\
+\t\tlist = new List([]),\n\
+    frag = document.createDocumentFragment();\n\
+\n\
+//bindings\n\
+\n\
+view.html(require('./showcase.html'), store);\n\
+view.attr('examples', list);\n\
+view.attr('event', new Event({\n\
+\tselect: function(ev, node) {\n\
+\t\tvar target = ev.target || ev.srcElement,\n\
+\t\t    name = target.getAttribute('href').substring(1),\n\
+\t\t    selected = node.querySelector('.selected');\n\
+\n\
+    //doesn't work on ie8\n\
+    selected && selected.classList.remove('selected');\n\
+    target.classList.add('selected');\n\
+\n\
+\t\tstack.show(name);\n\
+\t\tstore.reset(examples[name]);\n\
+\t},\n\
+\tclose: function() {\n\
+\t\tfrag.appendChild(view.dom);\n\
+\t}\n\
+}));\n\
+view.alive(frag);\n\
 stack.parent = view.dom.querySelector('.stack');\n\
 \n\
-function add(name) {\n\
-\texamples.add({\n\
+\n\
+//exports\n\
+\n\
+module.exports = view.dom;\n\
+\n\
+\n\
+//add examples\n\
+\n\
+utils.each(examples, function(name) {\n\
+\tlist.add({\n\
 \t\tname: name\n\
 \t});\n\
 \tstack.add(name, require(name));\n\
-}\n\
-\n\
-//do view for click\n\
-event.attach(document.querySelector('.btn'), 'click', function() {\n\
-\tdocument.body.appendChild(view.dom); //there is an issue with insert it apply again\n\
-\t//view.insert(document.body);\n\
 });\n\
 \n\
-event.attach(document.querySelector('.scroll'), 'click', function() {\n\
-\tscrollTo(0, 800, {\n\
-\t  ease: 'in-out-expo',\n\
-\t  duration: 800\n\
-\t});\n\
-});\n\
-\n\
-utils.each(apps, function(name) {\n\
-\tadd(name);\n\
-});\n\
-\n\
-stack.show('todo');//@ sourceURL=showcase/index.js"
+stack.show('todo');\n\
+//@ sourceURL=showcase/showcase.js"
 ));
 require.register("showcase/examples.js", Function("exports, require, module",
 "module.exports = {\n\
@@ -3490,6 +3572,7 @@ require.register("showcase/showcase.html", Function("exports, require, module",
 ));
 
 require.alias("showcase/index.js", "maple/deps/showcase/index.js");
+require.alias("showcase/showcase.js", "maple/deps/showcase/showcase.js");
 require.alias("showcase/examples.js", "maple/deps/showcase/examples.js");
 require.alias("showcase/index.js", "maple/deps/showcase/index.js");
 require.alias("showcase/index.js", "showcase/index.js");
