@@ -26,5 +26,5 @@ view.data('event', new Event({
 		body.appendChild(showcase);
 	}
 }));
-debugger
+
 view.alive(body, true);
