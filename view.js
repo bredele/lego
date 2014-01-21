@@ -93,8 +93,8 @@ View.prototype.data = function(name, plug) {
  * @api public
  */
 
-View.prototype.insert = function(node) {
-  this.alive();
+View.prototype.insert = function(node, bool) {
+  this.alive(this.dom, bool);
   node.appendChild(this.dom);
 };
 
@@ -105,7 +105,7 @@ View.prototype.insert = function(node) {
  * @api publi
  */
 
-View.prototype.alive = function(node) {
+View.prototype.alive = function(node, bool) {
   //do we want to apply multiple times? no
   if(node) this.dom = node;
   this.binding.apply(this.dom);
