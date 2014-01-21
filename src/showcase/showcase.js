@@ -39,7 +39,7 @@ view.attr('event', new Event({
 		frag.appendChild(view.dom);
 	}
 }));
-view.alive(frag);
+view.insert(frag);
 stack.parent = view.dom.querySelector('.stack');
 
 

@@ -345,8 +345,8 @@ View.prototype.data = function(name, plug) {\n\
  * @api public\n\
  */\n\
 \n\
-View.prototype.insert = function(node) {\n\
-  this.alive();\n\
+View.prototype.insert = function(node, bool) {\n\
+  this.alive(this.dom, bool);\n\
   node.appendChild(this.dom);\n\
 };\n\
 \n\
@@ -357,7 +357,7 @@ View.prototype.insert = function(node) {\n\
  * @api publi\n\
  */\n\
 \n\
-View.prototype.alive = function(node) {\n\
+View.prototype.alive = function(node, bool) {\n\
   //do we want to apply multiple times? no\n\
   if(node) this.dom = node;\n\
   this.binding.apply(this.dom);\n\
@@ -3364,11 +3364,12 @@ view.data('event', new Event({\n\
 \t\t\tduration: 800\n\
 \t\t});\n\
 \t},\n\
-\tshowcase: function() {\n\
-\t\tbody.appendChild(showcase.dom);\n\
+\tshow: function() {\n\
+\t\tbody.appendChild(showcase);\n\
 \t}\n\
 }));\n\
-view.apply(body, true);\n\
+debugger\n\
+view.alive(body, true);\n\
 //@ sourceURL=showcase/index.js"
 ));
 require.register("showcase/showcase.js", Function("exports, require, module",
@@ -3376,9 +3377,11 @@ require.register("showcase/showcase.js", Function("exports, require, module",
 //dependencies\n\
 \n\
 var View = require('maple/view'),\n\
+    Store = require('maple/store'),\n\
     Event = require('event-plugin'),\n\
     Stack = require('stack'),\n\
 \t\tList = require('list'),\n\
+\t\tutils = require('maple/lib/utils'),\n\
 \t\texamples = require('./examples');\n\
 \n\
 \n\
@@ -3387,7 +3390,7 @@ var View = require('maple/view'),\n\
 var view = new View(),\n\
     store = new Store(),\n\
     stack = new Stack();\n\
-\t\tlist = new List([]);\n\
+\t\tlist = new List([]),\n\
     frag = document.createDocumentFragment();\n\
 \n\
 //bindings\n\
@@ -3411,7 +3414,7 @@ view.attr('event', new Event({\n\
 \t\tfrag.appendChild(view.dom);\n\
 \t}\n\
 }));\n\
-view.apply(frag);\n\
+view.insert(frag);\n\
 stack.parent = view.dom.querySelector('.stack');\n\
 \n\
 \n\

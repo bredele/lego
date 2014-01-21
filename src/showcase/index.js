@@ -22,8 +22,9 @@ view.data('event', new Event({
 			duration: 800
 		});
 	},
-	showcase: function() {
-		body.appendChild(showcase.dom);
+	show: function() {
+		body.appendChild(showcase);
 	}
 }));
+debugger
 view.alive(body, true);
