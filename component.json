@@ -13,7 +13,7 @@
   "main": "maple.js",
   "scripts": [
     "maple.js",
-    "better-view.js",    
+    "view.js",    
     "store.js",
     "emitter.js",
     "binding.js",

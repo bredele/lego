@@ -1,136 +1,121 @@
 var assert = require('assert'),
+    Store = require('maple/store'),
     View = require('maple/view');
 
-    describe("View", function() {
-    	describe('template', function() {
-    		var body = null;
-    		beforeEach(function() {
-    			body = document.createElement('div');
-    		});
+describe("View", function() {
 
-    		it('should render simple string html', function() {
-    			var view = new View();
-    			view.html('<button>template</button>');
-    			view.insert(body);
+	describe("Constructor", function() {
 
-    			assert.equal((view.dom instanceof Element), true);
-    		});
+		it('should initialize a new view', function() {
+			var view = new View();
+			assert.equal(typeof view.html, 'function');
+			assert.equal(typeof view.insert, 'function');
+		});
 
-    		it('should accept HTML Element', function(){
-    			var view = new View();
-    			view.html(body);
+		it('should extend an object and return a view from it', function() {
+			var view = View({
+				html: 'something',
+				custom: function(){}
+			});
 
-    			assert.equal((view.dom instanceof Element), true);
-    			assert.equal(view.dom, body);
-    		});
+			assert.equal(typeof view.html, 'function');
+			assert.equal(typeof view.insert, 'function');			
+			assert.equal(typeof view.custom, 'function');
+		});
 
-    		it('should accept other template engine', function(){
-    			var view = new View();
-    			view.html(function(obj){
-    				var div = document.createElement('div');
-    				div.className = obj.className;
-    				return div;
-    			}, {className: 'bredele'});
+		it('should return a view', function() {
+			var view = View();
+			assert.equal(typeof view.html, 'function');
+			assert.equal(typeof view.insert, 'function');
+		});
 
-    			assert.equal(view.dom.tagName,'DIV');
-    			assert.equal(view.dom.className,'bredele');
-    		});
-    	});
+	});
 
-    	describe('template binding', function() {
-    		var body = null;
-    		beforeEach(function() {
-    			body = document.createElement('div');
-    		});
+	describe(".html()", function() {
 
-    		it('should render template from object', function() {
-    			var view = new View();
-    			view.html('<span>{github}</span>', {
-    				github:'leafs'
-    			});
-    			view.insert(body);
+		it("should render view's dom from string", function() {
+			var view = new View();
+			view.html('<button>maple</button>');
 
-    			assert.equal(view.dom.innerHTML, 'leafs');
-    		});
+			assert(view.dom instanceof Element);
+			assert.equal(view.dom.nodeName, 'BUTTON');
+			assert.equal(view.dom.innerHTML, 'maple');
+		});
 
-    		describe('store live-binding', function() {
-    			it('should update view\'s dom when store change', function() {
-    				var view = new View();
-    				var store = new Store({
-    					github:'leafs'
-    				});
-    				view.html('<span>{github}</span>', store);
-    				view.insert(body);
+		it("should set a document element as the view's dom", function() {
+			var el = document.createElement('div'),
+					view = new View();
+			view.html(el);
 
-    				assert.equal(view.dom.innerHTML, 'leafs');
+			assert.equal(view.dom, el);
+		});
 
-    				store.set('github', 'petrofeed');
-    				assert.equal(view.dom.innerHTML, 'petrofeed');
-    			});
-    		});
-    	});
+		it("should select view's domt from document", function() {
+			document.body.insertAdjacentHTML('beforeend', '<div class="view-select"></div>');
+			var view = new View();
+			view.html('.view-select');
 
-    	describe('plugin', function() {
-    		var body = null;
-    		beforeEach(function() {
-    			body = document.createElement('div');
-    		});
+			assert(view.dom instanceof Element);
+			assert.equal(view.dom.className, 'view-select');
+		});
 
+		//should we do query selection on node?
+		it(".html('#maple', 'li .test', data)");
 
-    		it('should add attribute binding', function(){
-    			var view = new View();
-    			var plugin = function(){};
-    			view.attr('class', plugin);
+	});
 
-    			assert.equal(view.binding.plugins['class'], plugin);
-    		});
+	describe("template binding", function() {
 
-    		it('should add data attribute binding', function() {
-    			var view = new View();
-    			var plugin = function(){};
-    			view.data('test', plugin);
+		it("should update view's dom from object", function() {
+			var view = new View();
+		  view.html('<span>{github}</span>', {
+				github:'leafs'
+			})
+			view.insert(document.createElement('div'));
 
-    			assert.equal(view.binding.plugins['data-test'], plugin);
-    		});
+			assert.equal(view.dom.innerHTML, 'leafs');
+		});
 
-    	});
+		describe("live-binding", function() {
 
-    	describe('insert', function() {
-    		var body = null;
-    		beforeEach(function() {
-    			body = document.createElement('div');
-    		});
+			it("should update view's dom when store change", function() {
+				var view = new View();
+				var store = new Store({
+					github:'leafs'
+				});
+				view.html('<span>{github}</span>', store);
+				view.insert(document.createElement('div'));
 
-    		it('should insert view\'s dom', function() {
-    			var view = new View();
-    			view.html('<span>template</span>');
-    			view.insert(body);
+				assert.equal(view.dom.innerHTML, 'leafs');
 
-    			assert.equal(body.firstChild, view.dom);
-    		});
-    	});
+				store.set('github', 'petrofeed');
+				assert.equal(view.dom.innerHTML, 'petrofeed');
+			});
+		});
+	});
+	
+	describe('plugin', function() {
 
+		it("should add binding plugin", function() {
+			var view = new View();
+			var plugin = function(){};
+			view.plug('class', plugin);
 
-    	describe('destroy', function() {
-    		it('should call the destroy function of every regstered plugin', function() {
-    			var view = new View(),
-                    idx = 0,
-        			destroy = function() {
-        				++idx;
-        			};
-                    
-    			view.attr('test', {
-    				destroy: destroy
-    			});
-    			view.attr('other', {
-    				destroy: destroy
-    			});
-    			view.data('another', {});
-    			view.alive(document.createElement('div'));
-    			view.destroy();
+			assert.equal(view.binding.plugins['class'], plugin);
+		});
 
+		it("should add multiple binding's plugins", function() {
+			var view = new View();
+			view.plug({
+				"class" : function(){},
+				"other" : function(){}
+			});
 
-    			assert.equal(idx, 2);
-    		});
-    	});
-    });
+			assert(view.binding.plugins['class'] !== undefined);
+			assert(view.binding.plugins['other'] !== undefined);		
+
+		});
+
+	});
+	
+});

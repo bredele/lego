@@ -1,5 +1,10 @@
-var Binding = require('./binding'),
-    Store = require('./store');
+
+/**
+ * Dependencies
+ */
+
+var binding = require('./binding'),
+    utils = require('./lib/utils');
 
 
 /**
@@ -11,116 +16,94 @@ module.exports = View;
 
 /**
  * View constructor.
- * We keep the constructor clean for override.
- * @api public
- */
-
-function View(){
-  this.dom = null;
-  this.store = null;
-  this.binding = new Binding();
-}
-
-/**
- * String to DOM.
- * @api pruvate
- */
-
-function domify(tmpl){
-  //ie8 doesn't support instanceof if left assignment not an object
-  if(typeof tmpl !== 'string') return tmpl;
-  //may be by applying binding on this node we can have multiple
-  //children
-  var div = document.createElement('div');
-  //use component insert
-  div.innerHTML = tmpl;
-  return div.firstChild;
-}
-
-
-/**
- * Turn HTML into DOM with data store.
- * The template is either a string or 
- * an existing HTML element.
- * @param  {String|HTMLElement|Function} tmpl  
- * @param  {Object} store can be nothing, an object or a store
- * @api public
- */
-
-View.prototype.html = function(tmpl, store) { //add mixin obj?
-  if(typeof tmpl === 'function') {
-    //TODO: use component to array
-    this.dom = tmpl.apply(null, [].slice.call(arguments, 1));
-  } else {
-    this.store = new Store(store);
-    this.binding.model = this.store;
-    this.dom = domify(tmpl);
-  }
-  return this;
-};
-
-
-/**
- * Add attribute binding plugin.
- * @param  {String} name 
- * @param  {Object | Function} plug 
- * @return {View}
- * @api public
- */
-
-View.prototype.attr = function(name, plug) {
-  this.binding.add(name, plug);
-  return this;
-};
-
-
-/**
- * Add binding plugin.
- * @param  {String} name 
- * @param  {Object | Function} plug 
- * @return {View}
- * @api public
- */
-
-View.prototype.data = function(name, plug) {
-  return this.attr('data-' + name, plug);
-};
-
-
-/**
- * Place widget in document.
- * @param {HTMLElement} node
- * @api public
- */
-
-View.prototype.insert = function(node, bool) {
-  this.alive(this.dom, bool);
-  node.appendChild(this.dom);
-};
-
-
-/**
- * Apply data-binding on dom.
- * @param {HTMLElement} node widget's dom if undefined
- * @api publi
- */
-
-View.prototype.alive = function(node, bool) {
-  //do we want to apply multiple times? no
-  if(node) this.dom = node;
-  this.binding.apply(this.dom, bool);
-};
-
-
-/**
- * Call the destroy method for every registered plugin.
  * 
+ * @param {Object} mixin
  * @api public
  */
 
-View.prototype.destroy = function() {
-  var parent = this.dom.parentNode;
-  this.binding.unbind();
-  if(parent) parent.removeChild(this.dom);
+function View(mixin) {
+  if(mixin) return utils.mixin(View.prototype, mixin);
+  if(!(this instanceof View)) return new View(mixin);
+  this.binding = binding();
+}
 
+
+/**
+ * Set or render view's dom.
+ * example:
+ *
+ *   view.html('#maple',data);
+ *   view.html('<button>maple</button>',data);
+ *   view.html(node,data); //with node HTMLElement
+ *
+ * @param {String|Element} tmpl
+ * @param {Object} data 
+ * @return {View}
+ * @api public
+ */
+
+View.prototype.html = function(tmpl, data) {
+	if(data) this.binding.data(data);
+	if(typeof tmpl === 'string') {
+		if(!~utils.indexOf(tmpl, '<')) {
+			this.dom = document.querySelector(tmpl);
+		} else {
+			var frag = document.createElement('div');
+			frag.insertAdjacentHTML('beforeend', tmpl);
+			this.dom = frag.firstChild;
+		}
+		return this;
+	}
+	this.dom = tmpl;
+	return this;
+};
+
+
+/**
+ * Plug/bind logic to the dom.
+ * example:
+ *
+ *   view.plug('data-event', function(){});
+ *   view.plug({
+ *     'data-event' : function(){},
+ *     'required' : function(){}
+ *   });
+ *   
+ * @param  {String|Object} attr   
+ * @param  {Function|Object} plugin 
+ * @return {View}
+ * @api public
+ */
+
+View.prototype.plug = function(attr, plugin) {
+	if(typeof attr !== 'string') {
+		utils.each(attr, function(name, obj) {
+			this.plug(name, obj);
+		}, this);
+	}
+	this.binding.add(attr, plugin);
+	return this;
+};
+
+
+/**
+ * Insert view's dom in HTML Element.
+ * Applies bindings it it hasn't been done yet.
+ * example:
+ *
+ *   view.insert('#maple');
+ *   view.insert(node); //with node HTML Element
+ * 
+ * @param  {Element|string} el   
+ * @param  {Boolean} bool true to apply only the plugins (not inteprolation)
+ * @api public
+ */
+
+View.prototype.insert = function(el, bool) {
+	//NOTE: should we do 2 level query selection for insert and html?
+	this.binding.apply(this.dom, bool); //we should apply only once!
+	if(typeof el === 'string') {
+		el = document.querySelector(el);
+	}
+	el.appendChild(this.dom);
 };
