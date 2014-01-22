@@ -39,10 +39,11 @@ function View(mixin) {
  * @param {String|Element} tmpl
  * @param {Object} data 
  * @return {View}
+ * @api public
  */
 
 View.prototype.html = function(tmpl, data) {
-	this.binding.data(data); //if data?
+	if(data) this.binding.data(data);
 	if(typeof tmpl === 'string') {
 		if(!~utils.indexOf(tmpl, '<')) {
 			this.dom = document.querySelector(tmpl);
@@ -71,6 +72,7 @@ View.prototype.html = function(tmpl, data) {
  * @param  {String|Object} attr   
  * @param  {Function|Object} plugin 
  * @return {View}
+ * @api public
  */
 
 View.prototype.plug = function(attr, plugin) {
@@ -87,12 +89,18 @@ View.prototype.plug = function(attr, plugin) {
 /**
  * Insert view's dom in HTML Element.
  * Applies bindings it it hasn't been done yet.
+ * example:
+ *
+ *   view.insert('#maple');
+ *   view.insert(node); //with node HTML Element
  * 
  * @param  {Element|string} el   
  * @param  {Boolean} bool true to apply only the plugins (not inteprolation)
+ * @api public
  */
 
 View.prototype.insert = function(el, bool) {
+	//NOTE: should we do 2 level query selection for insert and html?
 	this.binding.apply(this.dom, bool); //we should apply only once!
 	if(typeof el === 'string') {
 		el = document.querySelector(el);
