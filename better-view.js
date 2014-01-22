@@ -58,6 +58,40 @@ View.prototype.html = function(tmpl, data) {
 };
 
 
+/**
+ * Plug/bind logic to the dom.
+ * example:
+ *
+ *   view.plug('data-event', function(){});
+ *   view.plug({
+ *     'data-event' : function(){},
+ *     'required' : function(){}
+ *   });
+ *   
+ * @param  {String|Object} attr   
+ * @param  {Function|Object} plugin 
+ * @return {View}
+ */
+
+View.prototype.plug = function(attr, plugin) {
+	if(typeof attr !== 'string') {
+		utils.each(attr, function(name, obj) {
+			this.plug(name, obj);
+		}, this);
+	}
+	this.binding.add(attr, plugin);
+	return this;
+};
+
+
+/**
+ * Insert view's dom in HTML Element.
+ * Applies bindings it it hasn't been done yet.
+ * 
+ * @param  {Element|string} el   
+ * @param  {Boolean} bool true to apply only the plugins (not inteprolation)
+ */
+
 View.prototype.insert = function(el, bool) {
 	this.binding.apply(this.dom, bool); //we should apply only once!
 	if(typeof el === 'string') {

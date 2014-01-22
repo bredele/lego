@@ -96,20 +96,24 @@ describe("Better View", function() {
 	
 	describe('plugin', function() {
 
-		it('should add attribute binding', function() {
+		it("should add binding plugin", function() {
 			var view = new View();
 			var plugin = function(){};
-			view.attr('class', plugin);
+			view.plug('class', plugin);
 
 			assert.equal(view.binding.plugins['class'], plugin);
 		});
 
-		it('should add data attribute binding', function() {
+		it("should add multiple binding's plugins", function() {
 			var view = new View();
-			var plugin = function(){};
-			view.data('test', plugin);
+			view.plug({
+				"class" : function(){},
+				"other" : function(){}
+			});
 
-			assert.equal(view.binding.plugins['data-test'], plugin);
+			assert(view.binding.plugins['class'] !== undefined);
+			assert(view.binding.plugins['other'] !== undefined);		
+
 		});
 
 	});
