@@ -14,6 +14,7 @@
   "scripts": [
     "maple.js",
     "view.js",
+    "better-view.js",    
     "store.js",
     "emitter.js",
     "binding.js",
