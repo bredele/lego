@@ -29,6 +29,17 @@ function View(mixin) {
 
 
 /**
+ * query selector.
+ * @api private
+ */
+
+function query(el) {
+	if(typeof el === 'string') el = document.querySelector(el);
+	return el;
+}
+
+
+/**
  * Set or render view's dom.
  * example:
  *
@@ -46,7 +57,7 @@ View.prototype.html = function(tmpl, data) {
 	if(data) this.binding.data(data);
 	if(typeof tmpl === 'string') {
 		if(!~utils.indexOf(tmpl, '<')) {
-			this.dom = document.querySelector(tmpl);
+			this.dom = query(tmpl);
 		} else {
 			var frag = document.createElement('div');
 			frag.insertAdjacentHTML('beforeend', tmpl);
@@ -80,9 +91,9 @@ View.prototype.plug = function(attr, plugin) {
 		utils.each(attr, function(name, obj) {
 			this.plug(name, obj);
 		}, this);
-		return this;
+	} else {
+		this.binding.add(attr, plugin);
 	}
-	this.binding.add(attr, plugin);
 	return this;
 };
 
@@ -103,8 +114,7 @@ View.prototype.plug = function(attr, plugin) {
 View.prototype.insert = function(el, bool) {
 	//NOTE: should we do 2 level query selection for insert and html?
 	this.alive(this.dom, bool); //we should apply only once!
-	if(typeof el === 'string') el = document.querySelector(el);
-	el.appendChild(this.dom);
+	query(el).appendChild(this.dom);
 };
 
 
@@ -113,7 +123,8 @@ View.prototype.insert = function(el, bool) {
  * example:
  *
  *   view.alive(); //apply on view.dom
- *   view.alive(node); //apply in noce
+ *   view.alive(node); //apply in node
+ *   view.alive('#maple');
  *   
  * @param  {Empty|Element} node 
  * @param  {Boolean} bool 
@@ -122,9 +133,8 @@ View.prototype.insert = function(el, bool) {
  */
 
 View.prototype.alive = function(node, bool) {
-	//TODO:querySelection??
 	//TODO:??when we call alive from insert we do this.dom = this.dom
-	if(node) this.dom = node;
+	if(node) this.dom = query(node);
 	this.binding.apply(this.dom, bool);
 	return this;
 };
