@@ -433,11 +433,11 @@ img.left, img.right {
 }
 @font-face {
 	font-family: 'maple';
-	src:url("/bootstrap/fonts/maple.eot");
-	src:url("/bootstrap/fonts/maple.eot?#iefix") format('embedded-opentype'),
-		url("/bootstrap/fonts/maple.woff") format('woff'),
-		url("/bootstrap/fonts/maple.ttf") format('truetype'),
-		url("/bootstrap/fonts/maple.svg#maple") format('svg');
+	src:url("bootstrap/fonts/maple.eot");
+	src:url("bootstrap/fonts/maple.eot?#iefix") format('embedded-opentype'),
+		url("bootstrap/fonts/maple.woff") format('woff'),
+		url("bootstrap/fonts/maple.ttf") format('truetype'),
+		url("bootstrap/fonts/maple.svg#maple") format('svg');
 	font-weight: normal;
 	font-style: normal;
 }

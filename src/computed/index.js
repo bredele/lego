@@ -17,7 +17,7 @@ store.compute('name',function(){
 
 view.html(require('./computed.html'), store); //if html empty there is an error binding and childnodes doesn't exist
 
-view.attr('events', new Events({
+view.plug('events', new Events({
 	first: function(ev){
 		store.set('firstName', ev.target.value);
 	},

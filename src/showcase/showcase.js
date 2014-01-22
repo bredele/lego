@@ -21,24 +21,26 @@ var view = new View(),
 //bindings
 
 view.html(require('./showcase.html'), store);
-view.attr('examples', list);
-view.attr('event', new Event({
-	select: function(ev, node) {
-		var target = ev.target || ev.srcElement,
-		    name = target.getAttribute('href').substring(1),
-		    selected = node.querySelector('.selected');
+view.plug({
+	'examples': list,
+	'event' : new Event({
+			select: function(ev, node) {
+				var target = ev.target || ev.srcElement,
+				    name = target.getAttribute('href').substring(1),
+				    selected = node.querySelector('.selected');
 
-    //doesn't work on ie8
-    selected && selected.classList.remove('selected');
-    target.classList.add('selected');
+		    //doesn't work on ie8
+		    selected && selected.classList.remove('selected');
+		    target.classList.add('selected');
 
-		stack.show(name);
-		store.reset(examples[name]);
-	},
-	close: function() {
-		frag.appendChild(view.dom);
-	}
-}));
+				stack.show(name);
+				store.reset(examples[name]);
+			},
+			close: function() {
+				frag.appendChild(view.dom);
+			}
+	})
+});
 view.insert(frag);
 stack.parent = view.dom.querySelector('.stack');
 

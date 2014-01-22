@@ -95,8 +95,8 @@ var controller = {
 
 //bindings
 app.html(html, store);
-app.attr('todos', todos);
-app.attr('events', new Events(controller)); // could be greate to do events(controller) and events.off, etc
-app.attr('visible', require('hidden-plugin')); //TODO: do our own
+app.plug('todos', todos);
+app.plug('events', new Events(controller)); // could be greate to do events(controller) and events.off, etc
+app.plug('visible', require('hidden-plugin')); //TODO: do our own
 app.alive();
 module.exports = app.dom;

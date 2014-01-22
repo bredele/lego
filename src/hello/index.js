@@ -17,7 +17,7 @@ for(var l = 500; l--;) {
 	view.dom.appendChild(span);
 }
 
-view.attr('events', new Events({
+view.plug('events', new Events({
 	text: function(ev){
 		store.set('value', ev.target.value);
 	}
