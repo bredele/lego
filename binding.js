@@ -17,9 +17,17 @@ module.exports = Binding;
 
 function Binding(model) {
 	if(!(this instanceof Binding)) return new Binding(model);
-	this.model = new Store(model);
+  this.data(model);
 	this.plugins = {};
 }
+
+//TODO: this is for view, instead doing this.binding.model = new Store();
+//should we keep this or not?
+
+Binding.prototype.data = function(data) {
+  this.model = new Store(data);
+  return this;
+};
 
 
 //todo: make better parser and more efficient

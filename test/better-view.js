@@ -1,4 +1,5 @@
 var assert = require('assert'),
+    Store = require('maple/store'),
     View = require('maple/better-view');
 
 describe("Better View", function() {
@@ -8,7 +9,7 @@ describe("Better View", function() {
 		it('should initialize a new view', function() {
 			var view = new View();
 			assert.equal(typeof view.html, 'function');
-			assert.equal(typeof view.alive, 'function');
+			assert.equal(typeof view.insert, 'function');
 		});
 
 		it('should extend an object and return a view from it', function() {
@@ -18,14 +19,14 @@ describe("Better View", function() {
 			});
 
 			assert.equal(typeof view.html, 'function');
-			assert.equal(typeof view.alive, 'function');			
+			assert.equal(typeof view.insert, 'function');			
 			assert.equal(typeof view.custom, 'function');
 		});
 
 		it('should return a view', function() {
 			var view = View();
 			assert.equal(typeof view.html, 'function');
-			assert.equal(typeof view.alive, 'function');
+			assert.equal(typeof view.insert, 'function');
 		});
 
 	});
@@ -43,7 +44,7 @@ describe("Better View", function() {
 
 		it("should set a document element as the view's dom", function() {
 			var el = document.createElement('div'),
-			    view = new View();
+					view = new View();
 			view.html(el);
 
 			assert.equal(view.dom, el);
@@ -58,7 +59,59 @@ describe("Better View", function() {
 			assert.equal(view.dom.className, 'view-select');
 		});
 
+		//should we do query selection on node?
+		it(".html('#maple', 'li .test', data)");
+
+	});
+
+	describe("template binding", function() {
+
+		it("should update view's dom from object", function() {
+			var view = new View();
+		  view.html('<span>{github}</span>', {
+				github:'leafs'
+			})
+			view.insert(document.createElement('div'));
+
+			assert.equal(view.dom.innerHTML, 'leafs');
+		});
+
+		describe("live-binding", function() {
+
+			it("should update view's dom when store change", function() {
+				var view = new View();
+				var store = new Store({
+					github:'leafs'
+				});
+				view.html('<span>{github}</span>', store);
+				view.insert(document.createElement('div'));
+
+				assert.equal(view.dom.innerHTML, 'leafs');
+
+				store.set('github', 'petrofeed');
+				assert.equal(view.dom.innerHTML, 'petrofeed');
+			});
+		});
 	});
 	
+	describe('plugin', function() {
+
+		it('should add attribute binding', function() {
+			var view = new View();
+			var plugin = function(){};
+			view.attr('class', plugin);
+
+			assert.equal(view.binding.plugins['class'], plugin);
+		});
+
+		it('should add data attribute binding', function() {
+			var view = new View();
+			var plugin = function(){};
+			view.data('test', plugin);
+
+			assert.equal(view.binding.plugins['data-test'], plugin);
+		});
+
+	});
 	
 });

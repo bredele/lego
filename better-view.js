@@ -3,7 +3,8 @@
  * Dependencies
  */
 
-var utils = require('./lib/utils');
+var binding = require('./binding'),
+    utils = require('./lib/utils');
 
 
 /**
@@ -23,15 +24,25 @@ module.exports = View;
 function View(mixin) {
   if(mixin) return utils.mixin(View.prototype, mixin);
   if(!(this instanceof View)) return new View(mixin);
+  this.binding = binding();
 }
 
 
 /**
- * [html description]
- * @return {[type]} [description]
+ * Set or render view's dom.
+ * example:
+ *
+ *   view.html('#maple',data);
+ *   view.html('<button>maple</button>',data);
+ *   view.html(node,data); //with node HTMLElement
+ *
+ * @param {String|Element} tmpl
+ * @param {Object} data 
+ * @return {View}
  */
 
-View.prototype.html = function(tmpl) {
+View.prototype.html = function(tmpl, data) {
+	this.binding.data(data); //if data?
 	if(typeof tmpl === 'string') {
 		if(!~utils.indexOf(tmpl, '<')) {
 			this.dom = document.querySelector(tmpl);
@@ -40,11 +51,17 @@ View.prototype.html = function(tmpl) {
 			frag.insertAdjacentHTML('beforeend', tmpl);
 			this.dom = frag.firstChild;
 		}
-		return;
+		return this;
 	}
 	this.dom = tmpl;
+	return this;
 };
 
-View.prototype.alive = function() {
-	
+
+View.prototype.insert = function(el, bool) {
+	this.binding.apply(this.dom, bool); //we should apply only once!
+	if(typeof el === 'string') {
+		el = document.querySelector(el);
+	}
+	el.appendChild(this.dom);
 };
