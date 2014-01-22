@@ -37,7 +37,7 @@ describe("Better View", function() {
 			view.html('<button>maple</button>');
 
 			assert(view.dom instanceof Element);
-			assert.equal(view.dom.nodeType, 'BUTTON');
+			assert.equal(view.dom.nodeName, 'BUTTON');
 			assert.equal(view.dom.innerHTML, 'maple');
 		});
 

@@ -32,8 +32,17 @@ function View(mixin) {
  */
 
 View.prototype.html = function(tmpl) {
-	var frag = document.createElement('div');
-	frag.innerHTML = tmpl;
+	if(typeof tmpl === 'string') {
+		if(!~utils.indexOf(tmpl, '<')) {
+			this.dom = document.querySelector(tmpl);
+		} else {
+			var frag = document.createElement('div');
+			frag.insertAdjacentHTML('beforeend', tmpl);
+			this.dom = frag.firstChild;
+		}
+		return;
+	}
+	this.dom = tmpl;
 };
 
 View.prototype.alive = function() {
