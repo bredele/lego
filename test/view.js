@@ -117,5 +117,25 @@ describe("View", function() {
 		});
 
 	});
+
+		describe('destroy', function() {
+			it('should call the destroy function of every regstered plugin', function() {
+				var view = new View(),
+	                idx = 0,
+	    			destroy = function() {
+	    				++idx;
+	    			};
+	    				      debugger
+	      view.plug({
+	      	'test' : {destroy:destroy},
+	      	'other' : {destroy:destroy},
+	      	'another' : {}
+	      });
+	      view.alive(document.createElement('div'));
+				view.destroy();
+
+				assert.equal(idx, 2);
+			});
+		});
 	
 });

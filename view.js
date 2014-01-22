@@ -80,6 +80,7 @@ View.prototype.plug = function(attr, plugin) {
 		utils.each(attr, function(name, obj) {
 			this.plug(name, obj);
 		}, this);
+		return this;
 	}
 	this.binding.add(attr, plugin);
 	return this;
@@ -101,9 +102,42 @@ View.prototype.plug = function(attr, plugin) {
 
 View.prototype.insert = function(el, bool) {
 	//NOTE: should we do 2 level query selection for insert and html?
-	this.binding.apply(this.dom, bool); //we should apply only once!
-	if(typeof el === 'string') {
-		el = document.querySelector(el);
-	}
+	this.alive(this.dom, bool); //we should apply only once!
+	if(typeof el === 'string') el = document.querySelector(el);
 	el.appendChild(this.dom);
+};
+
+
+/**
+ * Apply bindings on passed HTML Element.
+ * example:
+ *
+ *   view.alive(); //apply on view.dom
+ *   view.alive(node); //apply in noce
+ *   
+ * @param  {Empty|Element} node 
+ * @param  {Boolean} bool 
+ * @return {View}
+ * @api public
+ */
+
+View.prototype.alive = function(node, bool) {
+	//TODO:querySelection??
+	//TODO:??when we call alive from insert we do this.dom = this.dom
+	if(node) this.dom = node;
+	this.binding.apply(this.dom, bool);
+	return this;
+};
+
+
+/**
+ * Destroy bindings and view's dom.
+ * 
+ * @api public
+ */
+
+View.prototype.destroy = function() {
+  var parent = this.dom.parentNode;
+  this.binding.unbind();
+  if(parent) parent.removeChild(this.dom);
 };
