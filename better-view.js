@@ -15,6 +15,8 @@ module.exports = View;
 
 /**
  * View constructor.
+ * 
+ * @param {Object} mixin
  * @api public
  */
 
@@ -23,8 +25,15 @@ function View(mixin) {
   if(!(this instanceof View)) return new View(mixin);
 }
 
-View.prototype.html = function() {
-	
+
+/**
+ * [html description]
+ * @return {[type]} [description]
+ */
+
+View.prototype.html = function(tmpl) {
+	var frag = document.createElement('div');
+	frag.innerHTML = tmpl;
 };
 
 View.prototype.alive = function() {

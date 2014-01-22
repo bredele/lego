@@ -29,5 +29,36 @@ describe("Better View", function() {
 		});
 
 	});
+
+	describe(".html()", function() {
+
+		it("should render view's dom from string", function() {
+			var view = new View();
+			view.html('<button>maple</button>');
+
+			assert(view.dom instanceof Element);
+			assert.equal(view.dom.nodeType, 'BUTTON');
+			assert.equal(view.dom.innerHTML, 'maple');
+		});
+
+		it("should set a document element as the view's dom", function() {
+			var el = document.createElement('div'),
+			    view = new View();
+			view.html(el);
+
+			assert.equal(view.dom, el);
+		});
+
+		it("should select view's domt from document", function() {
+			document.body.insertAdjacentHTML('beforeend', '<div class="view-select"></div>');
+			var view = new View();
+			view.html('.view-select');
+
+			assert(view.dom instanceof Element);
+			assert.equal(view.dom.className, 'view-select');
+		});
+
+	});
+	
 	
 });
