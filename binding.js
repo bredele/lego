@@ -19,6 +19,7 @@ function Binding(model) {
 	if(!(this instanceof Binding)) return new Binding(model);
   this.data(model);
 	this.plugins = {};
+  this.listeners = [];
 }
 
 //TODO: this is for view, instead doing this.binding.model = new Store();
@@ -114,14 +115,14 @@ Binding.prototype.bindAttrs = function(node) {
     if(plugin) {
       plugin.call(this.model, node, attr.nodeValue);
     } else {
-      subs(attr, this.model);
+      this.listeners.push(subs(attr, this.model));
     }
   }
 };
 
 
 /**
- * Apply bindings on a single node
+ * Apply binding's on a single node
  * 
  * @param  {DomElement} node 
  * @api private
@@ -132,7 +133,7 @@ Binding.prototype.bind = function(node) {
   //dom element
   if (type === 1) return this.bindAttrs(node);
   // text node
-  if (type === 3) subs(node, this.model);
+  if (type === 3) this.listeners.push(subs(node, this.model));
 };
 
 
@@ -186,6 +187,11 @@ Binding.prototype.query = function(el) {
  */
 
 Binding.prototype.unbind = function() {
+  for(var l = this.listeners.length; l--;) {
+    var listener = this.listeners[l];
+    if(listener) this.model.off(listener[0],listener[1]);
+  }
+
   for(var name in this.plugins) {
     var plugin = this.plugins[name];
     plugin.destroy && plugin.destroy();
