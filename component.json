@@ -19,7 +19,6 @@
     "binding.js",
     "lib/app.js",
     "lib/supplant.js",    
-    "lib/subs.js",
     "lib/utils.js"
   ]
 }

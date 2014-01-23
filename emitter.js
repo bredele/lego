@@ -38,6 +38,7 @@ function Emitter(obj) {
 
 Emitter.prototype.on = function(event, fn, scope){
 	(this.listeners[event] = this.listeners[event] || []).push([fn, scope]);
+	return [event, fn]; //TODO: to test
 };
 
 

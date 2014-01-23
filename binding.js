@@ -1,6 +1,6 @@
 var Store = require('./store'),
-    trim = require('./lib/utils').trim,
-    subs = require('./lib/subs');
+    utils = require('./lib/utils'),
+    supplant = require('./lib/supplant');
 
 /**
  * Expose 'Binding'
@@ -45,14 +45,14 @@ function parser(str) {
       if(expr[1]) {
         var args = expr[1].split(',');
         for(var j = 0, h = args.length; j < h; j++) {
-          params.push(trim(args[j]));
+          params.push(utils.trim(args[j]));
         }
       } else {
         name = 'main'; //doesn't do anything
       }
 
       results.push({
-        method: trim(expr[0]),
+        method: utils.trim(expr[0]),
         params: params
       });
     }
@@ -100,6 +100,32 @@ Binding.prototype.add = function(name, plugin) {
 
 
 /**
+ * Substitue node text with data.
+ * 
+ * @param  {HTMLElement} node  type 3
+ * @param  {Store} store 
+ * @api private
+ */
+
+Binding.prototype.subs = function(node, store) {
+  var text = node.nodeValue;
+  if(!~ utils.indexOf(text, '{')) return;
+
+  var exprs = supplant.attrs(text),
+      handle = function() {
+        //should we cache a function?
+        node.nodeValue = supplant(text, store.data);
+      };
+
+  handle();
+
+  for(var l = exprs.length; l--;) {
+    this.listeners.push(store.on('change ' + exprs[l], handle));
+  }
+};
+
+
+/**
  * Attribute binding.
  * 
  * @param  {HTMLElement} node 
@@ -115,7 +141,7 @@ Binding.prototype.bindAttrs = function(node) {
     if(plugin) {
       plugin.call(this.model, node, attr.nodeValue);
     } else {
-      this.listeners.push(subs(attr, this.model));
+      this.subs(attr, this.model);
     }
   }
 };
@@ -133,7 +159,7 @@ Binding.prototype.bind = function(node) {
   //dom element
   if (type === 1) return this.bindAttrs(node);
   // text node
-  if (type === 3) this.listeners.push(subs(node, this.model));
+  if (type === 3) this.subs(node, this.model);
 };
 
 
@@ -179,6 +205,7 @@ Binding.prototype.query = function(el) {
   }
 };
 
+
 /**
  * Destroy binding's plugins and unsubscribe
  * to emitter.
@@ -189,7 +216,7 @@ Binding.prototype.query = function(el) {
 Binding.prototype.unbind = function() {
   for(var l = this.listeners.length; l--;) {
     var listener = this.listeners[l];
-    if(listener) this.model.off(listener[0],listener[1]);
+    this.model.off(listener[0],listener[1]);
   }
 
   for(var name in this.plugins) {
