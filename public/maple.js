@@ -1804,7 +1804,8 @@ function mixin(obj) {\n\
  * @api public\n\
  */\n\
 \n\
-Emitter.prototype.on = function(event, fn){\n\
+Emitter.prototype.on =\n\
+Emitter.prototype.addEventListener = function(event, fn){\n\
   this._callbacks = this._callbacks || {};\n\
   (this._callbacks[event] = this._callbacks[event] || [])\n\
     .push(fn);\n\
@@ -1830,7 +1831,7 @@ Emitter.prototype.once = function(event, fn){\n\
     fn.apply(this, arguments);\n\
   }\n\
 \n\
-  fn._off = on;\n\
+  on.fn = fn;\n\
   this.on(event, on);\n\
   return this;\n\
 };\n\
@@ -1847,7 +1848,8 @@ Emitter.prototype.once = function(event, fn){\n\
 \n\
 Emitter.prototype.off =\n\
 Emitter.prototype.removeListener =\n\
-Emitter.prototype.removeAllListeners = function(event, fn){\n\
+Emitter.prototype.removeAllListeners =\n\
+Emitter.prototype.removeEventListener = function(event, fn){\n\
   this._callbacks = this._callbacks || {};\n\
 \n\
   // all\n\
@@ -1867,8 +1869,14 @@ Emitter.prototype.removeAllListeners = function(event, fn){\n\
   }\n\
 \n\
   // remove specific handler\n\
-  var i = callbacks.indexOf(fn._off || fn);\n\
-  if (~i) callbacks.splice(i, 1);\n\
+  var cb;\n\
+  for (var i = 0; i < callbacks.length; i++) {\n\
+    cb = callbacks[i];\n\
+    if (cb === fn || cb.fn === fn) {\n\
+      callbacks.splice(i, 1);\n\
+      break;\n\
+    }\n\
+  }\n\
   return this;\n\
 };\n\
 \n\
@@ -3564,7 +3572,7 @@ require.register("todo/todo.html", Function("exports, require, module",
   </section>\\n\
   <footer id=\"footer\" class=\"hidden\" visible=\"items\">\\n\
     <span id=\"todo-count\">\\n\
-      <strong>{number}</strong> \\n\
+      <strong>{ number}</strong> \\n\
       item{plurial} left\\n\
     </span>\\n\
     <button id=\"clear-completed\" class=\"todo-btn\" events=\"on:click,delAll\" visible=\"completed\">\\n\
