@@ -56,7 +56,7 @@ Emitter.prototype.once = function(event, fn, scope){
 		fn.apply(scope, arguments);
 		this.off(event, on);
 	};
-	this.on(event, on, this);
+	return this.on(event, on, this);
 };
 
 

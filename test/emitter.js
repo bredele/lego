@@ -60,6 +60,15 @@ describe("Emitter", function() {
 			assert.equal(call, 'maple');
 		});
 
+		it('returns the listener', function() {
+			var emitter = new Emitter(),
+			    fn = function(){};
+
+			var listener = emitter.on('foo', fn);
+			assert.equal(listener[0], 'foo');
+			assert.equal(listener[1], fn);
+		});
+
 	});
 
 	describe(".off()", function() {
