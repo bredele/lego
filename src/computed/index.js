@@ -18,11 +18,11 @@ store.compute('name',function(){
 view.html(require('./computed.html'), store); //if html empty there is an error binding and childnodes doesn't exist
 
 view.plug('events', new Events({
-	first: function(ev){
-		store.set('firstName', ev.target.value);
+	first: function(target){
+		store.set('firstName', target.value);
 	},
-	last: function(ev) {
-		store.set('lastName', ev.target.value);
+	last: function(target) {
+		store.set('lastName', target.value);
 	}
 }));
 view.alive();

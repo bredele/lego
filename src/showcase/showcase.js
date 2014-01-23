@@ -24,9 +24,8 @@ view.html(require('./showcase.html'), store);
 view.plug({
 	'examples': list,
 	'event' : new Event({
-			select: function(ev, node) {
-				var target = ev.target || ev.srcElement,
-				    name = target.getAttribute('href').substring(1),
+			select: function(target, ev, node) {
+				var name = target.getAttribute('href').substring(1),
 				    selected = node.querySelector('.selected');
 
 		    //doesn't work on ie8

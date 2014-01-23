@@ -32,9 +32,8 @@ store.compute('plurial', function() {
 //controller 
 
 function stats(cb) {
-	return function(ev) {
-		var count = 0,
-		    target = ev.target || ev.srcElement;
+	return function(target) {
+		var count = 0;
 
 		cb.call(null, target.parentElement, target); //remove ev when filter submit event
 		todos.loop(function(todo) {

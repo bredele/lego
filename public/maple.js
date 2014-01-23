@@ -1396,7 +1396,7 @@ function Events(view, isTouch){\n\
 Events.prototype.on = function(node, type, fn, capture) {\n\
   var _this = this,\n\
      cb = function(target, e) {\n\
-      _this.view[fn].call(_this.view, e, node); //we should pass target\n\
+      _this.view[fn].call(_this.view, target, e, node); //we should pass target\n\
      };\n\
   //todo: event should return the node as well...it's too complicated\n\
   this.listeners.push([node].concat(ev.attach(node, type, cb, (capture === 'true'))));\n\
@@ -2987,8 +2987,8 @@ for(var l = 500; l--;) {\n\
 }\n\
 \n\
 view.plug('events', new Events({\n\
-\ttext: function(ev){\n\
-\t\tstore.set('value', ev.target.value);\n\
+\ttext: function(target){\n\
+\t\tstore.set('value', target.value);\n\
 \t}\n\
 }));\n\
 view.alive();\n\
@@ -3016,11 +3016,11 @@ store.compute('name',function(){\n\
 view.html(require('./computed.html'), store); //if html empty there is an error binding and childnodes doesn't exist\n\
 \n\
 view.plug('events', new Events({\n\
-\tfirst: function(ev){\n\
-\t\tstore.set('firstName', ev.target.value);\n\
+\tfirst: function(target){\n\
+\t\tstore.set('firstName', target.value);\n\
 \t},\n\
-\tlast: function(ev) {\n\
-\t\tstore.set('lastName', ev.target.value);\n\
+\tlast: function(target) {\n\
+\t\tstore.set('lastName', target.value);\n\
 \t}\n\
 }));\n\
 view.alive();\n\
@@ -3298,9 +3298,8 @@ store.compute('plurial', function() {\n\
 //controller \n\
 \n\
 function stats(cb) {\n\
-\treturn function(ev) {\n\
-\t\tvar count = 0,\n\
-\t\t    target = ev.target || ev.srcElement;\n\
+\treturn function(target) {\n\
+\t\tvar count = 0;\n\
 \n\
 \t\tcb.call(null, target.parentElement, target); //remove ev when filter submit event\n\
 \t\ttodos.loop(function(todo) {\n\
@@ -3426,9 +3425,8 @@ view.html(require('./showcase.html'), store);\n\
 view.plug({\n\
 \t'examples': list,\n\
 \t'event' : new Event({\n\
-\t\t\tselect: function(ev, node) {\n\
-\t\t\t\tvar target = ev.target || ev.srcElement,\n\
-\t\t\t\t    name = target.getAttribute('href').substring(1),\n\
+\t\t\tselect: function(target, ev, node) {\n\
+\t\t\t\tvar name = target.getAttribute('href').substring(1),\n\
 \t\t\t\t    selected = node.querySelector('.selected');\n\
 \n\
 \t\t    //doesn't work on ie8\n\

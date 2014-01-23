@@ -18,8 +18,8 @@ for(var l = 500; l--;) {
 }
 
 view.plug('events', new Events({
-	text: function(ev){
-		store.set('value', ev.target.value);
+	text: function(target){
+		store.set('value', target.value);
 	}
 }));
 view.alive();
