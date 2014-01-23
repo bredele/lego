@@ -3367,6 +3367,71 @@ app.alive();\n\
 module.exports = app.dom;\n\
 //@ sourceURL=todo/index.js"
 ));
+require.register("svg/index.js", Function("exports, require, module",
+"var View = require('maple/view'),\n\
+    Store = require('maple/store'),\n\
+    Events = require('event-plugin');\n\
+\n\
+/*\n\
+ * Get a Point X value.\n\
+ * degress. Angle's degrees.\n\
+ * r. Circle's radio.\n\
+ * adjust. Percent of length.\n\
+ * x. Start of X point.\n\
+ */\n\
+\n\
+function getX(degrees, r, adjust, x) {\n\
+    var x = x || r, \n\
+    adj = adjust || 1;\n\
+    return x + r * adj * Math.cos(getRad(degrees));\n\
+}\n\
+\n\
+/*\n\
+ * Get a Point Y value.\n\
+ * degress. Angle's degrees.\n\
+ * r. Circle's radio.\n\
+ * adjust. Percent of length.\n\
+ * x. Start of Y point.\n\
+ */   \n\
+\n\
+function getY(degrees, r, adjust, y) {\n\
+    var y = y || r,\n\
+    adj = adjust || 1;\n\
+    return y + r * adj * Math.sin(getRad(degrees));\n\
+}\n\
+\n\
+// Convert from degrees to radians.\n\
+function getRad(degrees) {\n\
+    var adjust = Math.PI / 2;\n\
+    return (degrees * Math.PI / 180) - adjust;\n\
+}\n\
+\n\
+var view = new View();\n\
+var store = new Store(); //or view.model()? instead view.html(html, data)\n\
+\n\
+view.html(require('./svg.html'), store); //if html empty there is an error binding and childnodes doesn't exist\n\
+\n\
+view.plug('events', new Events({\n\
+\trange: function(target) {\n\
+\t\tstore.set('range', target.value);\n\
+\t}\n\
+}));\n\
+view.plug('data-range', function(node) {\n\
+\tstore.on('change range', function(value) {\n\
+\t\tvar deg = 6 * value;\n\
+\t\tx2 = getX(deg, 100, 0.95, 100), //100 is circle r\n\
+\t\ty2 = getY(deg, 100, 0.95, 100);\n\
+\t\t\n\
+\t\tnode.setAttribute('x1', 100);\n\
+\t\tnode.setAttribute('y1', 100); \n\
+\t\tnode.setAttribute('x2', x2);\n\
+\t\tnode.setAttribute('y2', y2); \n\
+\t});\n\
+});\n\
+view.alive();\n\
+\n\
+module.exports = view.dom;//@ sourceURL=svg/index.js"
+));
 require.register("showcase/index.js", Function("exports, require, module",
 "\n\
 //dependencies\n\
@@ -3499,6 +3564,12 @@ require.register("showcase/examples.js", Function("exports, require, module",
 \t\ttitle: \"Todo MVC\",\n\
 \t\tgithub: \"\",\n\
 \t\tdescription: \"sds\"\n\
+\t},\n\
+\t\"svg\" : {\n\
+\t\tname: \"svg\",\n\
+\t\ttitle: \"SVG\",\n\
+\t\tgithub: \"\",\n\
+\t\tdescription: \"youhouuuu\"\n\
 \t}\n\
 };\n\
 //@ sourceURL=showcase/examples.js"
@@ -3578,6 +3649,31 @@ require.register("todo/todo.html", Function("exports, require, module",
     </button>\\n\
   </footer>\\n\
 </section>';//@ sourceURL=todo/todo.html"
+));
+require.register("svg/svg.html", Function("exports, require, module",
+"module.exports = '<div class=\"svg\">\\n\
+\t<input type=\"range\" min=\"0\" max=\"60\" events=\"on:input, range\">\\n\
+\t<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"300\" height=\"300\" >\\n\
+\t\t<g>\\n\
+\t\t  <circle id=\"circle\" style=\"stroke: black; fill: #f8f8f8;\" cx=\"100\" cy=\"100\" r=\"100\"/>\\n\
+\t\t  <line id=\"hour0\" x1=\"100\" y1=\"10\"  x2=\"100\" y2=\"0\"/>\\n\
+\t\t  <line id=\"hour1\" x1=\"150\" y1=\"13\"  x2=\"145\" y2=\"22\"/>\\n\
+\t\t  <line id=\"hour2\" x1=\"187\" y1=\"50\"  x2=\"178\" y2=\"55\"/>\\n\
+\t\t  <line id=\"hour3\" x1=\"190\" y1=\"100\" x2=\"200\" y2=\"100\"/>\\n\
+\t\t  <line id=\"hour4\" x1=\"187\" y1=\"150\" x2=\"178\" y2=\"145\"/>\\n\
+\t\t  <line id=\"hour5\" x1=\"150\" y1=\"187\" x2=\"145\" y2=\"178\"/>\\n\
+\t\t  <line id=\"hour6\" x1=\"100\" y1=\"190\" x2=\"100\" y2=\"200\"/>\\n\
+\t\t  <line id=\"hour7\" x1=\"50\"  y1=\"187\" x2=\"55\"  y2=\"178\"/>\\n\
+\t\t  <line id=\"hour8\" x1=\"13\"  y1=\"150\" x2=\"22\"  y2=\"145\"/>\\n\
+\t\t  <line id=\"hour9\" x1=\"0\"   y1=\"100\" x2=\"10\"  y2=\"100\"/>\\n\
+\t\t  <line id=\"hour10\" x1=\"13\"  y1=\"50\"  x2=\"22\"  y2=\"55\" />\\n\
+\t\t  <line id=\"hour11\" x1=\"50\"  y1=\"13\"  x2=\"55\"  y2=\"22\" />\\n\
+\t\t</g>\\n\
+\t\t<g>\\n\
+\t\t  <line x1=\"100\" y1=\"100\" x2=\"100\" y2=\"5\"  style=\"stroke-width: 2px; stroke: red;\" data-range/>\\n\
+\t\t</g>\\n\
+\t</svg>\\n\
+</div>';//@ sourceURL=svg/svg.html"
 ));
 require.register("showcase/showcase.html", Function("exports, require, module",
 "module.exports = '<div class=\"showcase\">\\n\
@@ -3852,4 +3948,23 @@ require.alias("bredele-each/index.js", "bredele-list/deps/each/index.js");
 require.alias("bredele-each/index.js", "bredele-each/index.js");
 require.alias("bredele-list/index.js", "bredele-list/index.js");
 require.alias("todo/index.js", "todo/index.js");
+require.alias("svg/index.js", "showcase/deps/svg/index.js");
+require.alias("svg/index.js", "showcase/deps/svg/index.js");
+require.alias("bredele-maple/maple.js", "svg/deps/maple/maple.js");
+require.alias("bredele-maple/view.js", "svg/deps/maple/view.js");
+require.alias("bredele-maple/store.js", "svg/deps/maple/store.js");
+require.alias("bredele-maple/emitter.js", "svg/deps/maple/emitter.js");
+require.alias("bredele-maple/binding.js", "svg/deps/maple/binding.js");
+require.alias("bredele-maple/lib/app.js", "svg/deps/maple/lib/app.js");
+require.alias("bredele-maple/lib/supplant.js", "svg/deps/maple/lib/supplant.js");
+require.alias("bredele-maple/lib/utils.js", "svg/deps/maple/lib/utils.js");
+require.alias("bredele-maple/maple.js", "svg/deps/maple/index.js");
+require.alias("bredele-maple/maple.js", "bredele-maple/index.js");
+require.alias("bredele-event-plugin/index.js", "svg/deps/event-plugin/index.js");
+require.alias("bredele-event-plugin/index.js", "svg/deps/event-plugin/index.js");
+require.alias("bredele-event/index.js", "bredele-event-plugin/deps/event/index.js");
+require.alias("bredele-event/index.js", "bredele-event-plugin/deps/event/index.js");
+require.alias("bredele-event/index.js", "bredele-event/index.js");
+require.alias("bredele-event-plugin/index.js", "bredele-event-plugin/index.js");
+require.alias("svg/index.js", "svg/index.js");
 require.alias("showcase/index.js", "showcase/index.js");

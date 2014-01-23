@@ -34,5 +34,11 @@ module.exports = {
 		title: "Todo MVC",
 		github: "",
 		description: "sds"
+	},
+	"svg" : {
+		name: "svg",
+		title: "SVG",
+		github: "",
+		description: "youhouuuu"
 	}
 };

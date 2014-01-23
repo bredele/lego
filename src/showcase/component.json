@@ -15,7 +15,8 @@
     "events",
     "repeat",
     "stacks",
-    "todo"
+    "todo",
+    "svg"
   ],
   "templates" : ["showcase.html"],
   "styles" : ["showcase.styl"],
