@@ -20,7 +20,6 @@ var view = new View(),
 
 //bindings
 
-view.html(require('./showcase.html'), store);
 view.plug({
 	'examples': list,
 	'event' : new Event({
@@ -40,7 +39,11 @@ view.plug({
 			}
 	})
 });
+
+view.html(require('./showcase.html'), store);
+console.time('showcase');
 view.insert(frag);
+console.timeEnd('showcase');
 stack.parent = view.dom.querySelector('.stack');
 
 

@@ -13,7 +13,6 @@ var body = document.body;
 
 
 //bindings
-
 view()
 	.plug('data-event', new Event({
 		scroll: function() {

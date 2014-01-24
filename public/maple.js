@@ -3050,8 +3050,7 @@ require.register("stacks/index.js", Function("exports, require, module",
 "var View = require('maple/view');\n\
 var view = new View();\n\
 view.html(require('./stack.html'));\n\
-view.alive();\n\
-\n\
+view.alive();;\n\
 module.exports = view.dom;//@ sourceURL=stacks/index.js"
 ));
 require.register("component-classes/index.js", Function("exports, require, module",
@@ -3448,7 +3447,6 @@ var body = document.body;\n\
 \n\
 \n\
 //bindings\n\
-\n\
 view()\n\
 \t.plug('data-event', new Event({\n\
 \t\tscroll: function() {\n\
@@ -3486,7 +3484,6 @@ var view = new View(),\n\
 \n\
 //bindings\n\
 \n\
-view.html(require('./showcase.html'), store);\n\
 view.plug({\n\
 \t'examples': list,\n\
 \t'event' : new Event({\n\
@@ -3506,7 +3503,11 @@ view.plug({\n\
 \t\t\t}\n\
 \t})\n\
 });\n\
+\n\
+view.html(require('./showcase.html'), store);\n\
+console.time('showcase');\n\
 view.insert(frag);\n\
+console.timeEnd('showcase');\n\
 stack.parent = view.dom.querySelector('.stack');\n\
 \n\
 \n\
