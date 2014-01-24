@@ -1,0 +1,18 @@
+---
+layout: base
+---
+
+<article class="article">
+  <header class="article-header">
+      <h3 class="article-title">
+        <a class="article-link" href="{{ page.url }}">{{ page.title }}</a>
+      </h3>
+      <time class="article-date"  datetime="{{ page.date | date: "%Y-%d-%B" }}">{{ page.date | date: "%B %d, %Y" }}</time>
+    </header>
+  <div class="article-body">
+     {{ content }}
+  </div>
+  <footer class="article-footer">
+    Have anything to add? <a href="http://twitter.com/bredeleca" target="_blank">Tweet</a> at me.
+  </footer>
+</article>
