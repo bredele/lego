@@ -1,6 +1,10 @@
 {
   "name": "bootstrap",
-  "fonts" : ["fonts"],
+  "fonts" : ["fonts/maple.eot", 
+	  "fonts/maple.svg", 
+	  "fonts/maple.ttf",
+	  "fonts/maple.woff"],
+  "images" : ["logo.png"],
   "styles" : [
   "reset.styl",
   "fonts.styl",

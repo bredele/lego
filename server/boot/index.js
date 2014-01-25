@@ -14,7 +14,7 @@ module.exports = function(req, res, next) {
   mkdir.sync('public');
   var start = new Date;
   var builder = new Builder('.');
-  builder.copyAssetsTo('public');
+  builder.copyAssetsTo('assets');
   builder.use(rework);
   builder.addSourceURLs(); //dev mode
   builder.build(function(err, res){
