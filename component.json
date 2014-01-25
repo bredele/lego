@@ -1,0 +1,10 @@
+{
+  "name": "maple",
+  "paths": [
+    "apps"
+  ],
+  "local": [
+    "bootstrap",
+    "showcase"
+  ]
+}

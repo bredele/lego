@@ -1,0 +1,13 @@
+{
+  "name": "svg",
+  "dependencies": {
+    "leafs/maple" : "*",
+    "bredele/event-plugin" : "*"
+  },
+  "development": {},
+  "templates" : ["svg.html"],
+  "main": "index.js",
+  "scripts": [
+    "index.js"
+  ]
+}
