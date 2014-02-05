@@ -80,7 +80,7 @@ store.reset([{
 
 ### Architecture
 
-Maple.js provides an express-like api that allows to split a large web application into smaller pieces (calles apps).
+Maple.js provides an express-like api that allows to split a large web application into smaller pieces (called apps).
 
 ```js
 var maple = require('maple');
