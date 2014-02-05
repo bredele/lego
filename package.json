@@ -14,7 +14,7 @@
     "webapp",
     "html5",
     "binding",
-    "mvc",
+    "mvvm",
     "model",
     "view",
     "controller"

@@ -12,6 +12,10 @@
 
   For the first release, maple will work as a standalone library or through other package managers such as browserify or bower.
 
+## Browser Support
+
+Maple.js supports most ECMAScript 5 compliant browsers from IE8+.
+
 
 ## Concept
 
