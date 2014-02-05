@@ -47,6 +47,23 @@ Plugins (method `plug`) in Maple.js are attributes that link a DOM node with a p
 
 ### Store and Emitter
 
+Store is your model layer. It's basically a wrapper for your models and collections that contains your data and all the logic surrounding it such as formatters, access control, computed properties, reset, local storage and can be easily extended with its middleware engine.
+
+```js
+var Store = require('store');
+
+var store = new Store({
+	label: 'maple'
+});
+store.get('maple');
+store.on('change maple', function() {
+	//do something
+});
+store.set('label', 'leafs');
+```
+
+Store is based on an emitter (available under `maple/emitter`). 
+
 ### Architecture
 
 
