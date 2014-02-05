@@ -62,7 +62,21 @@ store.on('change maple', function() {
 store.set('label', 'leafs');
 ```
 
-Store is based on an emitter (available under `maple/emitter`). 
+> Store is based on an emitter (available under `maple/emitter`). 
+
+Store works with both object (model) and arrays (collection) and reduce the overhead to have separate components for both of them. It's just dead simple!
+
+```js
+var store = new Store([{
+	name: 'olivier'
+}, {
+	name: 'bredele'
+}]);
+
+store.reset([{
+	name: 'maple'
+}]);
+```
 
 ### Architecture
 
