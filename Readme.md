@@ -1,6 +1,8 @@
 
 # maple
 
+  > work in progress
+
   webapp toolset
 
 ## Installation
@@ -9,7 +11,14 @@
 
     $ component install leafs/maple
 
-## API
+## Concept
+
+### View and Bindings
+
+### Store and Emitter
+
+### Architecture
+
 
 
 
