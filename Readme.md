@@ -80,6 +80,18 @@ store.reset([{
 
 ### Architecture
 
+Maple.js provides an express-like api that allows to split a large web application into smaller pieces (calles apps).
+
+```js
+var maple = require('maple');
+var app = maple();
+
+app.use(/* other app or middleware */);
+```
+
+An app is entirely configurable (based on a Store) and can only speak to itself. Maple provides an event bus between all the apps to keep a clean separation of responsabilities. You can add, remove or break an app without breaking your larger web application!
+
+> see [artery](http://github.com/bredele/artery) for more information.
 
 ## License
 
