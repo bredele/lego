@@ -12,7 +12,10 @@
 
   For the first release, maple will work as a standalone library or through other package managers such as browserify or bower.
 
+
 ## Concept
+
+Maple.js is a set of Commonjs components to create maintainable and configurable web applications.
 
 ### View and Bindings
 
