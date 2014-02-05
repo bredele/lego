@@ -10,6 +10,8 @@
 
     $ component install leafs/maple
 
+  For the first release, maple will work as a standalone library or through other package managers such as browserify or bower.
+
 ## Concept
 
 ### View and Bindings
