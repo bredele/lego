@@ -76,12 +76,30 @@ describe('View', function() {
 			view.html('<button></button>');
 			assert.equal(created, true);
 		});
-		
-
 	});
 
-	describe("HTML interpolation", function() {
-		
+	describe("HTML insert: .el()", function() {
+		it('should insert view.dom into document', function() {
+			var view = new View(),
+			    parent = document.createElement('div');
+
+			view.html('<span>maple</span>');
+			view.el(parent);
+			assert.equal(parent.childNodes[0], view.dom);
+		});
+	});
+	
+
+	describe("HTML interpolation: .el()", function() {
+		it('should interpolate template variable on ready', function() {
+			var view = new View();
+			view.html('<span>{label}</span>', {
+				label: 'maple'
+			});
+
+			view.el();
+			assert.equal(view.dom.innerHTML, 'maple');
+		});
 	});
 	
 	

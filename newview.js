@@ -20,8 +20,8 @@ function View() {
 Emitter(View.prototype);
 
 
-View.prototype.el = function() {
-	
+View.prototype.el = function(parent) {
+	parent.appendChild(this.dom);
 };
 
 function query(str) {
