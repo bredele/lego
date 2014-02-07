@@ -87,6 +87,19 @@ describe('View', function() {
 			view.el(parent);
 			assert.equal(parent.childNodes[0], view.dom);
 		});
+
+		it('should emit a compiled event', function() {
+			var view = new View(),
+			    compiled = false;
+			view.on('compiled', function() {
+				compiled = true;
+			});
+
+			view.html('<span>maple</span>');
+			view.el(document.createElement('div'));
+
+			assert.equal(compiled, true);
+		});
 	});
 	
 
