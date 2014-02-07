@@ -24,7 +24,7 @@ View.prototype.el = function() {
 	
 };
 
-View.prototype.html = function() {
+View.prototype.html = function(str) {
 	
 };
 

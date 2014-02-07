@@ -47,6 +47,7 @@ describe('View', function() {
 	});
 
 	describe("HTML templating: .html()", function() {
+
 		it('should render HTML string into DOM (view.dom)', function() {
 			var view = new View();
 			view.html('<button>maple</button>');
@@ -54,6 +55,14 @@ describe('View', function() {
 			assert(view.dom instanceof Element);
 			assert.equal(view.dom.nodeName, 'BUTTON');
 			assert.equal(view.dom.innerHTML, 'maple');
+		});
+
+		it('should set a document element as view.dom', function() {
+			var el = document.createElement('div'),
+					view = new View();
+			view.html(el);
+			
+			assert.equal(view.dom, el);
 		});
 	});
 	
