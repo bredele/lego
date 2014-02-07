@@ -78,28 +78,40 @@ describe('View', function() {
 		});
 	});
 
-	describe("HTML insert: .el()", function() {
-		it('should insert view.dom into document', function() {
+	describe("HTML insert: .el(parent)", function() {
+		it('should insert view.dom into parent element (if exists)', function() {
 			var view = new View(),
 			    parent = document.createElement('div');
 
 			view.html('<span>maple</span>');
+
+      //parent null
+			view.el();
+			assert.equal(view.dom.parentElement, null);
+
+      //parent dom element
 			view.el(parent);
 			assert.equal(parent.childNodes[0], view.dom);
 		});
 
-		it('should emit a compiled event', function() {
+		it('should emit an inserted event', function() {
 			var view = new View(),
-			    compiled = false;
-			view.on('compiled', function() {
-				compiled = true;
+			    inserted = false;
+			view.on('inserted', function() {
+				inserted = true;
 			});
 
 			view.html('<span>maple</span>');
-			view.el(document.createElement('div'));
 
-			assert.equal(compiled, true);
+			//parent null
+			view.el();
+			assert.equal(inserted, false);
+
+			//parent dom element
+			view.el(document.createElement('div'));
+			assert.equal(inserted, true);
 		});
+
 	});
 	
 
@@ -113,6 +125,9 @@ describe('View', function() {
 			view.el();
 			assert.equal(view.dom.innerHTML, 'maple');
 		});
+
+
+		it('should emit a compiled event only once');
 	});
 	
 	

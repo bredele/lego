@@ -22,7 +22,7 @@ Emitter(View.prototype);
 
 View.prototype.el = function(parent) {
 	parent.appendChild(this.dom);
-	this.emit('compiled');
+	this.emit('inserted');
 };
 
 function query(str) {
