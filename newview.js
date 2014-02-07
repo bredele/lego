@@ -13,7 +13,7 @@ module.exports = View;
  */
 
 function View() {
-  //do something
+  this.dom = null;
 }
 
 
@@ -24,8 +24,14 @@ View.prototype.el = function() {
 	
 };
 
+function query(str) {
+	var frag = document.createElement('div');
+	frag.insertAdjacentHTML('beforeend', str);
+	return frag.firstChild;
+}
+
 View.prototype.html = function(str) {
-	
+	this.dom = (typeof str === 'string') ? query(str) : str;
 };
 
 View.prototype.plug = function() {
