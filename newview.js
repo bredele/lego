@@ -1,3 +1,4 @@
+var Emitter = require('./emitter');
 
 /**
  * Expose 'View'
@@ -14,6 +15,10 @@ module.exports = View;
 function View() {
   //do something
 }
+
+
+Emitter(View.prototype);
+
 
 View.prototype.el = function() {
 	

@@ -26,9 +26,10 @@ describe('View', function() {
 		});
 
 		describe("View Emitter", function() {
-			it('should ve an Emitter', function() {
+			it('should be an Emitter', function() {
 				var view = new View(),
 				    initialized = false;
+
 				assert.equal(typeof view.on, 'function');
 				assert.equal(typeof view.emit, 'function');
 
@@ -37,7 +38,7 @@ describe('View', function() {
 				});
 
 				view.emit('initialized');
-				assert.equal('initialized', true);
+				assert.equal(initialized, true);
 			});
 			
 		});
