@@ -26,6 +26,18 @@ describe('View', function() {
 		});
 		
 	});
+
+	describe("HTML templating: .html()", function() {
+		it('should render HTML string into DOM (view.dom)', function() {
+			var view = new View();
+			view.html('<button>maple</button>');
+
+			assert(view.dom instanceof Element);
+			assert.equal(view.dom.nodeName, 'BUTTON');
+			assert.equal(view.dom.innerHTML, 'maple');
+		});
+	});
+	
 	
 });
         
