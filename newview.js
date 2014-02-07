@@ -32,6 +32,7 @@ function query(str) {
 
 View.prototype.html = function(str) {
 	this.dom = (typeof str === 'string') ? query(str) : str;
+	this.emit('created');
 };
 
 View.prototype.plug = function() {

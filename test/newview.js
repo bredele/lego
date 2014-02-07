@@ -61,10 +61,29 @@ describe('View', function() {
 			var el = document.createElement('div'),
 					view = new View();
 			view.html(el);
-			
+
 			assert.equal(view.dom, el);
 		});
+
+		it('should emit a created event', function() {
+			var view = new View(),
+			    created = false;
+
+			view.on('created', function() {
+				created = true;
+			});
+
+			view.html('<button></button>');
+			assert.equal(created, true);
+		});
+		
+
 	});
+
+	describe("HTML interpolation", function() {
+		
+	});
+	
 	
 	
 });
