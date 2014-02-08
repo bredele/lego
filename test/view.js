@@ -1,6 +1,6 @@
 var assert = require('assert'),
 		Store = require('maple/store'),
-    View = require('maple/newview');
+    View = require('maple/view');
 
 describe('View', function() {
 
@@ -222,5 +222,52 @@ describe('View', function() {
 		//view.dom still exist, memory leaks?
 		
 	});
+
+  //TODO: to refactor
+	describe("Constructor Factory", function() {
+		it('should return a view without using new', function() {
+			var widget = View();
+			assert.equal(typeof widget.el, 'function');
+			assert.equal(typeof widget.html, 'function');
+			assert.equal(typeof widget.plug, 'function');			
+		});
+
+		//we should have data as well
+		it('should extend the view with an object an call the options (el,plug,html)', function() {
+			var parent = document.createElement('div'),
+					obj = {
+						el: parent,
+						html: '<button>maple</maple>',
+						plug: {
+							'data-event' : function(){}
+						},
+						custom: function() {
+							return this.dom;
+						}
+					};
+
+			var widget = View(obj);
+			assert.equal(parent.firstChild, widget.dom);
+			assert.equal(widget.dom.nodeName, 'BUTTON');
+			assert.equal(widget.dom.innerHTML, 'maple');
+			assert(widget.binding.plugins['data-event'] !== undefined);			
+			assert.equal(widget.custom, widget.dom);
+		});
+
+		it('should mixin object and ')
+		it('should render and compile a view');
+		it('should render, compile and insert a view');
+		// it('should render and compile a view', function() {
+		// 	var widget = View('<div>{label}</div>', {label:'maple'});
+		// 	assert.equal(widget.dom.innerHTML, 'maple');
+		// });
+
+		// it('should render, compile and insert a view', function() {
+		// 	var parent = document.createElement('div');
+		// 	var widget = View('<div>maple</div>', {}, parent);
+		// 	assert.equal(parent.firstChild, widget.dom);
+		// });
+	});
+	
 });
         

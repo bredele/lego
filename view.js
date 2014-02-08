@@ -1,6 +1,7 @@
 var Emitter = require('./emitter'),
 		binding = require('./binding'),
-		each = require('./lib/utils').each;
+		utils = require('./lib/utils'),
+		actions = ['el', 'plug', 'html'];
 
 /**
  * Expose 'View'
@@ -14,14 +15,25 @@ module.exports = View;
  * @api public
  */
 
-function View() {
+function View(mixin) {
+	if(!(this instanceof View)) return new View(mixin);
   this.dom = null;
   this.binding = binding();
+	if(mixin) {
+		for(var l = actions.length; l--;) {
+			var action = actions[l],
+					val = mixin[action];
+
+			if(val) this[action](val);
+		}
+		utils.mixin(View.prototype, mixin);
+	}
   this.once('inserted', function() {
 		this.emit('compiled');
 		this.binding.apply(this.dom);
   }, this);
 }
+
 
 //TODO:  may be View.dom
 //it could be great to have a static api
@@ -93,7 +105,7 @@ View.prototype.html = function(str, data) {
 
 View.prototype.plug = function(attr, plugin) {
 	if(typeof attr !== 'string') {
-		each(attr, function(name, obj) {
+		utils.each(attr, function(name, obj) {
 			this.plug(name, obj);
 		}, this);
 	} else {
