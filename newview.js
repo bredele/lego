@@ -15,7 +15,7 @@ module.exports = View;
 function View() {
   this.dom = null;
   this.once('inserted', function() {
-  	//this.emit('compiled');
+  	this.emit('compiled');
   }, this);
 }
 
