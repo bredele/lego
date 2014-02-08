@@ -160,11 +160,34 @@ describe('View', function() {
 
 				assert.equal(view.dom.innerHTML, 'leafs');
 
-				store.set('github', 'petrofeed');
-				assert.equal(view.dom.innerHTML, 'petrofeed');
+				store.set('github', 'maple');
+				assert.equal(view.dom.innerHTML, 'maple');
 			});
 		});
 
+	});
+	
+	describe("HTML plugin: .plug()", function() {
+
+		it("should add binding plugin", function() {
+			var view = new View();
+			var plugin = function(){};
+			view.plug('class', plugin);
+
+			assert.equal(view.binding.plugins['class'], plugin);
+		});
+
+		it("should add multiple binding's plugins", function() {
+			var view = new View();
+			view.plug({
+				"class" : function(){},
+				"other" : function(){}
+			});
+
+			assert(view.binding.plugins['class'] !== undefined);
+			assert(view.binding.plugins['other'] !== undefined);		
+
+		});
 	});
 	
 	

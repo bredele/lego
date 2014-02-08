@@ -29,6 +29,7 @@ Emitter(View.prototype);
 View.prototype.el = function(parent) {
   this.emit('inserted'); //faster to compile outside of the document
 	if(parent) parent.appendChild(this.dom);
+	return this;
 };
 
 function query(str) {
@@ -43,10 +44,12 @@ View.prototype.html = function(str, data) {
 	if(data) this.binding.data(data);
 	this.dom = (typeof str === 'string') ? query(str) : str;
 	this.emit('created'); //may be rendered
+	return this;
 };
 
-View.prototype.plug = function() {
-	
+View.prototype.plug = function(attr, plugin) {
+	this.binding.add(attr, plugin);
+	return this;
 };
 
 View.prototype.remove = function() {
