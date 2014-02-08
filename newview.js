@@ -22,6 +22,7 @@ function View() {
   }, this);
 }
 
+
 Emitter(View.prototype);
 
 
@@ -37,10 +38,11 @@ function query(str) {
 	return frag.firstChild;
 }
 
+
 View.prototype.html = function(str, data) {
 	if(data) this.binding.data(data);
 	this.dom = (typeof str === 'string') ? query(str) : str;
-	this.emit('created');
+	this.emit('created'); //may be rendered
 };
 
 View.prototype.plug = function() {

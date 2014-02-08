@@ -1,4 +1,5 @@
 var assert = require('assert'),
+		Store = require('maple/store'),
     View = require('maple/newview');
 
 describe('View', function() {
@@ -142,6 +143,26 @@ describe('View', function() {
 
 			view.el();
 			assert.equal(view.dom.innerHTML, 'maple');
+		});
+
+    //spy binding apply
+		it('should interpolet template variable only once');
+
+		describe("live-binding", function() {
+
+			it("should update view's dom when store change", function() {
+				var view = new View();
+				var store = new Store({
+					github:'leafs'
+				});
+				view.html('<span>{github}</span>', store);
+				view.el(document.createElement('div'));
+
+				assert.equal(view.dom.innerHTML, 'leafs');
+
+				store.set('github', 'petrofeed');
+				assert.equal(view.dom.innerHTML, 'petrofeed');
+			});
 		});
 
 	});
