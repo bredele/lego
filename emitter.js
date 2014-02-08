@@ -91,10 +91,14 @@ Emitter.prototype.off = function(event, fn){
 
 Emitter.prototype.emit = function(event){
 	this.listeners = this.listeners || {};	
-	var listeners = this.listeners[event];
-	if(!listeners) return;
-	for(var i = 0, l = listeners.length; i < l; i++) {
-		var listener = listeners[i];
-		listener[0].apply(listener[1] || this, utils.toArray(arguments, 1));
+	var listeners = this.listeners[event],
+			args = utils.toArray(arguments, 1);
+
+	if(listeners) {
+	  listeners = listeners.slice(0);
+		for(var i = 0, l = listeners.length; i < l; i++) {
+			var listener = listeners[i];
+			listener[0].apply(listener[1] || this, args);
+		}
 	}
 };

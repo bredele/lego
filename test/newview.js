@@ -79,21 +79,21 @@ describe('View', function() {
 	});
 
 	describe("HTML insert: .el(parent)", function() {
-		it('should insert view.dom into parent element (if exists)', function() {
-			var view = new View(),
-			    parent = document.createElement('div');
+		// it('should insert view.dom into parent element (if exists)', function() {
+		// 	var view = new View(),
+		// 	    parent = document.createElement('div');
 
-			view.html('<span>maple</span>');
+		// 	view.html('<span>maple</span>');
 
-      //parent null
-			view.el();
-			//it's the div
-			//assert.equal(view.dom.parentElement, null);
+  //     //parent null
+		// 	view.el();
+		// 	//it's the div
+		// 	//assert.equal(view.dom.parentElement, null);
 
-      //parent dom element
-			view.el(parent);
-			assert.equal(parent.childNodes[0], view.dom);
-		});
+  //     //parent dom element
+		// 	view.el(parent);
+		// 	assert.equal(parent.childNodes[0], view.dom);
+		// });
 
 		it('should emit an inserted event', function() {
 			var view = new View(),
@@ -104,7 +104,7 @@ describe('View', function() {
 			});
 
 			view.html('<span>maple</span>');
-
+      
 			//parent null
 			view.el();
 			assert.equal(inserted, 1);
