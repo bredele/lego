@@ -251,7 +251,7 @@ describe('View', function() {
 			assert.equal(widget.dom.nodeName, 'BUTTON');
 			assert.equal(widget.dom.innerHTML, 'maple');
 			assert(widget.binding.plugins['data-event'] !== undefined);			
-			assert.equal(widget.custom, widget.dom);
+			assert.equal(widget.custom(), widget.dom);
 		});
 
 		it('should mixin object and ')

@@ -24,9 +24,13 @@ function View(mixin) {
 			var action = actions[l],
 					val = mixin[action];
 
-			if(val) this[action](val);
+			if(val) {
+				this[action](val);
+				delete mixin[action];
+			}
 		}
-		utils.mixin(View.prototype, mixin);
+		//TODO: could do better than delete
+		utils.mixin(mixin, this);
 	}
   this.once('inserted', function() {
 		this.emit('compiled');
