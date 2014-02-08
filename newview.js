@@ -24,8 +24,23 @@ function View() {
 }
 
 
+//inherit from emitter
+
 Emitter(View.prototype);
 
+
+/**
+ * Insert and compile.
+ * A view is only compiled once.
+ * example:
+ *
+ *   view.el(); //compile
+ *   view.el(document.body) //insert and compile
+ *   
+ * @param  {Element} parent 
+ * @return {View}
+ * @api public
+ */
 
 View.prototype.el = function(parent) {
   this.emit('inserted'); //faster to compile outside of the document
@@ -40,6 +55,15 @@ function dom(str) {
 	return frag.firstChild;
 }
 
+/**
+ * Render view's dom.
+ * 
+ * @event {created}
+ * @param  {String|Element} str
+ * @param  {Object|Stire} data 
+ * @return {View}
+ * @api public
+ */
 
 View.prototype.html = function(str, data) {
 	if(data) this.binding.data(data);
@@ -47,6 +71,22 @@ View.prototype.html = function(str, data) {
 	this.emit('created'); //may be rendered
 	return this;
 };
+
+
+/**
+ * Add view's plugin.
+ * example:
+ * 
+ *   view.plug('data-event', fn);
+ *   view.plug({
+ *     'data-event' : fn
+ *   });
+ *   
+ * @param  {String|Object} attr   
+ * @param  {Function|Object} plugin 
+ * @return {View}
+ * @api public
+ */
 
 View.prototype.plug = function(attr, plugin) {
 	if(typeof attr !== 'string') {
@@ -58,6 +98,16 @@ View.prototype.plug = function(attr, plugin) {
 	}
 	return this;
 };
+
+
+/**
+ * Remove view's dom from its parent element
+ * and remove bindings.
+ * 
+ * @event {removed}
+ * @return {View}
+ * @api public
+ */
 
 View.prototype.remove = function() {
 	var parent = this.dom.parentElement;
