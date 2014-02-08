@@ -1,5 +1,6 @@
 var Emitter = require('./emitter'),
-		binding = require('./binding');
+		binding = require('./binding'),
+		each = require('./lib/utils').each;
 
 /**
  * Expose 'View'
@@ -49,7 +50,7 @@ View.prototype.html = function(str, data) {
 
 View.prototype.plug = function(attr, plugin) {
 	if(typeof attr !== 'string') {
-		utils.each(attr, function(name, obj) {
+		each(attr, function(name, obj) {
 			this.plug(name, obj);
 		}, this);
 	} else {
