@@ -30,7 +30,7 @@ function View(mixin) {
 					val = mixin[action];
 
 			if(val) {
-				this[action](val);
+				this[action].apply(this, val instanceof Array ? val: [val]);
 				delete mixin[action];
 			}
 		}

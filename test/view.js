@@ -233,7 +233,7 @@ describe('View', function() {
 		});
 
 		//we should have data as well
-		it('should extend the view with an object an call the options (el,plug,html)', function() {
+		it('should extend the view with an object and call the options (el,plug,html)', function() {
 			var parent = document.createElement('div');
 
 			var widget = new View({
@@ -256,6 +256,8 @@ describe('View', function() {
 			assert(widget.binding.plugins['data-event'] !== undefined);			
 			assert.equal(widget.custom(), widget.dom);
 		});
+
+		//TODO: test for array of options
 
 		// it('should render and compile a view', function() {
 		// 	var widget = View('<div>{label}</div>', {label:'maple'});
