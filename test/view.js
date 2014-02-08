@@ -1,39 +1,55 @@
 var assert = require('assert'),
-    Store = require('maple/store'),
-    View = require('maple/view');
+		Store = require('maple/store'),
+    View = require('maple/newview');
 
-describe("View", function() {
+describe('View', function() {
 
-	describe("Constructor", function() {
+	describe('API', function() {
 
-		it('should initialize a new view', function() {
+		it('should have a html method', function() {
 			var view = new View();
 			assert.equal(typeof view.html, 'function');
-			assert.equal(typeof view.insert, 'function');
 		});
 
-		it('should extend an object and return a view from it', function() {
-			var view = View({
-				html: 'something',
-				custom: function(){}
+		it('should have a el method', function() {
+			var view = new View();
+			assert.equal(typeof view.el, 'function');
+		});
+
+		it('should have a plug method', function() {
+			var view = new View();
+			assert.equal(typeof view.plug, 'function');			
+		});
+
+		it('should have a remove method', function() {
+			var view = new View();
+			assert.equal(typeof view.remove, 'function');
+		});
+
+		describe("View Emitter", function() {
+			it('should be an Emitter', function() {
+				var view = new View(),
+				    initialized = false;
+
+				assert.equal(typeof view.on, 'function');
+				assert.equal(typeof view.emit, 'function');
+
+				view.on('initialized', function() {
+					initialized = true;
+				});
+
+				view.emit('initialized');
+				assert.equal(initialized, true);
 			});
-
-			assert.equal(typeof view.html, 'function');
-			assert.equal(typeof view.insert, 'function');			
-			assert.equal(typeof view.custom, 'function');
+			
 		});
-
-		it('should return a view', function() {
-			var view = View();
-			assert.equal(typeof view.html, 'function');
-			assert.equal(typeof view.insert, 'function');
-		});
-
+		
+		
 	});
 
-	describe(".html()", function() {
+	describe("HTML templating: .html()", function() {
 
-		it("should render view's dom from string", function() {
+		it('should render HTML string into DOM (view.dom)', function() {
 			var view = new View();
 			view.html('<button>maple</button>');
 
@@ -42,7 +58,7 @@ describe("View", function() {
 			assert.equal(view.dom.innerHTML, 'maple');
 		});
 
-		it("should set a document element as the view's dom", function() {
+		it('should set a document element as view.dom', function() {
 			var el = document.createElement('div'),
 					view = new View();
 			view.html(el);
@@ -50,31 +66,87 @@ describe("View", function() {
 			assert.equal(view.dom, el);
 		});
 
-		it("should select view's domt from document", function() {
-			document.body.insertAdjacentHTML('beforeend', '<div class="view-select"></div>');
-			var view = new View();
-			view.html('.view-select');
+		it('should emit a created event', function() {
+			var view = new View(),
+			    created = false;
 
-			assert(view.dom instanceof Element);
-			assert.equal(view.dom.className, 'view-select');
+			view.on('created', function() {
+				created = true;
+			});
+
+			view.html('<button></button>');
+			assert.equal(created, true);
 		});
-
-		//should we do query selection on node?
-		it(".html('#maple', 'li .test', data)");
-
 	});
 
-	describe("template binding", function() {
+	describe("HTML insert: .el(parent)", function() {
+		it('should insert view.dom into parent element (if exists)', function() {
+			var view = new View(),
+			    parent = document.createElement('div');
 
-		it("should update view's dom from object", function() {
-			var view = new View();
-		  view.html('<span>{github}</span>', {
-				github:'leafs'
-			})
-			view.insert(document.createElement('div'));
+			view.html('<span>maple</span>');
 
-			assert.equal(view.dom.innerHTML, 'leafs');
+      //parent null
+			view.el();
+			//it's the div
+			//assert.equal(view.dom.parentElement, null);
+
+      //parent dom element
+			view.el(parent);
+			assert.equal(parent.childNodes[0], view.dom);
 		});
+
+		it('should emit an inserted event', function() {
+			var view = new View(),
+			    inserted = 0;
+
+			view.on('inserted', function() {
+				inserted++;
+			});
+
+			view.html('<span>maple</span>');
+      
+			//parent null
+			view.el();
+			assert.equal(inserted, 1);
+
+			//parent dom element
+			view.el(document.createElement('div'));
+			assert.equal(inserted, 2);
+		});
+
+		it('should emit inserted event with current and previous element');
+
+	});
+	
+
+	describe("HTML interpolation: .el()", function() {
+
+		it('should emit a compiled event only once', function() {
+			var view = new View(),
+			    compiled = 0;
+
+			view.html('<span>{label}</span>');
+			view.on('compiled', function() {
+				compiled++;
+			})
+			view.el();
+			view.el(document.createElement('div'));
+			assert.equal(compiled, 1);
+		});
+
+		it('should interpolate template variable', function() {
+			var view = new View();
+			view.html('<span>{label}</span>', {
+				label: 'maple'
+			});
+
+			view.el();
+			assert.equal(view.dom.innerHTML, 'maple');
+		});
+
+    //spy binding apply
+		it('should interpolet template variable only once');
 
 		describe("live-binding", function() {
 
@@ -84,17 +156,18 @@ describe("View", function() {
 					github:'leafs'
 				});
 				view.html('<span>{github}</span>', store);
-				view.insert(document.createElement('div'));
+				view.el(document.createElement('div'));
 
 				assert.equal(view.dom.innerHTML, 'leafs');
 
-				store.set('github', 'petrofeed');
-				assert.equal(view.dom.innerHTML, 'petrofeed');
+				store.set('github', 'maple');
+				assert.equal(view.dom.innerHTML, 'maple');
 			});
 		});
+
 	});
 	
-	describe('plugin', function() {
+	describe("HTML plugin: .plug()", function() {
 
 		it("should add binding plugin", function() {
 			var view = new View();
@@ -115,27 +188,39 @@ describe("View", function() {
 			assert(view.binding.plugins['other'] !== undefined);		
 
 		});
-
 	});
 
-		describe('destroy', function() {
-			it('should call the destroy function of every regstered plugin', function() {
-				var view = new View(),
-	                idx = 0,
-	    			destroy = function() {
-	    				++idx;
-	    			};
-	    				      debugger
-	      view.plug({
-	      	'test' : {destroy:destroy},
-	      	'other' : {destroy:destroy},
-	      	'another' : {}
-	      });
-	      view.alive(document.createElement('div'));
-				view.destroy();
+	describe('HTML remove: .remove()', function() {
 
-				assert.equal(idx, 2);
+		it("should emit a removed event", function() {
+			var view = new View(),
+			    removed = false;
+
+			view.html('<button>maple</button>');
+			view.el();
+			view.on('removed', function() {
+				removed = true;
 			});
+			view.remove();
+			assert.equal(removed, true);
 		});
-	
+
+		it('should remove from parent element if exists', function() {
+			var view = new View(),
+					parent = document.createElement('div');
+
+			view.html('<button>maple</button>');
+			view.el(parent);
+
+			view.remove();
+			assert.equal(parent.innerHTML, '');
+		});
+
+    //use spy
+		it('should destroy bindings');
+
+		//view.dom still exist, memory leaks?
+		
+	});
 });
+        

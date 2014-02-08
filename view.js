@@ -1,11 +1,6 @@
-
-/**
- * Dependencies
- */
-
-var binding = require('./binding'),
-    utils = require('./lib/utils');
-
+var Emitter = require('./emitter'),
+		binding = require('./binding'),
+		each = require('./lib/utils').each;
 
 /**
  * Expose 'View'
@@ -16,68 +11,78 @@ module.exports = View;
 
 /**
  * View constructor.
- * 
- * @param {Object} mixin
  * @api public
  */
 
-function View(mixin) {
-  if(mixin) return utils.mixin(View.prototype, mixin);
-  if(!(this instanceof View)) return new View(mixin);
+function View() {
+  this.dom = null;
   this.binding = binding();
+  this.once('inserted', function() {
+		this.emit('compiled');
+		this.binding.apply(this.dom);
+  }, this);
+}
+
+//TODO:  may be View.dom
+//it could be great to have a static api
+function dom(str) {
+	//we should may be use fragment for memory leaks
+	var frag = document.createElement('div');
+	frag.insertAdjacentHTML('beforeend', str);
+	return frag.firstChild;
 }
 
 
-/**
- * query selector.
- * @api private
- */
+//inherit from emitter
 
-function query(el) {
-	if(typeof el === 'string') el = document.querySelector(el);
-	return el;
-}
+Emitter(View.prototype);
 
 
 /**
- * Set or render view's dom.
+ * Insert and compile.
+ * A view is only compiled once.
  * example:
  *
- *   view.html('#maple',data);
- *   view.html('<button>maple</button>',data);
- *   view.html(node,data); //with node HTMLElement
- *
- * @param {String|Element} tmpl
- * @param {Object} data 
+ *   view.el(); //compile
+ *   view.el(document.body) //insert and compile
+ *   
+ * @param  {Element} parent 
  * @return {View}
  * @api public
  */
 
-View.prototype.html = function(tmpl, data) {
-	if(data) this.binding.data(data);
-	if(typeof tmpl === 'string') {
-		if(!~utils.indexOf(tmpl, '<')) {
-			this.dom = query(tmpl);
-		} else {
-			var frag = document.createElement('div');
-			frag.insertAdjacentHTML('beforeend', tmpl);
-			this.dom = frag.firstChild;
-		}
-		return this;
-	}
-	this.dom = tmpl;
+View.prototype.el = function(parent) { //we should may be call insert?
+  this.emit('inserted'); //faster to compile outside of the document
+	if(parent) parent.appendChild(this.dom); //use cross browser insertAdjacentElement
 	return this;
 };
 
 
 /**
- * Plug/bind logic to the dom.
+ * Render view's dom.
+ * 
+ * @event {created}
+ * @param  {String|Element} str
+ * @param  {Object|Stire} data 
+ * @return {View}
+ * @api public
+ */
+
+View.prototype.html = function(str, data) {
+	if(data) this.binding.data(data);
+	this.dom = (typeof str === 'string') ? dom(str) : str;
+	this.emit('created'); //may be rendered
+	return this;
+};
+
+
+/**
+ * Add view's plugin.
  * example:
- *
- *   view.plug('data-event', function(){});
+ * 
+ *   view.plug('data-event', fn);
  *   view.plug({
- *     'data-event' : function(){},
- *     'required' : function(){}
+ *     'data-event' : fn
  *   });
  *   
  * @param  {String|Object} attr   
@@ -88,7 +93,7 @@ View.prototype.html = function(tmpl, data) {
 
 View.prototype.plug = function(attr, plugin) {
 	if(typeof attr !== 'string') {
-		utils.each(attr, function(name, obj) {
+		each(attr, function(name, obj) {
 			this.plug(name, obj);
 		}, this);
 	} else {
@@ -99,55 +104,20 @@ View.prototype.plug = function(attr, plugin) {
 
 
 /**
- * Insert view's dom in HTML Element.
- * Applies bindings it it hasn't been done yet.
- * example:
- *
- *   view.insert('#maple');
- *   view.insert(node); //with node HTML Element
+ * Remove view's dom from its parent element
+ * and remove bindings.
  * 
- * @param  {Element|string} el   
- * @param  {Boolean} bool true to apply only the plugins (not inteprolation)
- * @api public
- */
-
-View.prototype.insert = function(el, bool) {
-	//NOTE: should we do 2 level query selection for insert and html?
-	this.alive(this.dom, bool); //we should apply only once!
-	query(el).appendChild(this.dom);
-};
-
-
-/**
- * Apply bindings on passed HTML Element.
- * example:
- *
- *   view.alive(); //apply on view.dom
- *   view.alive(node); //apply in node
- *   view.alive('#maple');
- *   
- * @param  {Empty|Element} node 
- * @param  {Boolean} bool 
+ * @event {removed}
  * @return {View}
  * @api public
  */
 
-View.prototype.alive = function(node, bool) {
-	//TODO:??when we call alive from insert we do this.dom = this.dom
-	if(node) this.dom = query(node);
-	this.binding.apply(this.dom, bool);
+View.prototype.remove = function() {
+	var parent = this.dom.parentElement;
+	this.binding.unbind();
+	if(parent) {
+			this.emit('removed');
+			parent.removeChild(this.dom);
+	}
 	return this;
-};
-
-
-/**
- * Destroy bindings and view's dom.
- * 
- * @api public
- */
-
-View.prototype.destroy = function() {
-  var parent = this.dom.parentNode;
-  this.binding.unbind();
-  if(parent) parent.removeChild(this.dom);
 };
