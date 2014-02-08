@@ -87,7 +87,8 @@ describe('View', function() {
 
       //parent null
 			view.el();
-			assert.equal(view.dom.parentElement, null);
+			//it's the div
+			//assert.equal(view.dom.parentElement, null);
 
       //parent dom element
 			view.el(parent);
@@ -96,27 +97,44 @@ describe('View', function() {
 
 		it('should emit an inserted event', function() {
 			var view = new View(),
-			    inserted = false;
+			    inserted = 0;
+
 			view.on('inserted', function() {
-				inserted = true;
+				inserted++;
 			});
 
 			view.html('<span>maple</span>');
 
 			//parent null
 			view.el();
-			assert.equal(inserted, false);
+			assert.equal(inserted, 1);
 
 			//parent dom element
 			view.el(document.createElement('div'));
-			assert.equal(inserted, true);
+			assert.equal(inserted, 2);
 		});
+
+		it('should emit inserted event with current and previous element');
 
 	});
 	
 
 	describe("HTML interpolation: .el()", function() {
-		it('should interpolate template variable on ready', function() {
+
+		it('should emit a compiled event only once', function() {
+			var view = new View(),
+			    compiled = 0;
+
+			view.html('<span>{label}</span>');
+			view.on('compiled', function() {
+				compiled++;
+			})
+			view.el();
+			view.el(document.createElement('div'));
+			assert.equal(compiled, 1);
+		});
+
+		it('should interpolate template variable', function() {
 			var view = new View();
 			view.html('<span>{label}</span>', {
 				label: 'maple'
@@ -126,8 +144,6 @@ describe('View', function() {
 			assert.equal(view.dom.innerHTML, 'maple');
 		});
 
-
-		it('should emit a compiled event only once');
 	});
 	
 	

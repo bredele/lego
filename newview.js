@@ -14,18 +14,21 @@ module.exports = View;
 
 function View() {
   this.dom = null;
+  this.once('inserted', function() {
+  	//this.emit('compiled');
+  }, this);
 }
-
 
 Emitter(View.prototype);
 
 
 View.prototype.el = function(parent) {
-	parent.appendChild(this.dom);
+	if(parent) parent.appendChild(this.dom);
 	this.emit('inserted');
 };
 
 function query(str) {
+	//we should may be use fragment for memory leaks
 	var frag = document.createElement('div');
 	frag.insertAdjacentHTML('beforeend', str);
 	return frag.firstChild;
