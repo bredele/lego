@@ -1,4 +1,5 @@
-var Emitter = require('./emitter');
+var Emitter = require('./emitter'),
+		binding = require('./binding');
 
 /**
  * Expose 'View'
@@ -14,8 +15,10 @@ module.exports = View;
 
 function View() {
   this.dom = null;
+  this.binding = binding();
   this.once('inserted', function() {
-  	this.emit('compiled');
+		this.emit('compiled');
+		this.binding.apply(this.dom);
   }, this);
 }
 
@@ -23,8 +26,8 @@ Emitter(View.prototype);
 
 
 View.prototype.el = function(parent) {
+  this.emit('inserted'); //faster to compile outside of the document
 	if(parent) parent.appendChild(this.dom);
-	this.emit('inserted');
 };
 
 function query(str) {
@@ -34,7 +37,8 @@ function query(str) {
 	return frag.firstChild;
 }
 
-View.prototype.html = function(str) {
+View.prototype.html = function(str, data) {
+	if(data) this.binding.data(data);
 	this.dom = (typeof str === 'string') ? query(str) : str;
 	this.emit('created');
 };
