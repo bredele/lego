@@ -33,7 +33,7 @@ View.prototype.el = function(parent) {
 	return this;
 };
 
-function query(str) {
+function dom(str) {
 	//we should may be use fragment for memory leaks
 	var frag = document.createElement('div');
 	frag.insertAdjacentHTML('beforeend', str);
@@ -43,7 +43,7 @@ function query(str) {
 
 View.prototype.html = function(str, data) {
 	if(data) this.binding.data(data);
-	this.dom = (typeof str === 'string') ? query(str) : str;
+	this.dom = (typeof str === 'string') ? dom(str) : str;
 	this.emit('created'); //may be rendered
 	return this;
 };
@@ -60,5 +60,6 @@ View.prototype.plug = function(attr, plugin) {
 };
 
 View.prototype.remove = function() {
-	
+	this.emit('removed');
+	return this;
 };

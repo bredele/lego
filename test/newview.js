@@ -189,8 +189,20 @@ describe('View', function() {
 
 		});
 	});
-	
-	
-	
+
+	describe('HTML remove: .remove()', function() {
+		it("should emit a removed event", function() {
+			var view = new View(),
+			    removed = false;
+			view.html('<button>maple</button>');
+			view.el();
+			view.on('removed', function() {
+				removed = true;
+			});
+			view.remove();
+			assert.equal(removed, true);
+		});
+		
+	});
 });
         
