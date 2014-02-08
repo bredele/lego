@@ -60,6 +60,11 @@ View.prototype.plug = function(attr, plugin) {
 };
 
 View.prototype.remove = function() {
-	this.emit('removed');
+	var parent = this.dom.parentElement;
+	this.binding.unbind();
+	if(parent) {
+			this.emit('removed');
+			parent.removeChild(this.dom);
+	}
 	return this;
 };

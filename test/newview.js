@@ -191,9 +191,11 @@ describe('View', function() {
 	});
 
 	describe('HTML remove: .remove()', function() {
+
 		it("should emit a removed event", function() {
 			var view = new View(),
 			    removed = false;
+
 			view.html('<button>maple</button>');
 			view.el();
 			view.on('removed', function() {
@@ -202,6 +204,22 @@ describe('View', function() {
 			view.remove();
 			assert.equal(removed, true);
 		});
+
+		it('should remove from parent element if exists', function() {
+			var view = new View(),
+					parent = document.createElement('div');
+
+			view.html('<button>maple</button>');
+			view.el(parent);
+
+			view.remove();
+			assert.equal(parent.innerHTML, '');
+		});
+
+    //use spy
+		it('should destroy bindings');
+
+		//view.dom still exist, memory leaks?
 		
 	});
 });
