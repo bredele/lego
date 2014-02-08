@@ -234,19 +234,22 @@ describe('View', function() {
 
 		//we should have data as well
 		it('should extend the view with an object an call the options (el,plug,html)', function() {
-			var parent = document.createElement('div'),
-					obj = {
-						el: parent,
-						html: '<button>maple</maple>',
-						plug: {
-							'data-event' : function(){}
-						},
-						custom: function() {
-							return this.dom;
-						}
-					};
+			var parent = document.createElement('div');
 
-			var widget = View(obj);
+			var widget = new View({
+				el: parent,
+				html: '<button>{label}</button>',
+				data: {
+					label: 'maple'
+				},
+				plug: {
+					'data-event' : function(){}
+				},
+				custom: function() {
+					return this.dom;
+				}
+			});
+
 			assert.equal(parent.firstChild, widget.dom);
 			assert.equal(widget.dom.nodeName, 'BUTTON');
 			assert.equal(widget.dom.innerHTML, 'maple');
@@ -254,9 +257,6 @@ describe('View', function() {
 			assert.equal(widget.custom(), widget.dom);
 		});
 
-		it('should mixin object and ')
-		it('should render and compile a view');
-		it('should render, compile and insert a view');
 		// it('should render and compile a view', function() {
 		// 	var widget = View('<div>{label}</div>', {label:'maple'});
 		// 	assert.equal(widget.dom.innerHTML, 'maple');

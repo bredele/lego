@@ -1,7 +1,7 @@
 var Emitter = require('./emitter'),
 		binding = require('./binding'),
 		utils = require('./lib/utils'),
-		actions = ['el', 'plug', 'html'];
+		actions = ['el', 'data','plug','html'];
 
 /**
  * Expose 'View'
@@ -19,6 +19,11 @@ function View(mixin) {
 	if(!(this instanceof View)) return new View(mixin);
   this.dom = null;
   this.binding = binding();
+	this.once('inserted', function() {
+		this.emit('compiled');
+		this.binding.apply(this.dom);
+	}, this);
+	
 	if(mixin) {
 		for(var l = actions.length; l--;) {
 			var action = actions[l],
@@ -32,10 +37,6 @@ function View(mixin) {
 		//TODO: could do better than delete
 		utils.mixin(mixin, this);
 	}
-  this.once('inserted', function() {
-		this.emit('compiled');
-		this.binding.apply(this.dom);
-  }, this);
 }
 
 
@@ -85,12 +86,25 @@ View.prototype.el = function(parent) { //we should may be call insert?
  */
 
 View.prototype.html = function(str, data) {
-	if(data) this.binding.data(data);
+	this.data(data);
 	this.dom = (typeof str === 'string') ? dom(str) : str;
 	this.emit('created'); //may be rendered
 	return this;
 };
 
+/**
+ * Set interpolation data.
+ * 
+ * @param  {Object|Store} data
+ * @return {View}
+ * @api public
+ */
+
+View.prototype.data = function(data) {
+	//TODO: to test
+	if(data) this.binding.data(data);
+	return this;
+};
 
 /**
  * Add view's plugin.
