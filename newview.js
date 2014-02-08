@@ -48,7 +48,13 @@ View.prototype.html = function(str, data) {
 };
 
 View.prototype.plug = function(attr, plugin) {
-	this.binding.add(attr, plugin);
+	if(typeof attr !== 'string') {
+		utils.each(attr, function(name, obj) {
+			this.plug(name, obj);
+		}, this);
+	} else {
+		this.binding.add(attr, plugin);
+	}
 	return this;
 };
 
