@@ -66,16 +66,16 @@ describe('View', function() {
 			assert.equal(view.dom, el);
 		});
 
-		it('should emit a created event', function() {
+		it('should emit a rendered event', function() {
 			var view = new View(),
-			    created = false;
+			    rendered = false;
 
-			view.on('created', function() {
-				created = true;
+			view.on('rendered', function() {
+				rendered = true;
 			});
 
 			view.html('<button></button>');
-			assert.equal(created, true);
+			assert.equal(rendered, true);
 		});
 	});
 

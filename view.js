@@ -1,7 +1,7 @@
 var Emitter = require('./emitter'),
 		binding = require('./binding'),
 		utils = require('./lib/utils'),
-		actions = ['el', 'data','plug','html'];
+		actions = ['el', 'data', 'plug', 'html'];
 
 /**
  * Expose 'View'
@@ -23,7 +23,7 @@ function View(mixin) {
 		this.emit('compiled');
 		this.binding.apply(this.dom);
 	}, this);
-	
+
 	if(mixin) {
 		for(var l = actions.length; l--;) {
 			var action = actions[l],
@@ -78,7 +78,7 @@ View.prototype.el = function(parent) { //we should may be call insert?
 /**
  * Render view's dom.
  * 
- * @event {created}
+ * @event {rendered}
  * @param  {String|Element} str
  * @param  {Object|Stire} data 
  * @return {View}
@@ -88,7 +88,7 @@ View.prototype.el = function(parent) { //we should may be call insert?
 View.prototype.html = function(str, data) {
 	this.data(data);
 	this.dom = (typeof str === 'string') ? dom(str) : str;
-	this.emit('created'); //may be rendered
+	this.emit('rendered'); //may be rendered
 	return this;
 };
 
