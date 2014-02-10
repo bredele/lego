@@ -16,7 +16,7 @@
     "view.js", 
     "store.js",
     "emitter.js",
-    "binding.js",
+    "lib/binding.js",
     "lib/app.js",
     "lib/supplant.js",    
     "lib/utils.js"

@@ -1,5 +1,5 @@
 var Emitter = require('./emitter'),
-		binding = require('./binding'),
+		binding = require('./lib/binding'),
 		utils = require('./lib/utils'),
 		actions = ['el', 'data', 'plug', 'html'];
 
