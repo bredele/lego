@@ -207,7 +207,7 @@ require.register("leafs-maple/maple.js", Function("exports, require, module",
  */\n\
 \n\
 var App = require('./lib/app'),\n\
-    utils = require('./lib/utils');\n\
+\t\tutils = require('./lib/utils');\n\
 \n\
 \n\
 var cache = [];\n\
@@ -228,11 +228,11 @@ module.exports = maple;\n\
  */\n\
 \n\
 function maple() {\n\
-        var app = new App();\n\
-        for(var i = 0, l = cache.length; i < l; i++) {\n\
-                utils.mixin(app, cache[i]);\n\
-        }\n\
-        return app;\n\
+\tvar app = new App();\n\
+\tfor(var i = 0, l = cache.length; i < l; i++) {\n\
+\t\tutils.mixin(app, cache[i]);\n\
+\t}\n\
+\treturn app;\n\
 }\n\
 \n\
 \n\
@@ -245,19 +245,15 @@ function maple() {\n\
  */\n\
 \n\
 maple.merge = function() {\n\
-        cache = utils.array(arguments);\n\
-        return this;\n\
+\tcache = utils.array(arguments);\n\
+\treturn this;\n\
 };//@ sourceURL=leafs-maple/maple.js"
 ));
 require.register("leafs-maple/view.js", Function("exports, require, module",
-"\n\
-/**\n\
- * Dependencies\n\
- */\n\
-\n\
-var binding = require('./binding'),\n\
-    utils = require('./lib/utils');\n\
-\n\
+"var Emitter = require('./emitter'),\n\
+\t\tbinding = require('./lib/binding'),\n\
+\t\tutils = require('./lib/utils'),\n\
+\t\tactions = ['el', 'data', 'plug', 'html'];\n\
 \n\
 /**\n\
  * Expose 'View'\n\
@@ -268,68 +264,107 @@ module.exports = View;\n\
 \n\
 /**\n\
  * View constructor.\n\
- * \n\
- * @param {Object} mixin\n\
  * @api public\n\
  */\n\
 \n\
 function View(mixin) {\n\
-  if(mixin) return utils.mixin(View.prototype, mixin);\n\
-  if(!(this instanceof View)) return new View(mixin);\n\
+\tif(!(this instanceof View)) return new View(mixin);\n\
+  this.dom = null;\n\
   this.binding = binding();\n\
+\tthis.once('inserted', function() {\n\
+\t\tthis.emit('compiled');\n\
+\t\tthis.binding.apply(this.dom);\n\
+\t}, this);\n\
+\n\
+\tif(mixin) {\n\
+\t\tfor(var l = actions.length; l--;) {\n\
+\t\t\tvar action = actions[l],\n\
+\t\t\t\t\tval = mixin[action];\n\
+\n\
+\t\t\tif(val) {\n\
+\t\t\t\tthis[action].apply(this, val instanceof Array ? val: [val]);\n\
+\t\t\t\tdelete mixin[action];\n\
+\t\t\t}\n\
+\t\t}\n\
+\t\t//TODO: could do better than delete\n\
+\t\tutils.mixin(mixin, this);\n\
+\t}\n\
 }\n\
 \n\
 \n\
-/**\n\
- * query selector.\n\
- * @api private\n\
- */\n\
-\n\
-function query(el) {\n\
-\tif(typeof el === 'string') el = document.querySelector(el);\n\
-\treturn el;\n\
+//TODO:  may be View.dom\n\
+//it could be great to have a static api\n\
+function dom(str) {\n\
+\t//we should may be use fragment for memory leaks\n\
+\tvar frag = document.createElement('div');\n\
+\tfrag.insertAdjacentHTML('beforeend', str);\n\
+\treturn frag.firstChild;\n\
 }\n\
 \n\
 \n\
+//inherit from emitter\n\
+\n\
+Emitter(View.prototype);\n\
+\n\
+\n\
 /**\n\
- * Set or render view's dom.\n\
+ * Insert and compile.\n\
+ * A view is only compiled once.\n\
  * example:\n\
  *\n\
- *   view.html('#maple',data);\n\
- *   view.html('<button>maple</button>',data);\n\
- *   view.html(node,data); //with node HTMLElement\n\
- *\n\
- * @param {String|Element} tmpl\n\
- * @param {Object} data \n\
+ *   view.el(); //compile\n\
+ *   view.el(document.body) //insert and compile\n\
+ *   \n\
+ * @param  {Element} parent \n\
  * @return {View}\n\
  * @api public\n\
  */\n\
 \n\
-View.prototype.html = function(tmpl, data) {\n\
-\tif(data) this.binding.data(data);\n\
-\tif(typeof tmpl === 'string') {\n\
-\t\tif(!~utils.indexOf(tmpl, '<')) {\n\
-\t\t\tthis.dom = query(tmpl);\n\
-\t\t} else {\n\
-\t\t\tvar frag = document.createElement('div');\n\
-\t\t\tfrag.insertAdjacentHTML('beforeend', tmpl);\n\
-\t\t\tthis.dom = frag.firstChild;\n\
-\t\t}\n\
-\t\treturn this;\n\
-\t}\n\
-\tthis.dom = tmpl;\n\
+View.prototype.el = function(parent) { //we should may be call insert?\n\
+  this.emit('inserted'); //faster to compile outside of the document\n\
+\tif(parent) parent.appendChild(this.dom); //use cross browser insertAdjacentElement\n\
 \treturn this;\n\
 };\n\
 \n\
 \n\
 /**\n\
- * Plug/bind logic to the dom.\n\
+ * Render view's dom.\n\
+ * \n\
+ * @event {rendered}\n\
+ * @param  {String|Element} str\n\
+ * @param  {Object|Stire} data \n\
+ * @return {View}\n\
+ * @api public\n\
+ */\n\
+\n\
+View.prototype.html = function(str, data) {\n\
+\tthis.data(data);\n\
+\tthis.dom = (typeof str === 'string') ? dom(str) : str;\n\
+\tthis.emit('rendered'); //may be rendered\n\
+\treturn this;\n\
+};\n\
+\n\
+/**\n\
+ * Set interpolation data.\n\
+ * \n\
+ * @param  {Object|Store} data\n\
+ * @return {View}\n\
+ * @api public\n\
+ */\n\
+\n\
+View.prototype.data = function(data) {\n\
+\t//TODO: to test\n\
+\tif(data) this.binding.data(data);\n\
+\treturn this;\n\
+};\n\
+\n\
+/**\n\
+ * Add view's plugin.\n\
  * example:\n\
- *\n\
- *   view.plug('data-event', function(){});\n\
+ * \n\
+ *   view.plug('data-event', fn);\n\
  *   view.plug({\n\
- *     'data-event' : function(){},\n\
- *     'required' : function(){}\n\
+ *     'data-event' : fn\n\
  *   });\n\
  *   \n\
  * @param  {String|Object} attr   \n\
@@ -351,59 +386,23 @@ View.prototype.plug = function(attr, plugin) {\n\
 \n\
 \n\
 /**\n\
- * Insert view's dom in HTML Element.\n\
- * Applies bindings it it hasn't been done yet.\n\
- * example:\n\
- *\n\
- *   view.insert('#maple');\n\
- *   view.insert(node); //with node HTML Element\n\
+ * Remove view's dom from its parent element\n\
+ * and remove bindings.\n\
  * \n\
- * @param  {Element|string} el   \n\
- * @param  {Boolean} bool true to apply only the plugins (not inteprolation)\n\
- * @api public\n\
- */\n\
-\n\
-View.prototype.insert = function(el, bool) {\n\
-\t//NOTE: should we do 2 level query selection for insert and html?\n\
-\tthis.alive(this.dom, bool); //we should apply only once!\n\
-\tquery(el).appendChild(this.dom);\n\
-};\n\
-\n\
-\n\
-/**\n\
- * Apply bindings on passed HTML Element.\n\
- * example:\n\
- *\n\
- *   view.alive(); //apply on view.dom\n\
- *   view.alive(node); //apply in node\n\
- *   view.alive('#maple');\n\
- *   \n\
- * @param  {Empty|Element} node \n\
- * @param  {Boolean} bool \n\
+ * @event {removed}\n\
  * @return {View}\n\
  * @api public\n\
  */\n\
 \n\
-View.prototype.alive = function(node, bool) {\n\
-\t//TODO:??when we call alive from insert we do this.dom = this.dom\n\
-\tif(node) this.dom = query(node);\n\
-\tthis.binding.apply(this.dom, bool);\n\
+View.prototype.remove = function() {\n\
+\tvar parent = this.dom.parentElement;\n\
+\tthis.binding.unbind();\n\
+\tif(parent) {\n\
+\t\t\tthis.emit('removed');\n\
+\t\t\tparent.removeChild(this.dom);\n\
+\t}\n\
 \treturn this;\n\
-};\n\
-\n\
-\n\
-/**\n\
- * Destroy bindings and view's dom.\n\
- * \n\
- * @api public\n\
- */\n\
-\n\
-View.prototype.destroy = function() {\n\
-  var parent = this.dom.parentNode;\n\
-  this.binding.unbind();\n\
-  if(parent) parent.removeChild(this.dom);\n\
-};\n\
-//@ sourceURL=leafs-maple/view.js"
+};//@ sourceURL=leafs-maple/view.js"
 ));
 require.register("leafs-maple/store.js", Function("exports, require, module",
 "var Emitter = require('./emitter'),\n\
@@ -646,13 +645,8 @@ module.exports = Emitter;\n\
  */\n\
 \n\
 function Emitter(obj) {\n\
-\tif (obj) {\n\
-\t\tobj.listeners = {}; //avoid listeners init in each handler\n\
-\t\treturn utils.mixin(Emitter.prototype, obj);\n\
-\t}\n\
-  this.listeners = {};\n\
+\tif (obj) utils.mixin(Emitter.prototype, obj);\n\
 }\n\
-\n\
 \n\
 /**\n\
  * Listen on the given `event` with `fn`.\n\
@@ -663,6 +657,7 @@ function Emitter(obj) {\n\
  */\n\
 \n\
 Emitter.prototype.on = function(event, fn, scope){\n\
+\tthis.listeners = this.listeners || {};\n\
 \t(this.listeners[event] = this.listeners[event] || []).push([fn, scope]);\n\
 \treturn [event, fn]; //TODO: to test\n\
 };\n\
@@ -677,12 +672,13 @@ Emitter.prototype.on = function(event, fn, scope){\n\
  * @api public\n\
  */\n\
 \n\
-Emitter.prototype.once = function(event, fn, scope){\n\
+Emitter.prototype.once = function(ev, fn, scope){\n\
+  this.listeners = this.listeners || {};\n\
 \tvar on = function() {\n\
 \t\tfn.apply(scope, arguments);\n\
-\t\tthis.off(event, on);\n\
+\t\tthis.off(ev, on);\n\
 \t};\n\
-\treturn this.on(event, on, this);\n\
+\treturn this.on(ev, on, this);\n\
 };\n\
 \n\
 \n\
@@ -696,6 +692,7 @@ Emitter.prototype.once = function(event, fn, scope){\n\
  */\n\
 \n\
 Emitter.prototype.off = function(event, fn){\n\
+\tthis.listeners = this.listeners || {};\t\n\
 \tif(arguments.length === 0) this.listeners = {};\n\
 \tif(!fn) {\n\
 \t\tdelete this.listeners[event];\n\
@@ -718,19 +715,24 @@ Emitter.prototype.off = function(event, fn){\n\
  */\n\
 \n\
 Emitter.prototype.emit = function(event){\n\
-\tvar listeners = this.listeners[event];\n\
-\tif(!listeners) return;\n\
-\tfor(var i = 0, l = listeners.length; i < l; i++) {\n\
-\t\tvar listener = listeners[i];\n\
-\t\tlistener[0].apply(listener[1] || this, utils.toArray(arguments, 1));\n\
+\tthis.listeners = this.listeners || {};\t\n\
+\tvar listeners = this.listeners[event],\n\
+\t\t\targs = utils.toArray(arguments, 1);\n\
+\n\
+\tif(listeners) {\n\
+\t  listeners = listeners.slice(0);\n\
+\t\tfor(var i = 0, l = listeners.length; i < l; i++) {\n\
+\t\t\tvar listener = listeners[i];\n\
+\t\t\tlistener[0].apply(listener[1] || this, args);\n\
+\t\t}\n\
 \t}\n\
 };\n\
 //@ sourceURL=leafs-maple/emitter.js"
 ));
-require.register("leafs-maple/binding.js", Function("exports, require, module",
-"var Store = require('./store'),\n\
-    utils = require('./lib/utils'),\n\
-    supplant = require('./lib/supplant');\n\
+require.register("leafs-maple/lib/binding.js", Function("exports, require, module",
+"var Store = require('../store'),\n\
+    utils = require('./utils'),\n\
+    supplant = require('./supplant');\n\
 \n\
 /**\n\
  * Expose 'Binding'\n\
@@ -954,7 +956,7 @@ Binding.prototype.unbind = function() {\n\
     plugin.destroy && plugin.destroy();\n\
   }\n\
 };\n\
-//@ sourceURL=leafs-maple/binding.js"
+//@ sourceURL=leafs-maple/lib/binding.js"
 ));
 require.register("leafs-maple/lib/app.js", Function("exports, require, module",
 "\n\
@@ -1132,8 +1134,42 @@ App.prototype.debug = function() {\n\
 };//@ sourceURL=leafs-maple/lib/app.js"
 ));
 require.register("leafs-maple/lib/supplant.js", Function("exports, require, module",
-"var utils = require('./utils');\n\
+"var utils = require('./utils'),\n\
+    re = /\\.\\w+|\\w+ *\\(|\"[^\"]*\"|'[^']*'|\\/([^/]+)\\/|[a-zA-Z_]\\w*/g;\n\
 \n\
+\n\
+var cache = {};\n\
+\n\
+\n\
+function props(str) {\n\
+\t//benchmark with using match and uniq array\n\
+\tvar arr = [];\n\
+\tstr.replace(/\\.\\w+|\\w+ *\\(|\"[^\"]*\"|'[^']*'|\\/([^/]+)\\//g, '')\n\
+\t\t.replace(/[a-zA-Z_]\\w*/g, function(expr) {\n\
+\t\t\tif(!~utils.indexOf(arr, expr)) arr.push(expr);\n\
+\t\t})\n\
+\treturn arr;\n\
+}\n\
+\n\
+\n\
+function fn(_) {\n\
+\treturn 'model.' + _;\n\
+}\n\
+\n\
+\n\
+function map(str) {\n\
+\tvar arr = props(str);\n\
+\treturn str.replace(re, function(_){\n\
+\t\tif ('(' == _[_.length - 1]) return fn(_);\n\
+\t\tif (!~utils.indexOf(arr, _)) return _;\n\
+\t\treturn fn(_);\n\
+\t});\n\
+}\n\
+\n\
+\n\
+function scope(str) {\n\
+  return new Function('model', 'return ' + map(str));\n\
+}\n\
 \n\
 /**\n\
  * Variable substitution on the string.\n\
@@ -1144,9 +1180,13 @@ require.register("leafs-maple/lib/supplant.js", Function("exports, require, modu
  */\n\
 \n\
 module.exports = function(text, model){\n\
-  return text.replace(/\\{([^}]+)\\}/g, function(_, expr) {\n\
-    return model[utils.trim(expr)] || '';\n\
-  });\n\
+\treturn text.replace(/\\{\\{([^}]+)\\}\\}/g, function(_, expr) {\n\
+\t\tif(/[.'[+(]/.test(expr)) {\n\
+\t\t\tvar cb = cache[expr] = cache[expr] || scope(expr);\n\
+\t\t\treturn cb(model) || '';\n\
+\t\t}\n\
+\t\treturn model[utils.trim(expr)] || '';\n\
+\t});\n\
 };\n\
 \n\
 /**\n\
@@ -1156,12 +1196,12 @@ module.exports = function(text, model){\n\
  * @return {Array}\n\
  */\n\
 module.exports.attrs = function(text) {\n\
-  var exprs = [];\n\
-  text.replace(/\\{([^}]+)\\}/g, function(_, expr){\n\
-    var val = utils.trim(expr);\n\
-    if(!~utils.indexOf(exprs, val)) exprs.push(val);\n\
-  });\n\
-  return exprs;\n\
+\tvar exprs = [];\n\
+\ttext.replace(/\\{\\{([^}]+)\\}\\}/g, function(_, expr){\n\
+\t\tvar val = utils.trim(expr);\n\
+\t\tif(!~utils.indexOf(exprs, val)) exprs.push(val);\n\
+\t});\n\
+\treturn exprs;\n\
 };//@ sourceURL=leafs-maple/lib/supplant.js"
 ));
 require.register("leafs-maple/lib/utils.js", Function("exports, require, module",
@@ -1278,9 +1318,9 @@ require.register("bredele-event/index.js", Function("exports, require, module",
  * Polyfill\n\
  */\n\
 \n\
- var attach = window.addEventListener ? 'addEventListener' : 'attachEvent',\n\
-     detach = window.removeEventListener ? 'removeEventListener' : 'detachEvent',\n\
-     prefix = attach !== 'addEventListener' ? 'on' : '';\n\
+var attach = window.addEventListener ? 'addEventListener' : 'attachEvent',\n\
+\t\tdetach = window.removeEventListener ? 'removeEventListener' : 'detachEvent',\n\
+\t\tprefix = attach !== 'addEventListener' ? 'on' : '';\n\
 \n\
 /**\n\
  * Matches query selection.\n\
@@ -1291,10 +1331,14 @@ require.register("bredele-event/index.js", Function("exports, require, module",
  * @return {Boolean}  true if the element would be selected by the \n\
  * specified selector string\n\
  */\n\
+\n\
 function matches(el, target, selector) {\n\
 \t//refactor with maple (childnodes indexof)\n\
 \treturn [].slice.call(el.querySelectorAll(selector)).indexOf(target) > -1;\n\
 }\n\
+\n\
+\n\
+module.exports = event;\n\
 \n\
 \n\
 /**\n\
@@ -1307,24 +1351,24 @@ function matches(el, target, selector) {\n\
  * @return {Array} handler to detach event      \n\
  */\n\
 \n\
- exports.attach = function(el, str, fn, capture) {\n\
- \tvar filter = str.split('>'),\n\
- \t    phrase = filter[0].split(' '),\n\
- \t    topic = phrase.shift(),\n\
- \t    selector = phrase.join(' ');\n\
+function event(el, str, fn, capture) {\n\
+\tvar filter = str.split('>'),\n\
+\t\t\tphrase = filter[0].split(' '),\n\
+\t\t\ttopic = phrase.shift(),\n\
+\t\t\tselector = phrase.join(' ');\n\
 \n\
-  //TODO: do that globally?\n\
- \tvar cb = function(ev) {\n\
- \t\tvar target = ev.target || ev.srcElement;\n\
- \t\tif(!selector || matches(el, target, selector)) {\n\
- \t\t\tvar code = filter[1] && filter[1].replace(/ /g,'');\n\
- \t\t\tif(!code || ev.keyCode.toString() === code) fn(target, ev);\n\
- \t\t}\n\
- \t};\n\
+\t//TODO: do that globally?\n\
+\tvar cb = function(ev) {\n\
+\t\tvar target = ev.target || ev.srcElement;\n\
+\t\tif(!selector || matches(el, target, selector)) {\n\
+\t\t\tvar code = filter[1] && filter[1].replace(/ /g,'');\n\
+\t\t\tif(!code || ev.keyCode.toString() === code) fn(target, ev);\n\
+\t\t}\n\
+\t};\n\
 \n\
-  el[attach](prefix + topic, cb, capture || false);\n\
- \treturn [topic, cb, capture];\n\
- };\n\
+\tel[attach](prefix + topic, cb, capture || false);\n\
+\treturn [topic, cb, capture];\n\
+}\n\
 \n\
 \n\
 /**\n\
@@ -1336,9 +1380,9 @@ function matches(el, target, selector) {\n\
  * @param  {Boolean}   capture   \n\
  */\n\
 \n\
- exports.detach = function(el, str, fn, capture) {\n\
- \tel[detach](prefix + str, fn, capture || false);\n\
- };\n\
+event.off = function(el, str, fn, capture) {\n\
+\tel[detach](prefix + str, fn, capture || false);\n\
+};\n\
 //@ sourceURL=bredele-event/index.js"
 ));
 require.register("bredele-event-plugin/index.js", Function("exports, require, module",
@@ -1399,7 +1443,7 @@ Events.prototype.on = function(node, type, fn, capture) {\n\
       _this.view[fn].call(_this.view, target, e, node); //we should pass target\n\
      };\n\
   //todo: event should return the node as well...it's too complicated\n\
-  this.listeners.push([node].concat(ev.attach(node, type, cb, (capture === 'true'))));\n\
+  this.listeners.push([node].concat(ev(node, type, cb, (capture === 'true'))));\n\
 };\n\
 \n\
 \n\
@@ -1423,7 +1467,7 @@ Events.prototype.map = function(type) {\n\
 Events.prototype.destroy = function() {\n\
   for(var l = this.listeners.length; l--;) {\n\
     var listener = this.listeners[l];\n\
-    ev.detach(listener[0], listener[1], listener[2], listener[3]);\n\
+    ev.off(listener[0], listener[1], listener[2], listener[3]);\n\
   }\n\
   this.listeners = [];\n\
 };\n\
@@ -3697,7 +3741,7 @@ require.alias("leafs-maple/maple.js", "showcase/deps/maple/maple.js");
 require.alias("leafs-maple/view.js", "showcase/deps/maple/view.js");
 require.alias("leafs-maple/store.js", "showcase/deps/maple/store.js");
 require.alias("leafs-maple/emitter.js", "showcase/deps/maple/emitter.js");
-require.alias("leafs-maple/binding.js", "showcase/deps/maple/binding.js");
+require.alias("leafs-maple/lib/binding.js", "showcase/deps/maple/lib/binding.js");
 require.alias("leafs-maple/lib/app.js", "showcase/deps/maple/lib/app.js");
 require.alias("leafs-maple/lib/supplant.js", "showcase/deps/maple/lib/supplant.js");
 require.alias("leafs-maple/lib/utils.js", "showcase/deps/maple/lib/utils.js");
@@ -3782,7 +3826,7 @@ require.alias("leafs-maple/maple.js", "hello/deps/maple/maple.js");
 require.alias("leafs-maple/view.js", "hello/deps/maple/view.js");
 require.alias("leafs-maple/store.js", "hello/deps/maple/store.js");
 require.alias("leafs-maple/emitter.js", "hello/deps/maple/emitter.js");
-require.alias("leafs-maple/binding.js", "hello/deps/maple/binding.js");
+require.alias("leafs-maple/lib/binding.js", "hello/deps/maple/lib/binding.js");
 require.alias("leafs-maple/lib/app.js", "hello/deps/maple/lib/app.js");
 require.alias("leafs-maple/lib/supplant.js", "hello/deps/maple/lib/supplant.js");
 require.alias("leafs-maple/lib/utils.js", "hello/deps/maple/lib/utils.js");
@@ -3801,7 +3845,7 @@ require.alias("leafs-maple/maple.js", "computed/deps/maple/maple.js");
 require.alias("leafs-maple/view.js", "computed/deps/maple/view.js");
 require.alias("leafs-maple/store.js", "computed/deps/maple/store.js");
 require.alias("leafs-maple/emitter.js", "computed/deps/maple/emitter.js");
-require.alias("leafs-maple/binding.js", "computed/deps/maple/binding.js");
+require.alias("leafs-maple/lib/binding.js", "computed/deps/maple/lib/binding.js");
 require.alias("leafs-maple/lib/app.js", "computed/deps/maple/lib/app.js");
 require.alias("leafs-maple/lib/supplant.js", "computed/deps/maple/lib/supplant.js");
 require.alias("leafs-maple/lib/utils.js", "computed/deps/maple/lib/utils.js");
@@ -3820,7 +3864,7 @@ require.alias("leafs-maple/maple.js", "events/deps/maple/maple.js");
 require.alias("leafs-maple/view.js", "events/deps/maple/view.js");
 require.alias("leafs-maple/store.js", "events/deps/maple/store.js");
 require.alias("leafs-maple/emitter.js", "events/deps/maple/emitter.js");
-require.alias("leafs-maple/binding.js", "events/deps/maple/binding.js");
+require.alias("leafs-maple/lib/binding.js", "events/deps/maple/lib/binding.js");
 require.alias("leafs-maple/lib/app.js", "events/deps/maple/lib/app.js");
 require.alias("leafs-maple/lib/supplant.js", "events/deps/maple/lib/supplant.js");
 require.alias("leafs-maple/lib/utils.js", "events/deps/maple/lib/utils.js");
@@ -3839,7 +3883,7 @@ require.alias("leafs-maple/maple.js", "repeat/deps/maple/maple.js");
 require.alias("leafs-maple/view.js", "repeat/deps/maple/view.js");
 require.alias("leafs-maple/store.js", "repeat/deps/maple/store.js");
 require.alias("leafs-maple/emitter.js", "repeat/deps/maple/emitter.js");
-require.alias("leafs-maple/binding.js", "repeat/deps/maple/binding.js");
+require.alias("leafs-maple/lib/binding.js", "repeat/deps/maple/lib/binding.js");
 require.alias("leafs-maple/lib/app.js", "repeat/deps/maple/lib/app.js");
 require.alias("leafs-maple/lib/supplant.js", "repeat/deps/maple/lib/supplant.js");
 require.alias("leafs-maple/lib/utils.js", "repeat/deps/maple/lib/utils.js");
@@ -3858,7 +3902,7 @@ require.alias("leafs-maple/maple.js", "stacks/deps/maple/maple.js");
 require.alias("leafs-maple/view.js", "stacks/deps/maple/view.js");
 require.alias("leafs-maple/store.js", "stacks/deps/maple/store.js");
 require.alias("leafs-maple/emitter.js", "stacks/deps/maple/emitter.js");
-require.alias("leafs-maple/binding.js", "stacks/deps/maple/binding.js");
+require.alias("leafs-maple/lib/binding.js", "stacks/deps/maple/lib/binding.js");
 require.alias("leafs-maple/lib/app.js", "stacks/deps/maple/lib/app.js");
 require.alias("leafs-maple/lib/supplant.js", "stacks/deps/maple/lib/supplant.js");
 require.alias("leafs-maple/lib/utils.js", "stacks/deps/maple/lib/utils.js");
@@ -3871,7 +3915,7 @@ require.alias("leafs-maple/maple.js", "todo/deps/maple/maple.js");
 require.alias("leafs-maple/view.js", "todo/deps/maple/view.js");
 require.alias("leafs-maple/store.js", "todo/deps/maple/store.js");
 require.alias("leafs-maple/emitter.js", "todo/deps/maple/emitter.js");
-require.alias("leafs-maple/binding.js", "todo/deps/maple/binding.js");
+require.alias("leafs-maple/lib/binding.js", "todo/deps/maple/lib/binding.js");
 require.alias("leafs-maple/lib/app.js", "todo/deps/maple/lib/app.js");
 require.alias("leafs-maple/lib/supplant.js", "todo/deps/maple/lib/supplant.js");
 require.alias("leafs-maple/lib/utils.js", "todo/deps/maple/lib/utils.js");
@@ -3947,7 +3991,7 @@ require.alias("leafs-maple/maple.js", "svg/deps/maple/maple.js");
 require.alias("leafs-maple/view.js", "svg/deps/maple/view.js");
 require.alias("leafs-maple/store.js", "svg/deps/maple/store.js");
 require.alias("leafs-maple/emitter.js", "svg/deps/maple/emitter.js");
-require.alias("leafs-maple/binding.js", "svg/deps/maple/binding.js");
+require.alias("leafs-maple/lib/binding.js", "svg/deps/maple/lib/binding.js");
 require.alias("leafs-maple/lib/app.js", "svg/deps/maple/lib/app.js");
 require.alias("leafs-maple/lib/supplant.js", "svg/deps/maple/lib/supplant.js");
 require.alias("leafs-maple/lib/utils.js", "svg/deps/maple/lib/utils.js");
