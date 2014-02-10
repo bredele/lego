@@ -14,7 +14,7 @@
 
 ## Browser Support
 
-Maple.js supports most ECMAScript 5 compliant browsers from IE8+.
+Maple.js supports most ECMAScript 5 compliant browsers from IE+.
 
 
 ## Concept
@@ -26,12 +26,17 @@ Maple.js is a set of Commonjs components to create maintainable and configurable
 
 Views in Maple.js are reusable components that help you to create a DOM element from a template:
 
-```js
-var view = require('maple/view');
+Views are 
 
-view()
-  .html('<div id="myElement"></div>')
-  .insert(document.body);
+```js
+var view = new View({
+  el: document.body,
+  html: '<ul class="contact {{github}}">{{label}}</div>',
+  data: {
+    label: 'maple',
+    github: 'leafs'
+  }
+});
 ```
 
 > A template can be a string, a DOM element or a custom function.
