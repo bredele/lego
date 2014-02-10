@@ -67,4 +67,18 @@ describe("Supplant", function() {
     });
 
   });
+
+  describe("Advances expressions", function() {
+    it("should compile advanced expressions", function() {
+      var str = "{{a + b - c}}";
+      var result = supplant(str, {
+        a: 1,
+        b: 3,
+        c:2
+      });
+      assert.equal("2", result);
+    });
+    
+  });
+  
 });
