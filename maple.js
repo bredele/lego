@@ -4,7 +4,7 @@
  */
 
 var App = require('./lib/app'),
-    utils = require('./lib/utils');
+		utils = require('./lib/utils');
 
 
 var cache = [];
@@ -25,11 +25,11 @@ module.exports = maple;
  */
 
 function maple() {
-        var app = new App();
-        for(var i = 0, l = cache.length; i < l; i++) {
-                utils.mixin(app, cache[i]);
-        }
-        return app;
+	var app = new App();
+	for(var i = 0, l = cache.length; i < l; i++) {
+		utils.mixin(app, cache[i]);
+	}
+	return app;
 }
 
 
@@ -42,6 +42,6 @@ function maple() {
  */
 
 maple.merge = function() {
-        cache = utils.array(arguments);
-        return this;
+	cache = utils.array(arguments);
+	return this;
 };
