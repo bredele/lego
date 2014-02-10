@@ -68,8 +68,8 @@ describe("Supplant", function() {
 
   });
 
-  describe("Advances expressions", function() {
-    it("should compile advanced expressions", function() {
+  describe("Advanced expressions", function() {
+    it("should compile complex expressions", function() {
       var str = "{{a + b - c}}";
       var result = supplant(str, {
         a: 1,
