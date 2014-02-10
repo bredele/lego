@@ -6,7 +6,7 @@ describe("Supplant", function() {
   describe('variabe substitution', function(){
 
     it('supports simple substitution', function(){
-      var str = "This is an {test} interpolation";
+      var str = "This is an {{test}} interpolation";
       var result = supplant(str, {
         test : 'awesome'
       });
@@ -14,7 +14,7 @@ describe("Supplant", function() {
     });
 
     it("returns an empty string if variable not found", function(){
-      var str = "This is an {something} interpolation";
+      var str = "This is an {{something}} interpolation";
       var result = supplant(str, {
         test : 'awesome'
       });
@@ -22,7 +22,7 @@ describe("Supplant", function() {
     });
 
     it('trim whitespace', function(){
-      var str = "This is an {        test   } interpolation";
+      var str = "This is an {{        test   }} interpolation";
       var result = supplant(str, {
         test : 'awesome'
       });
@@ -30,7 +30,7 @@ describe("Supplant", function() {
     });
 
     it('supports mutiple interpolation', function(){
-      var str = "This is an {test} interpolation made by {name}";
+      var str = "This is an {{test}} interpolation made by {{name}}";
       var result = supplant(str, {
         test : 'awesome',
         name: 'Bredele'
@@ -44,18 +44,19 @@ describe("Supplant", function() {
 
     it('returns an array', function(){
 
-      var str = "{welcome} My name is {firstname} {lastname} and I love {country}";
+      var str = "{{welcome}} My name is {{firstname}} {{lastname}} and I love {{country}}";
       var props = supplant.attrs(str,{
         firstname : 'olivier',
         lastname:'wietrich',
         country: 'France',
         github:'bredele'
       });
+      debugger
       assert.equal('["welcome","firstname","lastname","country"]', JSON.stringify(props));
     });
 
     it('returns a uniq array', function(){
-      var str = "My github is {github} {github} and I love {country}";
+      var str = "My github is {{github}} {{github}} and I love {{country}}";
       var props = supplant.attrs(str, {
         firstname : 'olivier',
         lastname:'wietrich',

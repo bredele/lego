@@ -126,7 +126,7 @@ describe('View', function() {
 			var view = new View(),
 			    compiled = 0;
 
-			view.html('<span>{label}</span>');
+			view.html('<span>{{label}}</span>');
 			view.on('compiled', function() {
 				compiled++;
 			})
@@ -137,7 +137,7 @@ describe('View', function() {
 
 		it('should interpolate template variable', function() {
 			var view = new View();
-			view.html('<span>{label}</span>', {
+			view.html('<span>{{label}}</span>', {
 				label: 'maple'
 			});
 
@@ -155,7 +155,7 @@ describe('View', function() {
 				var store = new Store({
 					github:'leafs'
 				});
-				view.html('<span>{github}</span>', store);
+				view.html('<span>{{github}}</span>', store);
 				view.el(document.createElement('div'));
 
 				assert.equal(view.dom.innerHTML, 'leafs');
@@ -238,7 +238,7 @@ describe('View', function() {
 
 			var widget = new View({
 				el: parent,
-				html: '<button>{label}</button>',
+				html: '<button>{{label}}</button>',
 				data: {
 					label: 'maple'
 				},

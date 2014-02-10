@@ -99,7 +99,7 @@ describe("Binding", function() {
 			});
 
 			it('should binding and interpolation', function(){
-				var el = domify('<a href="{ link }" data-other>{    title}</a>');
+				var el = domify('<a href="{{ link }}" data-other>{{    title}}</a>');
 
 				var store = new Store({
 					link : 'http://github.com/bredele',
@@ -161,7 +161,7 @@ describe("Binding", function() {
 			});
 
 			it('should apply bindings and inteprolation', function() {
-				var el = domify('<a class="{className}" data-model="bind:innerHTML,prop"></a>');
+				var el = domify('<a class="{{className}}" data-model="bind:innerHTML,prop"></a>');
 				var store = new Store({
 					prop : 'http://github.com/bredele',
 					className : 'bredele'
@@ -258,7 +258,7 @@ describe("Binding", function() {
 	describe('live binding', function() {
 
 		it('single attribute', function() {
-			var el = domify('<span>{name}</span>');
+			var el = domify('<span>{{name}}</span>');
 			var store = new Store({
 				name : 'olivier'
 			});
@@ -271,7 +271,7 @@ describe("Binding", function() {
 		});
 
 		it('multiple attributes on different nodes', function() {
-			var el = domify('<a href={link}>{label}</a>');
+			var el = domify('<a href={{link}}>{{label}}</a>');
 			var store = new Store({
 				label : 'bredele'
 			});
@@ -287,7 +287,7 @@ describe("Binding", function() {
 		});
 
 		it('multiple attributes on the same node', function() {
-			var el = domify('<a href={link}/repo/{name}></a>');
+			var el = domify('<a href={{link}}/repo/{{name}}></a>');
 			var store = new Store({
 				link : 'http://github.com/bredele',
 				name:'store'
@@ -303,7 +303,7 @@ describe("Binding", function() {
 		});
 
 		it('nested attributes', function() {
-			var el = domify('<a href="{link}"><span>{label}</span></a>');
+			var el = domify('<a href="{{link}}"><span>{{label}}</span></a>');
 			var store = new Store({
 				link: 'http://github.com/bredele',
 				label : 'bredele'
@@ -323,7 +323,7 @@ describe("Binding", function() {
 	describe("Query", function() {
 
 		it('should only query select the plugins (no interpolation)', function() {
-			var el = domify('<span data-query1="hello world" data-query2="test:hello">{label}</span>'),
+			var el = domify('<span data-query1="hello world" data-query2="test:hello">{{label}}</span>'),
 			query1 = false,
 			query2 = false;
 
@@ -340,7 +340,7 @@ describe("Binding", function() {
 
 			assert.equal(query1, true);
 			assert.equal(query2, true);
-			assert.equal(el.innerHTML, '{label}');
+			assert.equal(el.innerHTML, '{{label}}');
 		});
 	});
 
@@ -364,7 +364,7 @@ describe("Binding", function() {
 		});
 
 		it("should unsubscribe to store", function() {
-			var el = domify('<span>{label}</span>'),
+			var el = domify('<span>{{label}}</span>'),
 			store = new Store({
 				label: 'maple'
 			}),
