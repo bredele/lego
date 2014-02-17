@@ -21,7 +21,7 @@ function View(mixin) {
   this.binding = binding();
 	this.once('inserted', function() {
 		this.emit('compiled');
-		this.binding.apply(this.dom);
+		this.binding.scan(this.dom);
 	}, this);
 
 	if(mixin) {
@@ -144,7 +144,7 @@ View.prototype.plug = function(attr, plugin) {
 
 View.prototype.remove = function() {
 	var parent = this.dom.parentElement;
-	this.binding.unbind();
+	this.binding.remove();
 	if(parent) {
 			this.emit('removed');
 			parent.removeChild(this.dom);

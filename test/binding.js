@@ -11,13 +11,13 @@ describe("Binding", function() {
 		it("binding()", function() {
 			var obj = Binding();
 			assert.equal(typeof obj.add, 'function');
-			assert.equal(typeof obj.apply, 'function');
+			assert.equal(typeof obj.scan, 'function');
 		});
 
 		it("new Binding()", function() {
 			var obj = new Binding();
 			assert.equal(typeof obj.add, 'function');
-			assert.equal(typeof obj.apply, 'function');
+			assert.equal(typeof obj.scan, 'function');
 		});
 	});
 
@@ -31,7 +31,7 @@ describe("Binding", function() {
 				binding.add('link', function(el){
 					el.setAttribute('href', 'http://github.com/bredele');
 				});
-				binding.apply(el);
+				binding.scan(el);
 
 				assert('http://github.com/bredele' === el.getAttribute('href'));
 			});
@@ -42,7 +42,7 @@ describe("Binding", function() {
 				binding.add('data-text', function(el, value){
 					el.innerText = value;
 				});
-				binding.apply(el);
+				binding.scan(el);
 
 				assert('olivier' === el.innerText);
 			});
@@ -68,7 +68,7 @@ describe("Binding", function() {
 				var el = domify('<a data-test="something"></a>');
 				var binding = new Binding();
 				binding.add('data-test', plugin.test);
-				binding.apply(el);
+				binding.scan(el);
 
 				assert('awesome' === el.innerText);
 			});
@@ -78,7 +78,7 @@ describe("Binding", function() {
 				var binding = new Binding();
 				binding.add('data-test', plugin.test);
 				binding.add('data-other', plugin.other);
-				binding.apply(el);
+				binding.scan(el);
 
 				assert('beauty' === el.className);
 				assert('awesome' === el.innerText);
@@ -93,7 +93,7 @@ describe("Binding", function() {
 				binding.add('data-scope', function(el){
 	        el.innerText = this.get('name'); //TODO: should pass the model attribute's name
 	      });
-				binding.apply(el);
+				binding.scan(el);
 
 				assert('Wietrich' === el.innerText);
 			});
@@ -108,7 +108,7 @@ describe("Binding", function() {
 
 				var binding = new Binding(store);
 				binding.add('data-other', plugin.other);
-				binding.apply(el);
+				binding.scan(el);
 
 				assert('beauty' === el.className);
 				assert('http://github.com/bredele' === el.getAttribute('href'));
@@ -133,7 +133,7 @@ describe("Binding", function() {
 					prop : 'http://github.com/bredele'
 				}));
 
-				binding.apply(el);
+				binding.scan(el);
 				assert('http://github.com/bredele' === el.innerHTML);
 			});
 
@@ -155,7 +155,7 @@ describe("Binding", function() {
 					lastname : 'Wietrich'
 				}));
 
-				binding.apply(el);
+				binding.scan(el);
 				assert('Olivier' === el.querySelector('.first').innerHTML);
 				assert('Wietrich' === el.querySelector('.last').innerHTML);
 			});
@@ -176,7 +176,7 @@ describe("Binding", function() {
 
 				binding.add('data-model', new Plugin(store));
 
-				binding.apply(el);
+				binding.scan(el);
 				assert('http://github.com/bredele' === el.innerHTML);
 				assert('bredele' === el.className);
 			});
@@ -193,7 +193,7 @@ describe("Binding", function() {
 
 				binding.add('required', new Plugin());
 
-				binding.apply(el);
+				binding.scan(el);
 				assert('bredele' === el.value);
 			});
 		});
@@ -211,7 +211,7 @@ describe("Binding", function() {
 			binding.add('data-plug2', function(node){
 				node.innerText = 'bredele';
 			});
-			binding.apply(el);
+			binding.scan(el);
 			assert('http://github.com/bredele' === el.getAttribute('href'));
 			assert('bredele' === el.firstChild.innerText);
 		});
@@ -228,7 +228,7 @@ describe("Binding", function() {
 			binding.add('data-plug2', function(node){
 				node.innerText = 'bredele';
 			});
-			binding.apply(el);
+			binding.scan(el);
 			assert('http://github.com/bredele' === el.getAttribute('href'));
 			assert('bredele' === el.querySelector('span').innerText);
 		});
@@ -248,7 +248,7 @@ describe("Binding", function() {
 				value = val;
 				node = el;
 			});
-			binding.apply(el);
+			binding.scan(el);
 			assert('name' === value);
 			assert.equal(node, el);
 		});
@@ -263,7 +263,7 @@ describe("Binding", function() {
 				name : 'olivier'
 			});
 			var binding = new Binding(store);
-			binding.apply(el);
+			binding.scan(el);
 			assert('olivier' === el.innerHTML);
 
 			store.set('name', 'bruno');
@@ -277,7 +277,7 @@ describe("Binding", function() {
 			});
 
 			var binding = new Binding(store);
-			binding.apply(el);
+			binding.scan(el);
 			assert('bredele' === el.innerHTML);
 			assert('' === el.getAttribute('href'));
 
@@ -294,7 +294,7 @@ describe("Binding", function() {
 			});
 
 			var binding = new Binding(store);
-			binding.apply(el);
+			binding.scan(el);
 			assert('http://github.com/bredele/repo/store' === el.getAttribute('href'));
 			store.set('link', 'http://github.com');
 			assert('http://github.com/repo/store' === el.getAttribute('href'));
@@ -309,7 +309,7 @@ describe("Binding", function() {
 				label : 'bredele'
 			});
 			var binding = new Binding(store);
-			binding.apply(el);
+			binding.scan(el);
 			assert('bredele' === el.firstChild.innerHTML);
 			assert('http://github.com/bredele' === el.getAttribute('href'));
 			store.set('link', 'http://www.google.com');
@@ -336,7 +336,7 @@ describe("Binding", function() {
 					query2 = true;
 				}
 			})
-			.apply(el, true);
+			.scan(el, true);
 
 			assert.equal(query1, true);
 			assert.equal(query2, true);
@@ -344,7 +344,7 @@ describe("Binding", function() {
 		});
 	});
 
-	describe("unbind", function() {
+	describe("remove", function() {
 
 		it("should destroy plugins", function() {
 			var el = document.createElement('div'),
@@ -357,9 +357,9 @@ describe("Binding", function() {
 
 			var binding = Binding()
 			.add('plug', plugin)
-			.apply(el);
+			.scan(el);
 
-			binding.unbind();
+			binding.remove();
 			assert.equal(plugin.called, true);
 		});
 
@@ -375,8 +375,8 @@ describe("Binding", function() {
 			});
 
 			Binding(store)
-			.apply(el)
-			.unbind();
+			.scan(el)
+			.remove();
 
 			store.set('label', 'bredele');
 			assert.equal(el.innerHTML, 'maple');
