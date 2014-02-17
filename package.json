@@ -23,5 +23,8 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/bredele/maple/issues"
+  },
+  "devDependencies": {
+    "mocha-cloud": "~0.1.0"
   }
 }

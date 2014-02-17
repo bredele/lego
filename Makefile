@@ -8,4 +8,7 @@ components: component.json
 clean:
 	rm -fr build components
 
+opensauce:
+	@node test/opensauce.js
+
 .PHONY: clean
