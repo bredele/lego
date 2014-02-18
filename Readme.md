@@ -86,7 +86,14 @@ Check out all the examples at this [link](http://leafs.github.io/maple).
 
 ### Is it different from other MVVM libraries?
 
+### Why support IE8?
+
+Supporting IE8 is really not complicated and does not make Maple.js slower.
+IE8 doesn't not support `indexOf` and `trim` for example (see `lib/utils`). IE8 has shadow node attributes and doesn't support `data` (we use `nodeValue` in `lib/binding`).
+Thats's pretty much it!
+
 ### Why an Architecural pattern?
+
 
 
 ## License
