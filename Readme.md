@@ -106,7 +106,7 @@ Thats's pretty much it!
 
 ### Why an Architecural pattern?
 
-The pattern is inspired by this [article](http://www.slideshare.net/nzakas/scalable-javascript-application-architecture-2012) and allows you to split your larger application into smaller pieces. Instead having a composite layout where you have a view in a view in a view (and keep references of every views), you have totally independant pieces (with single responsability) that communicate through an event hub. 
+The pattern has an express-like API and is inspired by this [article](http://www.slideshare.net/nzakas/scalable-javascript-application-architecture-2012). Iallows you to split your larger application into smaller pieces. Instead having a composite layout where you have a view in a view in a view (and keep references of every views), you have totally independant pieces (with single responsability) that communicate through an event hub. 
 
 The main benefits are:
   * removing/adding or updating an app doesn't break the others
@@ -115,7 +115,7 @@ The main benefits are:
   * easier to reuse
   * memory safety
 
-You'll see that it'll be easier to get back on your code when your application will become bigger and even a new team member could add, remove or update features in a flash.
+You'll see that it'll be easier to get back on your code when your application will become bigger and even a new team member could add, remove or update features in a flash. However. nothing forces you to use it.
 
 ## License
 
