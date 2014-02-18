@@ -1,4 +1,4 @@
-# Maple
+# Maple <small style="color:#7f8c8d;">(3kb min+gzip)</small>
 
 MVVM micro library to create large scale and real time web applications in a flash.
 
@@ -11,10 +11,11 @@ Maple.js makes it easy to create rich yet maintainable web interfaces by providi
 
 ## Browser Support
 
-Maple.js supports most ECMAScript 5 compliant browsers from IE8+.
+Maple.js has no dependencies, is fully tested and support all mainstream browsers from IE8+.
+
 [![Selenium Test Status](https://saucelabs.com/browser-matrix/bredele.svg)](https://saucelabs.com/u/bredele)
 
-
+IE7 requires the use of JSON and querySelector polyfill.
 
 ## Installation
 
