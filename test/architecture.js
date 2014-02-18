@@ -1,5 +1,5 @@
 var assert = require('assert'),
-maple = require('maple');
+maple = require('../');
 
 describe("Architecture", function() {
 	describe("config", function() {

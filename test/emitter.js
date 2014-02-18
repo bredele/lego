@@ -1,5 +1,5 @@
 var assert = require('assert'),
-    Emitter = require('maple/emitter');
+    Emitter = require('../emitter');
 
 describe("Emitter", function() {
 

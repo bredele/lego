@@ -1,5 +1,5 @@
 var assert = require('assert'),
-    Store = require('maple/store');
+    Store = require('../store');
 
 describe("Store", function() {
 

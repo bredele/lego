@@ -1,4 +1,4 @@
-var supplant = require('maple/lib/supplant'),
+var supplant = require('../lib/supplant'),
     assert = require('assert');
 
 describe("Supplant", function() {

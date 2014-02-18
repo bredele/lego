@@ -1,7 +1,7 @@
 var assert = require('assert'),
 domify = require('domify'),
-Store = require('maple/store'),
-Binding = require('maple/lib/binding');
+Store = require('../store'),
+Binding = require('../lib/binding');
 
 
 describe("Binding", function() {

@@ -1,6 +1,6 @@
 var assert = require('assert'),
-		Store = require('maple/store'),
-    View = require('maple/view');
+		Store = require('../store'),
+    View = require('../view');
 
 describe('View', function() {
 

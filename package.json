@@ -4,7 +4,8 @@
   "description": "webapp toolset",
   "main": "maple.js",
   "scripts": {
-    "test": "make test"
+    "test": "zuul -- test/*.js",
+    "test-local": "zuul --local -- test/*.js"
   },
   "repository": {
     "type": "git",
@@ -24,7 +25,11 @@
   "bugs": {
     "url": "https://github.com/bredele/maple/issues"
   },
+
   "devDependencies": {
-    "mocha-cloud": "~0.1.0"
+    "mocha-cloud": "~0.1.0",
+    "mocha": "~1.17.1",
+    "domify": "~1.1.1",
+    "zuul": "~1.5.4"
   }
 }

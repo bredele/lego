@@ -1,5 +1,5 @@
 var assert = require('assert'),
-		utils = require('maple/lib/utils');
+		utils = require('../lib/utils');
 
 describe("Utils", function() {
 	describe("mixin", function() {
