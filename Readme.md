@@ -1,11 +1,20 @@
-# maple
+# Maple
+
+MVVM micro library to create large scale and real time web applications in a flash.
 
 [![Build Status](https://travis-ci.org/leafs/maple.png?branch=master)](https://travis-ci.org/leafs/maple)
 [![Selenium Test Status](https://saucelabs.com/buildstatus/bredele)](https://saucelabs.com/u/bredele)
 
-  > work in progress
+Maple.js makes it easy to create rich yet maintainable web interfaces by providing a set of composable and extensible components. It uses **declarative bindings** and **observers** to sync and update your UI with an underlying data model (or **store**). Maple.js has been built with business needs in mind and provides an **architectural pattern** to ease the creation of large scale applications.
 
-  webapp toolset
+<p align="center"><a href="http://leafs/github.io/maple" target="_blank"><img width="100"src="http://leafs.github.io/maple/assets/bootstrap/logo.png"></a></p>
+
+## Browser Support
+
+Maple.js supports most ECMAScript 5 compliant browsers from IE8+.
+[![Selenium Test Status](https://saucelabs.com/browser-matrix/bredele.svg)](https://saucelabs.com/u/bredele)
+
+
 
 ## Installation
 
@@ -14,11 +23,6 @@
     $ component install leafs/maple
 
   For the first release, maple will work as a standalone library or through other package managers such as browserify or bower.
-
-## Browser Support
-
-Maple.js supports most ECMAScript 5 compliant browsers from IE8+.
-[![Selenium Test Status](https://saucelabs.com/browser-matrix/bredele.svg)](https://saucelabs.com/u/bredele)
 
 
 ## Concept
