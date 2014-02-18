@@ -9,6 +9,7 @@ Maple.js makes it easy to create rich yet maintainable web interfaces by providi
 
 <p align="center"><a href="http://leafs/github.io/maple" target="_blank"><img width="100"src="http://leafs.github.io/maple/assets/bootstrap/logo.png"></a></p>
 
+
 ## Browser Support
 
 Maple.js has no dependencies, is fully tested and support all mainstream browsers from IE8+.
@@ -17,104 +18,71 @@ Maple.js has no dependencies, is fully tested and support all mainstream browser
 
 IE7 requires the use of JSON and querySelector polyfill.
 
+
+## Concept and Features
+
+Maple.js is not a framework and follows the node.js spirit by providing tiny modules with single responsability. They do one thing and do it well! They are the minimal amount of glue you need to create the web application you want.
+
+  > Why go into debt to buy an expensive car with high fuel-cost when you can easily afford and **only need** a smaller and budget friendly car with superior performance.
+
+With equivalent features...
+
+  * Observers
+  * Models and Collections
+  * Composable Views
+  * Batched and Fast DOM rendering
+  * Extendable Interpolation (filters, partials, etc)
+  * Automatic DOM Binding
+  * Extendable data-bindings (via jQuery-like plugins)
+  * Event-bus Architectural pattern (lifecycle hooks, configs, debug, etc)
+  * Loose coupling of modules
+  * Composable and Reusable components
+  * SVG binding
+  * IE support
+
+...Maple.js is probably one of the smallest (3kb) and fastest implementation.
+
+Performance matters, really, but we also think you should be able to test, maintain and reuse your code in other projects. That's why Maple.js is based on Commonjs components and offers an ecosystem of independant [plugins]() and [modules](http://component.io/). 
+
+You can reuse its components outside of Maple.js itself, use them on server side with node.js or mix other components to get what you really need.
+
+<!-- 
+You should easily debug your code and if something goes wrong with it, it should not break your application. -->
+
+Last but not least, Maple.js API is really simple and just few minutes are enough to get into it.
+
+```html
+<div class="todo">
+  <input type="text" on-input="addTask">
+  <ul list>
+    <li>{{ task }}</li>
+  </ul>
+</div>
+```
+
+```js
+view()
+  .html('.todo', [{
+    task: 'first todo task'
+  }])
+  .plug('list', require('list-plug'))
+  .el();
+```
+
+Check out all the examples at this [link](http://leafs.github.io/maple).
+
 ## Installation
 
   Install with [component](http://component.io):
 
     $ component install leafs/maple
 
-  For the first release, maple will work as a standalone library or through other package managers such as browserify or bower.
+## FAQ
 
+### Is it different from other MVVM libraries?
 
-## Concept
+### Why an Architecural pattern?
 
-Maple.js is a set of Commonjs components to create maintainable and configurable web applications.
-
-### View and Bindings
-
-
-Views in Maple.js are reusable components that help you to create a DOM element from a template:
-
-Views are 
-
-```js
-var view = new View({
-  el: document.body,
-  html: '<ul class="contact {{github}}">{{label}}</div>',
-  data: {
-    label: 'maple',
-    github: 'leafs'
-  }
-});
-```
-
-> A template can be a string, a DOM element or a custom function.
-
-A view is the behavior behind this DOM element. It updates itself when the model changes, registers sophisticated bindings and control the element life cycle:
-
-```js
-view()
-  .html('<div plugin>{label}</div>', {
-    label: 'maple'
-  })
-  .plug('plugin', function(node) {
-    //do something on node
-  })
-  .insert(document.body);
-```
-
-Plugins (method `plug`) in Maple.js are attributes that link a DOM node with a piece of JavaScript logic in a MVVM fashion. There is already plugins to handler user events, hide or show elements, repeat elements once per item into a store, etc. What's great is that you can reuse these plugins or create your own.
-
-> see [binding](http://github.com/bredele/binding) for more information.
-
-
-### Store and Emitter
-
-Store is your model layer. It's basically a wrapper for your models and collections that contains your data and all the logic surrounding it such as formatters, access control, computed properties, reset, local storage and can be easily extended with its middleware engine.
-
-```js
-var Store = require('store');
-
-var store = new Store({
-	label: 'maple'
-});
-store.get('maple');
-store.on('change maple', function() {
-	//do something
-});
-store.set('label', 'leafs');
-```
-
-> Store is based on an emitter (available under `maple/emitter`). 
-
-Store works with both object (model) and arrays (collection) and reduce the overhead to have separate components for both of them. It's just dead simple!
-
-```js
-var store = new Store([{
-	name: 'olivier'
-}, {
-	name: 'bredele'
-}]);
-
-store.reset([{
-	name: 'maple'
-}]);
-```
-
-### Architecture
-
-Maple.js provides an express-like api that allows to split a large web application into smaller pieces (called apps).
-
-```js
-var maple = require('maple');
-var app = maple();
-
-app.use(/* other app or middleware */);
-```
-
-An app is entirely configurable (based on a Store) and can only speak to itself. Maple provides an event bus between all the apps to keep a clean separation of responsabilities. You can add, remove or break an app without breaking your larger web application!
-
-> see [artery](http://github.com/bredele/artery) for more information.
 
 ## License
 
