@@ -1,5 +1,8 @@
 # maple
 
+[![Build Status](https://travis-ci.org/leafs/maple.png?branch=master)](https://travis-ci.org/leafs/maple)
+[![Selenium Test Status](https://saucelabs.com/buildstatus/bredele)](https://saucelabs.com/u/bredele)
+
   > work in progress
 
   webapp toolset
@@ -14,7 +17,8 @@
 
 ## Browser Support
 
-Maple.js supports most ECMAScript 5 compliant browsers from IE+.
+Maple.js supports most ECMAScript 5 compliant browsers from IE8+.
+[![Selenium Test Status](https://saucelabs.com/browser-matrix/bredele.svg)](https://saucelabs.com/u/bredele)
 
 
 ## Concept
