@@ -1,8 +1,10 @@
-<h1>
+# Maple :maple_leaf:
+
+<!-- <h1>
   <a name="maple" class="anchor" href="#maple">
     <span class="octicon octicon-link"></span>
   </a>Maple <small style="color:#7f8c8d;">(3kb min+gzip)</small>
-</h1>
+</h1> -->
 
 MVVM micro library to create large scale and real time web applications in a flash.
 
