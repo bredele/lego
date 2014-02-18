@@ -1,4 +1,8 @@
-# Maple <small style="color:#7f8c8d;">(3kb min+gzip)</small>
+<h1>
+  <a name="maple" class="anchor" href="#maple">
+    <span class="octicon octicon-link"></span>
+  </a>Maple <small style="color:#7f8c8d;">(3kb min+gzip)</small>
+</h1>
 
 MVVM micro library to create large scale and real time web applications in a flash.
 
@@ -7,7 +11,12 @@ MVVM micro library to create large scale and real time web applications in a fla
 
 Maple.js makes it easy to create rich yet maintainable web interfaces by providing a set of composable and extensible components. It uses **declarative bindings** and **observers** to sync and update your UI with an underlying data model (or **store**). Maple.js has been built with business needs in mind and provides an **architectural pattern** to ease the creation of large scale applications.
 
-<p align="center"><a href="http://leafs/github.io/maple" target="_blank"><img width="100"src="http://leafs.github.io/maple/assets/bootstrap/logo.png"></a></p>
+<p align="center">
+  <a href="http://leafs/github.io/maple" target="_blank" style="text-decoration: none;">
+    <img width="100"src="http://leafs.github.io/maple/assets/bootstrap/logo.png">
+  </a>
+  <span style="color:#2c3e50;font-weight:bold;">Maple.js</span>
+</p>
 
 
 ## Browser Support
@@ -55,18 +64,19 @@ Last but not least, Maple.js API is really simple and just few minutes are enoug
 <div class="todo">
   <input type="text" on-input="addTask">
   <ul list>
-    <li>{{ task }}</li>
+    <li class="{{ done ? 'crossed' : '' }}">{{ task }}</li>
   </ul>
 </div>
 ```
 
 ```js
 view()
-  .html('.todo', [{
-    task: 'first todo task'
+  .data([{
+    task: 'first todo task',
+    done: false
   }])
   .plug('list', require('list-plug'))
-  .el();
+  .el('.todo');
 ```
 
 Check out all the examples at this [link](http://leafs.github.io/maple).
