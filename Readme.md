@@ -101,8 +101,9 @@ The main benefits are:
   * easier to test
   * easing to maintain
   * easier to reuse
+  * memory safety
 
-You'll see that it'll be easier to get back on your code when your application will become bigger and even a new team menber could add, remove or update features in a flash.
+You'll see that it'll be easier to get back on your code when your application will become bigger and even a new team member could add, remove or update features in a flash.
 
 ## License
 
