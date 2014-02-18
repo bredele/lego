@@ -87,16 +87,16 @@ Check out all the examples at this [link](http://leafs.github.io/maple).
 
 ### Is it different from other MVVM libraries?
 
-In Maple.js, each view has its own bindings and set of plugins unlike some libraries where everything is contained into a global scope. This is important to avoid conflict, memory leaks and to maintain your code properly.
+In Maple.js, each view has its own bindings and set of plugins unlike some libraries where everything is contained in a global scope. This is important in order to avoid conflict, memory leaks and to maintain your code properly.
 
 ```js
 view.plug('list', require('list-plug'));
 ```
 
-As shown above, you can give a name to your plugins to avoid names conflict when different views overlap. Your code is readable and also configurable! You can create your own plugins like jQuery (it's as easy as creating a function) and reuse them multiple times inside or outside of your application.
+As shown above, you can give a name to your plugins to avoid name conflicts when different views overlap. Your code is readable and also configurable! You can create your own plugins like jQuery (it's as easy as creating a function) and reuse them multiple times inside or outside of your application.
 
-**[Inversion of controls](http://en.wikipedia.org/wiki/Inversion_of_control)** is one of the fundamental concept of Maple.js. Some libraries tend to abstract everything under a single wrapper for the sake of simplicity : you have a view with built-in data bindings that creates a model layer from an object, etc. So what happend if you want to create an application that only process data (no view)? How can you create a model and share it between multiple views? How can you have multiple models for a single view? etc.
-Inversion of controls allows you to reuse every Maple.js components independently, to extend them and to control the lifecycle of everything in your application. That's what make Maple.js easy and fast.
+**[Inversion of controls](http://en.wikipedia.org/wiki/Inversion_of_control)** is one of the fundamental concepts of Maple.js. Some libraries tend to abstract everything under a single wrapper for the sake of simplicity : you have a view with built-in data bindings that creates a model layer from an object, etc. So what happens if you want to create an application that only processes data (no view)? How can you create a model and share it between multiple views? How can you have multiple models for a single view? etc.
+Inversion of controls allows you to reuse every Maple.js component independently, to extend them and to control the lifecycle of everything in your application. That's what makes Maple.js easy and fast.
 
 ### Why support IE8?
 
