@@ -13,6 +13,7 @@ MVVM micro library to create large scale and real time web applications in a fla
 
 Maple.js makes it easy to create rich yet maintainable web interfaces by providing a set of composable and extensible components. It uses **declarative bindings** and **observers** to sync and update your UI with an underlying data model (or **store**). Maple.js has been built with business needs in mind and provides an **architectural pattern** to ease the creation of large scale applications.
 
+See [documentation](https://github.com/leafs/maple/wiki) for more information.
 
 ## Browser Support
 
