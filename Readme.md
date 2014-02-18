@@ -125,7 +125,7 @@ You'll see that it'll be easier to get back on your code when your application w
 
 ## Changelog
 
-See details changes for each version in the [release notes](https://github.com/leafs/maple/releases).
+See [release notes](https://github.com/leafs/maple/releases).
 
 ## License
 
