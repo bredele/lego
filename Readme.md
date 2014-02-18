@@ -117,6 +117,16 @@ The main benefits are:
 
 You'll see that it'll be easier to get back on your code when your application will become bigger and even a new team member could add, remove or update features in a flash. However. nothing forces you to use it.
 
+## Get in Touch
+
+- If you have a related project, plugin or tool, add it to the [Wiki page](https://github.com/leafs/maple/wiki/contributions)!
+- Issues, questions & feature requests: [open an issue](https://github.com/leafs/maple/issues)
+- Twitter: [@bredeleca](https://twitter.com/bredeleca)
+
+## Changelog
+
+See details changes for each version in the [release notes](https://github.com/leafs/maple/releases).
+
 ## License
 
 The MIT License (MIT)
