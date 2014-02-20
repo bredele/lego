@@ -35,7 +35,7 @@ With equivalent features...
   * Observers
   * Models and Collections
   * Composable Views
-  * Batched and Fast DOM rendering
+  * Fast DOM rendering
   * Extendable Interpolation (filters, partials, etc)
   * Automatic DOM Binding
   * Extendable data-bindings (via jQuery-like plugins)
