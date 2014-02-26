@@ -75,7 +75,7 @@ view()
   .el('.todo');
 ```
 
-<a href="http://leafs.github.io/maple" target="_blank"><img src="https://runnable.com/external/styles/assets/runnablebtn.png" style="max-width:100%;"></a>
+<!-- <a href="http://leafs.github.io/maple" target="_blank"><img src="https://runnable.com/external/styles/assets/runnablebtn.png" style="max-width:100%;"></a> -->
 
 ## Installation
 
