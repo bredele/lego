@@ -41,6 +41,47 @@ IE7 requires the use of JSON and querySelector polyfill.
 
     $ npm install lego
 
+## FAQ
+
+### Is it different from other MVVM libraries?
+
+In Lego.js, each view has its own bindings and set of plugins unlike some libraries where everything is contained in a global scope. This is important in order to avoid conflict, memory leaks and to maintain your code properly.
+
+```js
+view.add('repeat', require('repeat-brick'));
+```
+
+As shown above, you can give a name to your plugins to avoid name conflicts when different views overlap. Your code is readable and also configurable! You can create your own plugins like jQuery (it's as easy as creating a function) and reuse them multiple times inside or outside of your application.
+
+### Why support IE8?
+
+Supporting IE8 is really not complicated and does not make Lego.js slower.
+IE8 doesn't support `[indexOf](http://github.com/component/indexof)` and `[trim](http://github.com/component/trim)`. IE8 has shadow node attributes and doesn't support `data` (we use `nodeValue` in `[binding](http://github.com/bredele/binding)`).
+Thats's pretty much it!
+
+### Why a Lego box?
+
+The pattern has an express-like API and is inspired by this [article](http://www.slideshare.net/nzakas/scalable-javascript-application-architecture-2012). Iallows you to split your larger application into smaller pieces. Instead having a composite layout where you have a view in a view in a view (and keep references of every views), you have totally independant pieces (with single responsability) that communicate through an event hub. 
+
+The main benefits are:
+  * removing/adding or updating an app doesn't break the others
+  * easier to test
+  * easing to maintain
+  * easier to reuse
+  * memory safety
+
+You'll see that it'll be easier to get back on your code when your application will become bigger and even a new team member could add, remove or update features in a flash. However. nothing forces you to use it.
+
+## Get in Touch
+
+- If you have a related project, plugin or tool, add it to the [Wiki page](https://github.com/bredele/lego/wiki/contributions)!
+- Issues, questions & feature requests: [open an issue](https://github.com/bredele/lego/issues)
+- Twitter: [@bredeleca](https://twitter.com/bredeleca)
+
+## Changelog
+
+See [release notes](https://github.com/bredele/lego/releases).    
+
 ## License
 
 The MIT License (MIT)
