@@ -65,7 +65,7 @@ Last but not least, Lego.js API is really simple and just few minutes are enough
 <div class="lego">
   <style>
     .brick {
-      color: {{ color }};
+      background: {{ color }};
     }
   </style>
   <div class="brick"> {{ label }} </div>
@@ -74,7 +74,7 @@ Last but not least, Lego.js API is really simple and just few minutes are enough
 
 ```js
 var view = lego(el, {
-  color:red,
+  color: 'red',
   label: 'Hello'
 }).build();
 
