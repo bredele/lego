@@ -4,7 +4,10 @@
   "description": "MVVM bricks to create realtime and large scale applications in a flash",
   "version": "0.0.1",
   "keywords": [],
-  "dependencies": {},
+  "dependencies": {
+    "bredele/artery": "*",
+    "bredele/brick": "*"
+  },
   "development": {},
   "license": "MIT",
   "main": "index.js",

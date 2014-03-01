@@ -22,5 +22,12 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/bredele/lego/issues"
+  },
+  "browser" : {
+    "brick" : "brick-component"
+  },
+  "dependencies": {
+    "artery": "0.0.1",
+    "brick-component": "0.0.3"
   }
 }
