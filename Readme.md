@@ -1,6 +1,6 @@
 # Lego
 
-[![Build Status](https://travis-ci.org/bredele/lego.png?branch=master)](https://travis-ci.org/bredele/lego)  [![Selenium Test Status](https://saucelabs.com/buildstatus/bredele)](https://saucelabs.com/u/bredele)
+[![Build Status](https://travis-ci.org/bredele/lego.png?branch=master)](https://travis-ci.org/bredele/lego) 
 <!-- Remember where you were young, how simple it was to stack few blocks of Lego to create your dream house? -->
 
 
@@ -26,9 +26,7 @@ view.build(document.body);
 
 ## Browser support
 
-brick is fully tested and supports all mainstream browsers from IE8+.
-
-[![Selenium Test Status](https://saucelabs.com/browser-matrix/bredele.svg)](https://saucelabs.com/u/bredele)
+Lego is fully tested and supports all mainstream browsers from IE8+.
 
 IE7 requires the use of JSON and querySelector polyfill.
 
