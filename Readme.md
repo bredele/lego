@@ -19,6 +19,15 @@ Lego.js has been built with business needs in mind and provides an **architectur
 
     $ npm install lego
 
+
+## Browser support
+
+Lego is fully tested and supports all mainstream browsers from IE8+.
+
+[![Selenium Test Status](https://saucelabs.com/browser-matrix/bredele.svg)](https://saucelabs.com/u/bredele)
+
+IE7 requires the use of JSON and querySelector polyfill.    
+
 ## 10 seconds example
 
 ```js
@@ -28,14 +37,6 @@ var view = lego('<span>{{name}}</span>', {
 
 view.build(document.body);
 ```
-
-## Browser support
-
-Lego is fully tested and supports all mainstream browsers from IE8+.
-
-[![Selenium Test Status](https://saucelabs.com/browser-matrix/bredele.svg)](https://saucelabs.com/u/bredele)
-
-IE7 requires the use of JSON and querySelector polyfill.
 
 ## Concept
 
