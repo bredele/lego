@@ -20,6 +20,8 @@ var view = lego('<span>{{name}}</span>', {
 view.build(document.body);
 ```
 
+See [examples](http://github.com/bredele/lego-examples)
+
 ## Browser support
 
 Lego is fully tested and supports all mainstream browsers from IE8+.
