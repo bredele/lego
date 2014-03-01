@@ -7,7 +7,7 @@
 
 Lego.js makes it easy to create rich yet maintainable web interfaces by providing a set of composable and extensible components. It uses **declarative bindings** and **observers** to sync and update your UI with an underlying data model (or lego **store**).
 
-Lego.js has been built with business needs in mind and provides an **architectural pattern** (or lego box) to ease the creation of large scale applications.
+Lego.js has been built with business needs in mind and provides an **architectural pattern (or lego box)** to ease the creation of large scale applications.
 
 
 ## 10 seconds example
