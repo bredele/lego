@@ -1,24 +1,14 @@
 {
-  "name": "maple",
-  "repo": "leafs/maple",
-  "description": "webapp toolset",
+  "name": "lego",
+  "repo": "bredele/lego",
+  "description": "MVVM bricks to create realtime and large scale applications in a flash",
   "version": "0.0.1",
   "keywords": [],
   "dependencies": {},
-  "development": {
-    "component/assert" : "*",
-    "component/domify" : "*"
-  },
+  "development": {},
   "license": "MIT",
-  "main": "maple.js",
+  "main": "index.js",
   "scripts": [
-    "maple.js",
-    "view.js", 
-    "store.js",
-    "emitter.js",
-    "lib/binding.js",
-    "lib/app.js",
-    "lib/supplant.js",    
-    "lib/utils.js"
+    "index.js"
   ]
 }

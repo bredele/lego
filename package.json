@@ -1,35 +1,26 @@
 {
-  "name": "maple",
+  "name": "lego",
   "version": "0.0.0",
-  "description": "webapp toolset",
-  "main": "maple.js",
+  "description": "MVVM bricks to create real time and large scale applications in a flash",
+  "main": "index.js",
   "scripts": {
-    "test": "zuul -- test/*.js",
-    "test-local": "zuul --local -- test/*.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/bredele/maple.git"
+    "url": "git://github.com/bredele/lego.git"
   },
   "keywords": [
-    "webapp",
-    "html5",
-    "binding",
-    "mvvm",
+    "MVVM",
+    "lego",
+    "brick",
+    "store",
     "model",
-    "view",
-    "controller"
+    "binding"
   ],
-  "author": "Olivier Wietrich <olivier.wietrich@gmail.com>",
+  "author": "Olivier Wietrich <olivier.wietrich@gmail.com> (http://github.com/bredele)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/bredele/maple/issues"
-  },
-
-  "devDependencies": {
-    "mocha-cloud": "~0.1.0",
-    "mocha": "~1.17.1",
-    "domify": "~1.1.1",
-    "zuul": "~1.5.4"
+    "url": "https://github.com/bredele/lego/issues"
   }
 }
