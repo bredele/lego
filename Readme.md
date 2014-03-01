@@ -56,7 +56,7 @@ As shown above, you can give a name to your plugins to avoid name conflicts when
 ### Why support IE8?
 
 Supporting IE8 is really not complicated and does not make Lego.js slower.
-IE8 doesn't support `[indexOf](http://github.com/component/indexof)` and `[trim](http://github.com/component/trim)`. IE8 has shadow node attributes and doesn't support `data` (we use `nodeValue` in `[binding](http://github.com/bredele/binding)`).
+IE8 doesn't support [`indexOf`]((http://github.com/component/indexof)) and [`trim`]((http://github.com/component/trim)). IE8 has shadow node attributes and doesn't support `data` (we use `nodeValue` in [`binding`]((http://github.com/bredele/binding))).
 Thats's pretty much it!
 
 ### Why a Lego box?
