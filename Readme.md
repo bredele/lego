@@ -9,24 +9,6 @@ Lego.js makes it easy to create rich yet maintainable web interfaces by providin
 
 Lego.js has been built with business needs in mind and provides an **architectural pattern** (or lego box) to ease the creation of large scale applications.
 
-## Installation
-
-  with [component](http://github.com/component/component):
-
-    $ component install bredele/lego
-
-  with [nodejs](http://nodejs.org):
-
-    $ npm install lego
-
-
-## Browser support
-
-Lego is fully tested and supports all mainstream browsers from IE8+.
-
-[![Selenium Test Status](https://saucelabs.com/browser-matrix/bredele.svg)](https://saucelabs.com/u/bredele)
-
-IE7 requires the use of JSON and querySelector polyfill.    
 
 ## 10 seconds example
 
@@ -38,7 +20,26 @@ var view = lego('<span>{{name}}</span>', {
 view.build(document.body);
 ```
 
+## Browser support
+
+Lego is fully tested and supports all mainstream browsers from IE8+.
+
+[![Selenium Test Status](https://saucelabs.com/browser-matrix/bredele.svg)](https://saucelabs.com/u/bredele)
+
+IE7 requires the use of JSON and querySelector polyfill.    
+
+
 ## Concept
+
+## Installation
+
+  with [component](http://github.com/component/component):
+
+    $ component install bredele/lego
+
+  with [nodejs](http://nodejs.org):
+
+    $ npm install lego
 
 ## License
 
