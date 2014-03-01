@@ -1,6 +1,6 @@
 # Lego
 
-[![Build Status](https://travis-ci.org/bredele/lego.png?branch=master)](https://travis-ci.org/bredele/lego)  [![Selenium Test Status](https://saucelabs.com/buildstatus/bredele)](https://saucelabs.com/u/bredele)
+[![Build Status](https://travis-ci.org/bredele/brick.png?branch=master)](https://travis-ci.org/bredele/brick)  [![Selenium Test Status](https://saucelabs.com/buildstatus/bredele)](https://saucelabs.com/u/bredele)
 <!-- Remember where you were young, how simple it was to stack few blocks of Lego to create your dream house? -->
 
 
