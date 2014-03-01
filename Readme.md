@@ -31,6 +31,58 @@ IE7 requires the use of JSON and querySelector polyfill.
 
 ## Concept
 
+Lego.js is not a framework and follows the node.js spirit by providing tiny modules (or bricks) with single responsability. They do one thing and do it well! They are the minimal amount of glue you need to create the web application you want.
+
+  > Why go into debt to buy an expensive car with high fuel-cost when you can easily afford and **only need** a smaller and budget friendly car with superior performance.
+
+With equivalent features...
+
+  * Observers
+  * Models and Collections
+  * Composable Views
+  * Fast DOM rendering
+  * Extendable Interpolation
+  * Automatic DOM Binding
+  * Extendable data-bindings (via jQuery-like plugins)
+  * Event-bus Architectural pattern (lifecycle hooks, configs, debug, etc)
+  * Loose coupling of modules
+  * Composable and Reusable components
+  * SVG binding
+  * IE support
+
+...Lego.js is probably one of the smallest (4kb) and fastest implementation.
+
+Performance matters, really, but we also think you should be able to test, maintain and reuse your code in other projects. That's why lego.js is based on Commonjs components and offers an ecosystem of independant [bricks](http://github.com/bredele) and [modules](http://component.io/). 
+
+You can reuse its components outside of Lego.js itself, use them on server side with node.js or mix other components to get what you really need.
+
+<!-- 
+You should easily debug your code and if something goes wrong with it, it should not break your application. -->
+
+Last but not least, Lego.js API is really simple and just few minutes are enough to get into it.
+
+```html
+<div class="lego">
+  <style>
+    .brick {
+      color: {{ color }};
+    }
+  </style>
+  <div class="brick"> {{ label }} </div>
+</div>
+```
+
+```js
+var view = lego(el, {
+  color:red,
+  label: 'Hello'
+}).build();
+
+//change label
+view.set('label', 'World!');
+```
+
+
 ## Installation
 
   with [component](http://github.com/component/component):
