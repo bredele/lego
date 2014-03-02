@@ -97,6 +97,10 @@ view.set('label', 'World!');
 
     $ npm install lego
 
+## Documentation
+
+  We are currently writing a new documentation but you can find the old one in the [wiki](https://github.com/bredele/lego/wiki/_pages).
+
 ## FAQ
 
 ### Is it different from other MVVM libraries?
