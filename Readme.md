@@ -22,6 +22,8 @@ view.build(document.body);
 
 <a href="http://bredele.github.com/lego-examples/" target="_blank"><img src="https://runnable.com/external/styles/assets/runnablebtn.png" style="width:67px;height:25px;"></a>
 
+  > Lego is still in an experimental stage and some improvement and new features are coming.
+
 ## Browser support
 
 Lego is fully tested and supports all mainstream browsers from IE8+.
