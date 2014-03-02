@@ -1,4 +1,4 @@
-# Lego
+# Legojs
 
   > Put the fun back into building web applications
 
