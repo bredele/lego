@@ -20,7 +20,7 @@ var view = lego('<span>{{name}}</span>', {
 view.build(document.body);
 ```
 
-See [examples](http://github.com/bredele/lego-examples)
+<a href="http://bredele.github.com/lego-examples/" target="_blank"><img src="https://runnable.com/external/styles/assets/runnablebtn.png" style="width:67px;height:25px;"></a>
 
 ## Browser support
 
