@@ -5,9 +5,9 @@
 [![Build Status](https://travis-ci.org/bredele/brick.png?branch=master)](https://travis-ci.org/bredele/brick)  [![Selenium Test Status](https://saucelabs.com/buildstatus/bredele)](https://saucelabs.com/u/bredele)
 <!-- Remember where you were young, how simple it was to stack few blocks of Lego to create your dream house? -->
 
-Legojs makes it easy to create rich yet maintainable web interfaces by providing a set of composable and extensible components. It uses **declarative bindings** and **observers** to sync and update your UI with an underlying data model (or lego **store**).
+Legojs makes it easy to create rich yet maintainable web interfaces by providing a set of composable and extensible components. It uses **declarative bindings** and **observers** to sync and update your UI with an underlying data model (or legojs **store**).
 
-Legojs has been built with business needs in mind and provides an **architectural pattern (or lego box)** to ease the creation of large scale applications.
+Legojs has been built with business needs in mind and provides an **architectural pattern (or legojs box)** to ease the creation of large scale applications.
 
 
 ## 10 seconds example
@@ -56,7 +56,7 @@ With equivalent features...
 
 ...Lego.js is probably one of the smallest (4kb) and fastest implementation.
 
-Performance matters, really, but we also think you should be able to test, maintain and reuse your code in other projects. That's why lego.js is based on Commonjs components and offers an ecosystem of independant [bricks](http://github.com/bredele) and [modules](http://component.io/). 
+Performance matters, really, but we also think you should be able to test, maintain and reuse your code in other projects. That's why lego.js is based on Commonjs components and offers an ecosystem of independant [bricks](https://github.com/bredele/lego/wiki) and [modules](http://component.io/). 
 
 You can reuse its components outside of Lego.js itself, use them on server side with node.js or mix other components to get what you really need.
 
