@@ -99,7 +99,7 @@ view.set('label', 'World!');
 
 ## Documentation
 
-  We are currently writing a new documentation but you can find the old one in the [wiki](https://github.com/bredele/lego/wiki/_pages).
+  We are currently writing a new documentation but you can find the old one in the [wiki](https://github.com/bredele/lego/wiki).
 
 ## FAQ
 
