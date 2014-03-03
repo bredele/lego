@@ -5,7 +5,7 @@
 [![Build Status](https://travis-ci.org/bredele/brick-view.png?branch=master)](https://travis-ci.org/bredele/brick-view)  [![Selenium Test Status](https://saucelabs.com/buildstatus/bredele)](https://saucelabs.com/u/bredele)
 <!-- Remember where you were young, how simple it was to stack few blocks of Lego to create your dream house? -->
 
-Brick makes it easy to create rich yet maintainable web interfaces by providing a set of composable and extensible components. It uses **declarative bindings** and **observers** to sync and update your UI with an underlying data model (or Brick **store**).
+Brick makes it easy to create rich yet maintainable web interfaces by providing a set of composable and extensible components. It uses **declarative bindings** and **observers** to sync and update your UI with an underlying data model (or **store**).
 
 Brick has been built with business needs in mind and provides an **architectural pattern (or Brick box)** to ease the creation of large scale applications.
 
