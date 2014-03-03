@@ -1,19 +1,19 @@
-# Legojs
+# Brick
 
   > Put the fun back into building web applications
 
 [![Build Status](https://travis-ci.org/bredele/brick.png?branch=master)](https://travis-ci.org/bredele/brick)  [![Selenium Test Status](https://saucelabs.com/buildstatus/bredele)](https://saucelabs.com/u/bredele)
 <!-- Remember where you were young, how simple it was to stack few blocks of Lego to create your dream house? -->
 
-Legojs makes it easy to create rich yet maintainable web interfaces by providing a set of composable and extensible components. It uses **declarative bindings** and **observers** to sync and update your UI with an underlying data model (or legojs **store**).
+Brick makes it easy to create rich yet maintainable web interfaces by providing a set of composable and extensible components. It uses **declarative bindings** and **observers** to sync and update your UI with an underlying data model (or Brick **store**).
 
-Legojs has been built with business needs in mind and provides an **architectural pattern (or legojs box)** to ease the creation of large scale applications.
+Brick has been built with business needs in mind and provides an **architectural pattern (or Brick box)** to ease the creation of large scale applications.
 
 
 ## 10 seconds example
 
 ```js
-var view = lego('<span>{{name}}</span>', {
+var view = brick('<span>{{name}}</span>', {
   name: 'bredele'
 });
 
@@ -22,11 +22,11 @@ view.build(document.body);
 
 <a href="http://bredele.github.com/lego-examples/" target="_blank"><img src="https://runnable.com/external/styles/assets/runnablebtn.png" style="width:67px;height:25px;"></a>
 
-  > Legojs is still in an experimental stage and some improvement and new features are coming.
+  > Brick is still in an experimental stage and some improvement and new features are coming.
 
 ## Browser support
 
-Legojs is fully tested and supports all mainstream browsers from IE8+.
+Brick is fully tested and supports all mainstream browsers from IE8+.
 
 [![Selenium Test Status](https://saucelabs.com/browser-matrix/bredele.svg)](https://saucelabs.com/u/bredele)
 
@@ -35,7 +35,7 @@ IE7 requires the use of JSON and querySelector polyfill.
 
 ## Concept
 
-Legojs is not a framework and follows the node.js spirit by providing tiny modules (or bricks) with single responsability. They do one thing and do it well! They are the minimal amount of glue you need to create the web application you want.
+Brick is not a framework and follows the node.js spirit by providing tiny modules (or bricks) with single responsability. They do one thing and do it well! They are the minimal amount of glue you need to create the web application you want.
 
   > Why go into debt to buy an expensive car with high fuel-cost when you can easily afford and **only need** a smaller and budget friendly car with superior performance.
 
@@ -54,19 +54,19 @@ With equivalent features...
   * SVG binding
   * IE support
 
-...Lego.js is probably one of the smallest (4kb) and fastest implementation.
+...Brickjs is probably one of the smallest (4kb) and fastest implementation.
 
-Performance matters, really, but we also think you should be able to test, maintain and reuse your code in other projects. That's why lego.js is based on Commonjs components and offers an ecosystem of independant [bricks](https://github.com/bredele/lego/wiki) and [modules](http://component.io/). 
+Performance matters, really, but we also think you should be able to test, maintain and reuse your code in other projects. That's why Brickjs is based on Commonjs components and offers an ecosystem of independant [bricks](https://github.com/bredele/brick/wiki) and [modules](http://component.io/). 
 
-You can reuse its components outside of Lego.js itself, use them on server side with node.js or mix other components to get what you really need.
+You can reuse its components outside of Brickjs itself, use them on server side with node.js or mix other components to get what you really need.
 
 <!-- 
 You should easily debug your code and if something goes wrong with it, it should not break your application. -->
 
-Last but not least, Legojs API is really simple and just few minutes are enough to get into it.
+Last but not least, Brick API is really simple and just few minutes are enough to get into it.
 
 ```html
-<div class="lego">
+<div>
   <style>
     .brick {
       background: {{ color }};
@@ -77,7 +77,7 @@ Last but not least, Legojs API is really simple and just few minutes are enough 
 ```
 
 ```js
-var view = lego(el, {
+var view = brick(el, {
   color: 'red',
   label: 'Hello'
 }).build();
@@ -91,21 +91,21 @@ view.set('label', 'World!');
 
   with [component](http://github.com/component/component):
 
-    $ component install bredele/lego
+    $ component install bredele/brick
 
   with [nodejs](http://nodejs.org):
 
-    $ npm install lego
+    $ npm install brickjs
 
 ## Documentation
 
-  We are currently writing a new documentation but you can find the old one in the [wiki](https://github.com/bredele/lego/wiki).
+  We are currently writing a new documentation but you can find the old one in the [wiki](https://github.com/bredele/brick/wiki).
 
 ## FAQ
 
 ### Is it different from other MVVM libraries?
 
-In Lego.js, each view has its own bindings and set of plugins unlike some libraries where everything is contained in a global scope. This is important in order to avoid conflict, memory leaks and to maintain your code properly.
+In Brickjs, each view has its own bindings and set of plugins unlike some libraries where everything is contained in a global scope. This is important in order to avoid conflict, memory leaks and to maintain your code properly.
 
 ```js
 view.add('repeat', require('repeat-brick'));
@@ -115,11 +115,11 @@ As shown above, you can give a name to your plugins to avoid name conflicts when
 
 ### Why support IE8?
 
-Supporting IE8 is really not complicated and does not make Lego.js slower.
+Supporting IE8 is really not complicated and does not make Brickjs slower.
 IE8 doesn't support [`indexOf`]((http://github.com/component/indexof)) and [`trim`]((http://github.com/component/trim)). IE8 has shadow node attributes and doesn't support `data` (we use `nodeValue` in [`binding`]((http://github.com/bredele/binding))).
 Thats's pretty much it!
 
-### Why a Legojs box?
+### Why a Brick box?
 
 The pattern has an express-like API and is inspired by this [article](http://www.slideshare.net/nzakas/scalable-javascript-application-architecture-2012). Iallows you to split your larger application into smaller pieces. Instead having a composite layout where you have a view in a view in a view (and keep references of every views), you have totally independant pieces (with single responsability) that communicate through an event hub. 
 
@@ -134,13 +134,13 @@ You'll see that it'll be easier to get back on your code when your application w
 
 ## Get in Touch
 
-- If you have a related project, plugin or tool, add it to the [Wiki page](https://github.com/bredele/lego/wiki/contributions)!
-- Issues, questions & feature requests: [open an issue](https://github.com/bredele/lego/issues)
+- If you have a related project, plugin or tool, add it to the [Wiki page](https://github.com/bredele/brick/wiki/contributions)!
+- Issues, questions & feature requests: [open an issue](https://github.com/bredele/brick/issues)
 - Twitter: [@bredeleca](https://twitter.com/bredeleca)
 
 ## Changelog
 
-See [release notes](https://github.com/bredele/lego/releases).    
+See [release notes](https://github.com/bredele/brick/releases).    
 
 ## License
 
