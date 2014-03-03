@@ -1,5 +1,5 @@
 {
-  "name": "lego",
+  "name": "brickjs",
   "version": "0.1.0",
   "description": "MVVM bricks to create real time and large scale applications in a flash",
   "main": "index.js",
@@ -24,10 +24,10 @@
     "url": "https://github.com/bredele/lego/issues"
   },
   "browser": {
-    "brick": "brick-component"
+    "brick": "brick-view"
   },
   "dependencies": {
     "artery": "0.0.1",
-    "brick-component": "0.0.4"
+    "brick-view": "0.0.4"
   }
 }

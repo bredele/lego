@@ -1,6 +1,6 @@
 {
-  "name": "lego",
-  "repo": "bredele/lego",
+  "name": "brick",
+  "repo": "bredele/brick",
   "description": "MVVM bricks to create realtime and large scale applications in a flash",
   "version": "0.0.1",
   "keywords": [],
