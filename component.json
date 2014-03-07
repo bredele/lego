@@ -2,7 +2,7 @@
   "name": "brick",
   "repo": "bredele/brick",
   "description": "MVVM bricks to create realtime and large scale applications in a flash",
-  "version": "0.0.1",
+  "version": "0.1.1",
   "keywords": [],
   "dependencies": {
     "bredele/artery": "*",
