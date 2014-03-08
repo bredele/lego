@@ -20,7 +20,7 @@ var view = brick('<span>{{name}}</span>', {
 view.build(document.body);
 ```
 
-<a href="http://bredele.github.com/lego-examples/" target="_blank"><img src="https://runnable.com/external/styles/assets/runnablebtn.png" style="width:67px;height:25px;"></a>
+<a href="http://bredele.github.com/brick-examples/" target="_blank"><img src="https://runnable.com/external/styles/assets/runnablebtn.png" style="width:67px;height:25px;"></a>
 
   > Brick is still in an experimental stage and some improvement and new features are coming.
 
