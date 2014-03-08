@@ -54,7 +54,7 @@ With equivalent features...
   * SVG binding
   * IE support
 
-...Brickjs is probably one of the smallest (4kb) and fastest implementation.
+...Brickjs is probably one of the smallest (4kb gzip with require, 3kb without) and fastest implementation.
 
 Performance matters, really, but we also think you should be able to test, maintain and reuse your code in other projects. That's why Brickjs is based on Commonjs components and offers an ecosystem of independant [bricks](https://github.com/bredele/brick/wiki) and [modules](http://component.io/). 
 
