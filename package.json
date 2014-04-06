@@ -1,6 +1,6 @@
 {
   "name": "brickjs",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "MVVM bricks to create real time and large scale applications in a flash",
   "main": "index.js",
   "scripts": {
@@ -27,7 +27,7 @@
     "brick": "brick-view"
   },
   "dependencies": {
-    "artery": "0.0.1",
-    "brick-view": "0.0.5"
+    "artery": "^0.1.1",
+    "brick-view": "^0.1.1"
   }
 }
