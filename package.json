@@ -28,6 +28,6 @@
   },
   "dependencies": {
     "artery": "0.0.1",
-    "brick-view": "0.0.5"
+    "brick-view": "0.1.0"
   }
 }
