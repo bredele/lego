@@ -39,9 +39,7 @@ IE7 requires the use of JSON and querySelector polyfill.
 
 ## Concept
 
-There is enough MV* libraries out there and some of them are actually really good. It's not brick's intent to replace them. Instead, it follows the UNIX spirit and provides tiny modules (or bricks) with single responsability. They do one thing and do it well! They are the minimal amount of glue you need to create the web application you want.
-Using [component](http://github.com/component) or [browserify](http://browserify.org/) brick can be easily included in your existing project.
-
+Let's be honnest, there is enough MV* libraries out there and some of them are actually really good. It's not brick's intent to replace them. Instead, it follows the UNIX spirit and provides tiny modules (or bricks) with single responsability. They do one thing and do it well! They are the minimal amount of glue you need to create the web application you want.
 
 With equivalent features...
 
