@@ -36,7 +36,7 @@ or play online
 Let's face it, supporting IE8 is a pain but it's unfortunately still widely used in the industry. This is the reason why brick is fully tested and supports all mainstrean browsers, IE8 included.
 
 
-[![Selenium Test Status](https://saucelabs.com/browser-matrix/bredele.svg)](https://saucelabs.com/u/bredele)
+<a class="requirebin-link" target="_blank" href="http://requirebin.com/?gist=10794588"><img src="http://requirebin.com/badge.png"></a>
 
 IE7 requires the use of JSON and querySelector polyfill.    
 
