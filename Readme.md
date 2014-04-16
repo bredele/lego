@@ -5,15 +5,16 @@
 [![Build Status](https://travis-ci.org/bredele/brick-view.png?branch=master)](https://travis-ci.org/bredele/brick-view)  [![Selenium Test Status](https://saucelabs.com/buildstatus/bredele)](https://saucelabs.com/u/bredele)
 <!-- Remember where you were young, how simple it was to stack few blocks of Lego to create your dream house? -->
 
-Brick makes it easy to create rich yet maintainable web interfaces by providing a set of composable and extensible components. It uses **declarative bindings** and **observers** to sync and update your UI with an underlying data model (or **store**).
+Brick makes it easy to create rich yet maintainable web interfaces by providing a set of composable and extensible components. It uses [cement](http://github.com/bredele/cement) to sync and update your UI with an underlying data [store](http://github.com/bredele/datastore).
 
-Brick has been built with business needs in mind and provides an **architectural pattern (or Brick box)** to ease the creation of large scale applications.
+
+Brick has been built for [wall](http://github.com/bredele/wall), an express-like framework to ease the creation of maintainable and large scale application. Brick is simple, composable and easy to learn. Give it a try you won't be disappointed!
 
 
 ## 10 seconds example
 
 ```js
-var view = brick('<span>{{name}}</span>', {
+var view = brick('<span>{{ name }}</span>', {
   name: 'bredele'
 });
 
@@ -26,7 +27,8 @@ view.build(document.body);
 
 ## Browser support
 
-Brick is fully tested and supports all mainstream browsers from IE8+.
+Let's face it, supporting IE8 is a pain but it's unfortunately still widely used in the industry. This is the reason why brick is fully tested and supports all mainstrean browsers, IE8 included.
+
 
 [![Selenium Test Status](https://saucelabs.com/browser-matrix/bredele.svg)](https://saucelabs.com/u/bredele)
 
@@ -119,9 +121,10 @@ Supporting IE8 is really not complicated and does not make Brickjs slower.
 IE8 doesn't support [`indexOf`]((http://github.com/component/indexof)) and [`trim`]((http://github.com/component/trim)). IE8 has shadow node attributes and doesn't support `data` (we use `nodeValue` in [`binding`]((http://github.com/bredele/binding))).
 Thats's pretty much it!
 
-### Why a Brick box?
+### What is wall?
 
-The pattern has an express-like API and is inspired by this [article](http://www.slideshare.net/nzakas/scalable-javascript-application-architecture-2012). Iallows you to split your larger application into smaller pieces. Instead having a composite layout where you have a view in a view in a view (and keep references of every views), you have totally independant pieces (with single responsability) that communicate through an event hub. 
+
+[Wall](http://github.com/bredele/wall) has an express-like API and is inspired by this [article](http://www.slideshare.net/nzakas/scalable-javascript-application-architecture-2012). It allows you to split your larger application into smaller pieces. Instead having a composite layout where you have a view in a view in a view (and keep references of every views), you have totally independant pieces (with single responsability) that communicate through an event hub. 
 
 The main benefits are:
   * removing/adding or updating an app doesn't break the others
