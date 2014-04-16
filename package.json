@@ -4,16 +4,18 @@
   "description": "MVVM bricks to create real time and large scale applications in a flash",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "zuul -- test/*.js",
+    "test-local": "zuul --local -- test/*.js"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/bredele/lego.git"
+    "url": "git://github.com/bredele/brick.git"
   },
   "keywords": [
     "MVVM",
-    "lego",
     "brick",
+    "cement",
+    "wall",
     "store",
     "model",
     "binding"
@@ -21,13 +23,15 @@
   "author": "Olivier Wietrich <olivier.wietrich@gmail.com> (http://github.com/bredele)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/bredele/lego/issues"
-  },
-  "browser": {
-    "brick": "brick-view"
+    "url": "https://github.com/bredele/brick/issues"
   },
   "dependencies": {
-    "artery": "^0.1.1",
-    "brick-view": "^0.1.1"
+    "bredele-each": "^0.1.2",
+    "datastore": "^1.0.0",
+    "cement": "^0.3.0"
+  },
+  "devDependencies": {
+    "mocha": "~1.17.1",
+    "zuul": "~1.5.4"
   }
 }

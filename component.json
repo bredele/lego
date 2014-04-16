@@ -5,8 +5,9 @@
   "version": "0.1.2",
   "keywords": [],
   "dependencies": {
-    "bredele/artery": "*",
-    "bredele/brick-view": "*"
+    "bredele/cement": "*",
+    "bredele/datastore": "*",
+    "bredele/each" : "*"
   },
   "development": {},
   "license": "MIT",
