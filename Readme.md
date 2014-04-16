@@ -5,10 +5,10 @@
 [![Build Status](https://travis-ci.org/bredele/brick-view.png?branch=master)](https://travis-ci.org/bredele/brick-view)  [![Selenium Test Status](https://saucelabs.com/buildstatus/bredele)](https://saucelabs.com/u/bredele)
 <!-- Remember where you were young, how simple it was to stack few blocks of Lego to create your dream house? -->
 
-Brick makes it easy to create rich yet maintainable web interfaces by providing a set of composable and extensible components. It uses [cement](http://github.com/bredele/cement) to sync and update your UI with an underlying data [store](http://github.com/bredele/datastore).
+Brick makes it easy to create rich yet maintainable web interfaces by providing a set of composable and extensible components. It uses **[cement](http://github.com/bredele/cement)** to sync and update your UI with an underlying data **[store](http://github.com/bredele/datastore)**.
 
 
-Brick has been built for [wall](http://github.com/bredele/wall), an express-like framework to ease the creation of maintainable and large scale application. Brick is simple, composable and easy to learn. 
+Brick has been built for **[wall](http://github.com/bredele/wall)**, an express-like framework to ease the creation of maintainable and large scale application. Brick is simple, composable and easy to learn. 
 
 Give it a try you won't be disappointed!
 
