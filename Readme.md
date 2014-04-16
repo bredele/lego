@@ -1,6 +1,6 @@
 # Brick
 
-  > Put the fun back into building web applications
+  > Build your web application like a pro.
 
 [![Build Status](https://travis-ci.org/bredele/brick-view.png?branch=master)](https://travis-ci.org/bredele/brick-view)  [![Selenium Test Status](https://saucelabs.com/buildstatus/bredele)](https://saucelabs.com/u/bredele)
 <!-- Remember where you were young, how simple it was to stack few blocks of Lego to create your dream house? -->
@@ -8,7 +8,9 @@
 Brick makes it easy to create rich yet maintainable web interfaces by providing a set of composable and extensible components. It uses [cement](http://github.com/bredele/cement) to sync and update your UI with an underlying data [store](http://github.com/bredele/datastore).
 
 
-Brick has been built for [wall](http://github.com/bredele/wall), an express-like framework to ease the creation of maintainable and large scale application. Brick is simple, composable and easy to learn. Give it a try you won't be disappointed!
+Brick has been built for [wall](http://github.com/bredele/wall), an express-like framework to ease the creation of maintainable and large scale application. Brick is simple, composable and easy to learn. 
+
+Give it a try you won't be disappointed!
 
 
 ## 10 seconds example
@@ -37,9 +39,9 @@ IE7 requires the use of JSON and querySelector polyfill.
 
 ## Concept
 
-Brick is not a framework and follows the node.js spirit by providing tiny modules (or bricks) with single responsability. They do one thing and do it well! They are the minimal amount of glue you need to create the web application you want.
+There is enough MV* libraries out there and some of them are actually really good. It's not brick's intent to replace them. Instead, it follows the UNIX spirit and provides tiny modules (or bricks) with single responsability. They do one thing and do it well! They are the minimal amount of glue you need to create the web application you want.
+Using [component](http://github.com/component) or [browserify](http://browserify.org/) brick can be easily included in your existing project.
 
-  > Why go into debt to buy an expensive car with high fuel-cost when you can easily afford and **only need** a smaller and budget friendly car with superior performance.
 
 With equivalent features...
 
@@ -95,7 +97,7 @@ view.set('label', 'World!');
 
     $ component install bredele/brick
 
-  with [nodejs](http://nodejs.org):
+  with [nodejs/browserify](http://nodejs.org):
 
     $ npm install brickjs
 
