@@ -25,6 +25,10 @@ view.build(document.body);
 
 <a href="http://bredele.github.com/brick-examples/" target="_blank"><img src="https://runnable.com/external/styles/assets/runnablebtn.png" style="width:67px;height:25px;"></a>
 
+or play online
+
+[![view on requirebin](http://requirebin.com/badge.png)](http://requirebin.com/?gist=10794588)
+
   > Brick is still in an experimental stage and some improvement and new features are coming.
 
 ## Browser support
