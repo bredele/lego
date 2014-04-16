@@ -191,7 +191,7 @@ describe("Render", function() {
 					}
 				});
 				view.build();
-				assert.equal(view.el.innerHTML, 'hello brick!');
+				assert.equal(view.el.innerHTML, 'hello BRICK!');
 			});
 
 		});
