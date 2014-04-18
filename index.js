@@ -58,14 +58,31 @@ function Brick(tmpl, data) {
 Brick.prototype = Store.prototype;
 
 
+/**
+ * Brick factory.
+ *
+ * Useful to reuse your bricks.
+ * Examples:
+ *
+ *   var btn = brick.extend('<button i18n>{{ label }}</button>')
+ *     .use(plugin)
+ *     .add('i18n', lang());
+ *
+ *   var view = btn({
+ *     label: 'my button'
+ *   }).build();
+ *   
+ * @param  {[type]} tmpl [description]
+ * @param  {[type]} data [description]
+ * @return {[type]}      [description]
+ */
+
 Brick.extend = function(tmpl, data) {
   var plugins = [];
   var bindings = {};
-  var factory = function(str, model) {
-    var view = new Brick(str || tmpl, model || data);
-    each(bindings, function(name, binding) {
-      view.add(name, binding);
-    });
+  var factory = function(model) {
+    var view = new Brick(tmpl, model || data);
+    view.add(bindings);
     each(plugins, function(key, plugin) {
       view.use.apply(view, plugin);
     });
@@ -77,6 +94,7 @@ Brick.extend = function(tmpl, data) {
     return factory;
   };
 
+  //NOTE: add multiple
   factory.add = function(name, binding) {
     bindings[name] = binding;
     return factory;
@@ -84,6 +102,7 @@ Brick.extend = function(tmpl, data) {
 
   return factory;
 };
+
 
 /**
  * Transform amything into dom.

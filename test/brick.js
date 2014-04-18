@@ -458,13 +458,13 @@ describe('factory/extend', function() {
   });
 
   it('should override brick Constructor', function() {
-    var span = brick.extend('<span>brick</span>');
-    var view = span('<button>button</button>', {
-      name: 'brick'
-    });
-    assert.equal(view.el.innerHTML, 'button');
+    var span = brick.extend('<span>{{label}}</span>');
+    var view = span({
+      label: 'brick'
+    }).dom('<button>{{label}}</button>')
+      .build();
+    assert.equal(view.el.innerHTML, 'brick');
     assert.equal(view.el.nodeName, 'BUTTON');
-    assert.equal(view.get('name'), 'brick');
   });
 
 });

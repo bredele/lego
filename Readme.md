@@ -55,7 +55,7 @@ Brick is also an ecosystem of plugins:
 
 ## Concept
 
-Brick is that tiny piece (2.58kb gzip) that composes well. It follows the UNIX philosophy and provides simply just what you need. Everything else is a module (using [npm and browserify](http://browserify.org) or [component](http://github.com/component/component)) with single responsability that you can reuse at scale.
+Brick is that tiny piece (3kb gzip) that composes well. It follows the UNIX philosophy and provides simply just what you need. Everything else is a module (using [npm and browserify](http://browserify.org) or [component](http://github.com/component/component)) with single responsability that you can reuse at scale.
 
 You can compose your owm framework. The possibilities are limitless and commonjs allows you to reuse functionnalities made by the community ([npm](https://www.npmjs.org/) or [component](http://component.io)) and stop duplicating your effort.
 
