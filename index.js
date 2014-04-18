@@ -6,7 +6,7 @@
 
 var Store = require('datastore');
 var cement = require('cement');
-var each = require('bredele-each');
+var each = require('looping');
 
 
 /**

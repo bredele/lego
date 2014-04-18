@@ -1,12 +1,12 @@
 {
   "name": "brickjs",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "MVVM building block to create real time and large scale applications in a flash",
   "main": "index.js",
   "scripts": {
     "test": "zuul -- test/*.js",
     "test-local": "zuul --local -- test/*.js",
-    "standalone" : "component build --standalone brick --name brick --out ."
+    "standalone": "component build --standalone brick --name brick --out ."
   },
   "repository": {
     "type": "git",
@@ -27,9 +27,9 @@
     "url": "https://github.com/bredele/brick/issues"
   },
   "dependencies": {
-    "bredele-each": "^0.1.2",
     "datastore": "^1.0.0",
-    "cement": "^0.3.1"
+    "cement": "^0.3.1",
+    "looping": "^1.0.0"
   },
   "devDependencies": {
     "mocha": "~1.17.1",
