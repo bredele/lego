@@ -2,7 +2,7 @@
 
   > Compose your own MVVM library.
 
-[![Build Status](https://travis-ci.org/bredele/brick-view.png?branch=master)](https://travis-ci.org/bredele/brick-view)  [![Selenium Test Status](https://saucelabs.com/buildstatus/bredele)](https://saucelabs.com/u/bredele)
+[![Build Status](https://travis-ci.org/bredele/brick-view.png?branch=master)](https://travis-ci.org/bredele/brick-view)  [![Selenium Test Status](https://saucelabs.com/buildstatus/bredele)](https://saucelabs.com/u/bredele) 
 <!-- Remember where you were young, how simple it was to stack few blocks of Lego to create your dream house? -->
 
 Brick makes it easy to create rich yet maintainable web interfaces by providing a set of composable and extensible components. It uses **[cement](http://github.com/bredele/cement)** to sync and update your UI with an underlying data **[store](http://github.com/bredele/datastore)**.
@@ -30,11 +30,9 @@ or play online
 
 [![view on requirebin](http://requirebin.com/badge.png)](http://requirebin.com/?gist=10794588)
 
-  > Brick is still in an experimental stage and some improvement and new features are coming.
-
 ## Browser support
 
-Let's face it, supporting IE8 is a pain but it's unfortunately still widely used in the industry. This is the reason why brick is fully tested and supports all mainstrean browsers, IE8 included.
+Supporting IE8 is a pain but it's unfortunately still widely used in the industry. This is the reason why brick is fully tested and supports all mainstrean browsers, IE8 included.
 
 
 [![Selenium Test Status](https://saucelabs.com/browser-matrix/bredele.svg)](https://saucelabs.com/u/bredele)
@@ -44,36 +42,28 @@ IE7 requires the use of JSON and querySelector polyfill.
 
 ## Concept
 
-Let's be honnest, there is enough MV* libraries out there and some of them are actually really good. It's not brick's intent to replace them. Instead, it follows the UNIX spirit and provides tiny modules (or bricks) with single responsability. They do one thing and do it well! They are the minimal amount of glue you need to create the web application you want.
+Brick is that tiny piece (2.58kb gzip) that composes well. It follows the UNIX philosophy and provides simply just what you need. Everything else is a module (using [npm and browserify](http://browserify.org) or [component](http://github.com/component/component)) with single responsability that you can reuse at scale.
 
-With equivalent features...
+You can compose your owm framework. The possibilities are limitless and commonjs allows you to reuse functionnalities made by the community ([npm](https://www.npmjs.org/) or [component](http://component.io)) and stop duplicating your effort.
 
-  * Observers
-  * Models and Collections
-  * Composable Views
-  * Fast DOM rendering
-  * Extendable Interpolation
-  * Automatic DOM Binding
-  * Extendable data-bindings (via jQuery-like plugins)
-  * Event-bus Architectural pattern (lifecycle hooks, configs, debug, etc)
-  * Loose coupling of modules
-  * Composable and Reusable components
-  * SVG binding
-  * IE support
+Event if brick is small, it has a fair bit of power under the hood:
+  - observer/emitter
+  - extendable models and collections
+  - computed properties
+  - localstorage
+  - composable views
+  - fast dom rendering
+  - interpolation
+  - filters
+  - composable data bindings (aka plugins)
+  - SVG binding
+  - IE support
+  - etc
 
-...Brickjs is probably one of the smallest (4kb gzip with require, 3kb without) and fastest implementation.
-
-Performance matters, really, but we also think you should be able to test, maintain and reuse your code in other projects. That's why Brickjs is based on Commonjs components and offers an ecosystem of independant [bricks](https://github.com/bredele/brick/wiki) and [modules](http://component.io/). 
-
-You can reuse its components outside of Brickjs itself, use them on server side with node.js or mix other components to get what you really need.
-
-<!-- 
-You should easily debug your code and if something goes wrong with it, it should not break your application. -->
-
-Last but not least, Brick API is really simple and just few minutes are enough to get into it.
+Brick is also simple. Just a minute is enough to get into it:
 
 ```html
-<div>
+<div class="el">
   <style>
     .brick {
       background: {{ color }};
@@ -84,14 +74,16 @@ Last but not least, Brick API is really simple and just few minutes are enough t
 ```
 
 ```js
-var view = brick(el, {
+var view = brick('.el', {
   color: 'red',
   label: 'Hello'
 }).build();
 
-//change label
+// change label
 view.set('label', 'World!');
 ```
+
+Let's be honnest, there is enough MV* libraries out there and some of them are actually really good. It's not brick's intent to replace them. Instead, brick's goal is to create an ecosytem of composable components to create rich and maintainable web applications in a flash.
 
 
 ## Installation
