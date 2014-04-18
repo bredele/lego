@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "zuul -- test/*.js",
-    "test-local": "zuul --local -- test/*.js"
+    "test-local": "zuul --local -- test/*.js",
+    "standalone" : "component build --standalone brick --name brick --out ."
   },
   "repository": {
     "type": "git",
