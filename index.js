@@ -58,6 +58,33 @@ function Brick(tmpl, data) {
 Brick.prototype = Store.prototype;
 
 
+Brick.extend = function(tmpl, data) {
+  var plugins = [];
+  var bindings = {};
+  var factory = function(str, model) {
+    var view = new Brick(str || tmpl, model || data);
+    each(bindings, function(name, binding) {
+      view.add(name, binding);
+    });
+    each(plugins, function(key, plugin) {
+      view.use.apply(view, plugin);
+    });
+    return view;
+  };
+
+  factory.use = function(fn, opts) {
+    plugins.push([fn, opts]);
+    return factory;
+  };
+
+  factory.add = function(name, binding) {
+    bindings[name] = binding;
+    return factory;
+  };
+
+  return factory;
+};
+
 /**
  * Transform amything into dom.
  *
@@ -108,7 +135,6 @@ Brick.prototype.add = function(name, plug) {
     each(name, this.add, this);
   } else {
     this.bindings.add(name, plug);
-    if(plug.init) plug.init(this);
   }
   return this;
 };

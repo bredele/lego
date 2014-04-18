@@ -69,6 +69,7 @@ Event if brick is small, it has a fair bit of power under the hood:
   - interpolation
   - filters
   - composable data bindings (aka plugins)
+  - lifecycle hooks (rendered, inserted, ready, removed, etc)
   - SVG binding
   - IE support
   - etc
