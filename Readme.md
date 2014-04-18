@@ -12,9 +12,11 @@ Brick has been built for **[wall](http://github.com/bredele/wall)**, an express-
 
 Give it a try you won't be disappointed!
 
+<a href="http://bredele.github.com/brick-examples/" target="_blank"><img src="https://runnable.com/external/styles/assets/runnablebtn.png" style="width:67px;height:25px;"></a>
 
-## 10 seconds example
+## 10 seconds examples
 
+Interpolation (see [online](http://requirebin.com/?gist=11064575)):
 ```js
 var view = brick('<span>{{ name }}</span>', {
   name: 'bredele'
@@ -23,11 +25,28 @@ var view = brick('<span>{{ name }}</span>', {
 view.build(document.body);
 ```
 
-<a href="http://bredele.github.com/brick-examples/" target="_blank"><img src="https://runnable.com/external/styles/assets/runnablebtn.png" style="width:67px;height:25px;"></a>
+[Plugins](#plugins):
+```js
+brick('<ul repeat><li>{{ name }}</li></ul>', [{
+    name: 'bredele' 
+  }])
+  .use(repeats)
+  .build();
+```
 
-or play online
+Factory (see [online](http://requirebin.com/?gist=11063834)):
+```js
+var card = brick.extend('<button>{{ name }}</button>')
+  .use(interval(100))
 
-[![view on requirebin](http://requirebin.com/badge.png)](http://requirebin.com/?gist=10794588)
+var view = card({
+  name: 'bredele'
+}).build();
+```
+
+<!-- Play online
+
+[![view on requirebin](http://requirebin.com/badge.png)](http://requirebin.com/?gist=10794588) -->
 
 ## Browser support
 
