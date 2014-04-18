@@ -21,11 +21,11 @@ module.exports = Brick;
  * 
  * Examples:
  * 
- *   var lego = require('lego');
+ *   var brick = require('brick');
  *   
- *   lego('<span>lego</span>');
- *   lego('<span>{{ label }}</span>', {
- *     label: 'lego'
+ *   brick('<span>brick</span>');
+ *   brick('<span>{{ label }}</span>', {
+ *     label: 'brick'
  *   });
  *
  * @event 'before ready'
@@ -58,6 +58,33 @@ function Brick(tmpl, data) {
 Brick.prototype = Store.prototype;
 
 
+/**
+ * Transform amything into dom.
+ *
+ * Examples:
+ *
+ *   brick.dom('<span>content</span>');
+ *   brick.dom(el);
+ *   brick.dom('.myEl');
+ * 
+ * @param  {String|Element} tmpl
+ * @return {Element}
+ * @api public
+ */
+
+Brick.dom = function(tmpl) {
+  if(typeof tmpl === 'string') {
+    if(tmpl[0] === '<') {
+      var div = document.createElement('div');
+      div.insertAdjacentHTML('beforeend', tmpl);
+      return div.firstChild;
+    } else {
+      return document.querySelector(tmpl);
+    }
+  }
+  return tmpl;
+};
+
 
 /**
  * Add attribure binding.
@@ -72,7 +99,7 @@ Brick.prototype = Store.prototype;
  *   
  * @param {String|Object} name
  * @param {Function} plug 
- * @return {Brick}
+ * @return {this}
  * @api public
  */
 
@@ -92,7 +119,7 @@ Brick.prototype.add = function(name, plug) {
  * 
  * @param  {String}   name
  * @param  {Function} fn
- * @return {Brick}
+ * @return {this}
  * @api public 
  */
 
@@ -113,21 +140,16 @@ Brick.prototype.filter = function(name, fn) {
  *
  *   view.dom('<span>lego</span>');
  *   view.dom(dom);
+ *   view.dom('#id');
  *   
  * @param  {String|Element} tmpl
- * @return {Brick}
+ * @return {this}
  * @event 'rendered' 
  * @api public
  */
 
 Brick.prototype.dom = function(tmpl) {
-  if(typeof tmpl === 'string') {
-    var div = document.createElement('div');
-    div.insertAdjacentHTML('beforeend', tmpl);
-    this.el = div.firstChild;
-  } else {
-    this.el = tmpl;
-  }
+  this.el = Brick.dom(tmpl);
   this.emit('rendered');
   return this;
 };
@@ -147,7 +169,7 @@ Brick.prototype.dom = function(tmpl) {
  *    
  * @param  {Element} parent
  * @param {Boolean} query
- * @return {Brick}
+ * @return {this}
  * @event 'before inserted'
  * @event 'inserted' 
  * @api public
@@ -169,7 +191,7 @@ Brick.prototype.build = function(parent, query) {
  * Remove attribute bindings, store
  * listeners and remove dom.
  * 
- * @return {Brick}
+ * @return {this}
  * @event 'before removed'
  * @event 'removed' 
  * @api public
@@ -187,4 +209,4 @@ Brick.prototype.remove = function() {
   return this;
 };
 
-//partials, directive
+//partials
