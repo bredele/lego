@@ -7,7 +7,6 @@
 
 Brick makes it easy to create rich yet maintainable web interfaces by providing a set of composable and extensible components. It uses **[cement](http://github.com/bredele/cement)** to sync and update your UI with an underlying data **[store](http://github.com/bredele/datastore)**.
 
-![brick](bricks.png)
 
 Brick has been built for **[wall](http://github.com/bredele/wall)**, an express-like framework to ease the creation of maintainable and large scale application. Brick is simple, composable and easy to learn. 
 
@@ -39,6 +38,20 @@ Supporting IE8 is a pain but it's unfortunately still widely used in the industr
 
 IE7 requires the use of JSON and querySelector polyfill.    
 
+
+## Plugins
+
+Brick is also an ecosystem of plugins:
+
+  - [events](http://github.com/bredele/gully) attach event handlers to your dom
+  - [repeat](http://github.com/bredele/repeat-brick) repeat dom
+  - [toggle and radio](http://github.com/bredele/control-brick) toggle or radio any dom elements
+  - [input](http://github.com/bredele/input-brick) double way binding
+  - [hidden](http://github.com/bredele/hidden-brick) hide your elements
+  - [nodes](http://github.com/bredele/nodes-brick) reference your dom nodes
+  - [stack](http://github.com/bredele/stack-brick) stack your dom nodes
+  - [html](http://github.com/bredele/html-brick) set inner html
+  - [attr](http://github.com/bredele/attr-brick) set html attribute
 
 ## Concept
 
