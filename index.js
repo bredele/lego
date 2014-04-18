@@ -10,7 +10,7 @@ var each = require('bredele-each');
 
 
 /**
- * Expose 'Lego'
+ * Expose 'Brick'
  */
 
 module.exports = Brick;
@@ -138,7 +138,7 @@ Brick.prototype.filter = function(name, fn) {
  * 
  * Examples:
  *
- *   view.dom('<span>lego</span>');
+ *   view.dom('<span>brick</span>');
  *   view.dom(dom);
  *   view.dom('#id');
  *   
@@ -202,11 +202,10 @@ Brick.prototype.remove = function() {
   this.emit('before removed');
   this.bindings.remove();
   if(parent) {
-      //this.emit('removed');
       parent.removeChild(this.el);
   }
   this.emit('removed');
   return this;
 };
 
-//partials
+//partials, stack
