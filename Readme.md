@@ -68,7 +68,7 @@ Brick is also an ecosystem of plugins:
   - [input](http://github.com/bredele/input-brick) double way binding
   - [hidden](http://github.com/bredele/hidden-brick) hide your elements
   - [nodes](http://github.com/bredele/nodes-brick) reference your dom nodes
-  - [stack](http://github.com/bredele/stack-brick) stack your dom nodes
+<!--  - [stack](http://github.com/bredele/stack-brick) stack your dom nodes -->
   - [html](http://github.com/bredele/html-brick) set inner html
   - [attr](http://github.com/bredele/attr-brick) set html attribute
 
