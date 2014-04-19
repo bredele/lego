@@ -34,7 +34,7 @@ brick('<ul repeat><li>{{ name }}</li></ul>', [{
   .build();
 ```
 
-Factory (see [online](http://requirebin.com/?gist=11063834)):
+Factory (see [online](http://requirebin.com/?gist=11070644)):
 ```js
 var card = brick.extend('<button>{{ name }}</button>')
   .use(interval(100))
@@ -58,7 +58,7 @@ Supporting IE8 is a pain but it's unfortunately still widely used in the industr
 IE7 requires the use of JSON and querySelector polyfill.    
 
 
-## Plugins
+<! -- ## Plugins
 
 Brick is also an ecosystem of plugins:
 
@@ -68,10 +68,11 @@ Brick is also an ecosystem of plugins:
   - [input](http://github.com/bredele/input-brick) double way binding
   - [hidden](http://github.com/bredele/hidden-brick) hide your elements
   - [nodes](http://github.com/bredele/nodes-brick) reference your dom nodes
-<!--  - [stack](http://github.com/bredele/stack-brick) stack your dom nodes -->
+ - [stack](http://github.com/bredele/stack-brick) stack your dom nodes 
   - [html](http://github.com/bredele/html-brick) set inner html
   - [attr](http://github.com/bredele/attr-brick) set html attribute
 
+-->
 ## Concept
 
 Brick is that tiny piece (3kb gzip) that composes well. It follows the UNIX philosophy and provides simply just what you need. Everything else is a module (using [npm and browserify](http://browserify.org) or [component](http://github.com/component/component)) with single responsability that you can reuse at scale.
