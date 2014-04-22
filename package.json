@@ -1,6 +1,6 @@
 {
   "name": "brickjs",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "MVVM building block to create real time and large scale applications in a flash",
   "main": "index.js",
   "scripts": {
@@ -29,7 +29,8 @@
   "dependencies": {
     "datastore": "^1.0.0",
     "cement": "^0.3.1",
-    "looping": "^1.0.0"
+    "looping": "^1.0.0",
+    "many": "^0.3.2"
   },
   "devDependencies": {
     "mocha": "~1.17.1",

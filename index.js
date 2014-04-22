@@ -7,6 +7,7 @@
 var Store = require('datastore');
 var cement = require('cement');
 var each = require('looping');
+var many = require('many');
 
 
 /**
@@ -95,10 +96,9 @@ Brick.extend = function(tmpl, data) {
   };
 
   //NOTE: add multiple
-  factory.add = function(name, binding) {
+  factory.add = many(function(name, binding) {
     bindings[name] = binding;
-    return factory;
-  };
+  });
 
   return factory;
 };
@@ -149,14 +149,9 @@ Brick.dom = function(tmpl) {
  * @api public
  */
 
-Brick.prototype.add = function(name, plug) {
-  if(typeof name !== 'string') {
-    each(name, this.add, this);
-  } else {
-    this.bindings.add(name, plug);
-  }
-  return this;
-};
+Brick.prototype.add = many(function(name, plug) {
+  this.bindings.add(name, plug);
+});
 
 
 /**
@@ -168,14 +163,9 @@ Brick.prototype.add = function(name, plug) {
  * @api public 
  */
 
-Brick.prototype.filter = function(name, fn) {
-  if(typeof name!== 'string') {
-    each(name, this.filter, this);
-  } else {
-    this.bindings.subs.filter(name, fn);
-  }
-  return this;
-};
+Brick.prototype.filter = many(function(name, fn) {
+  this.bindings.subs.filter(name, fn);
+});
 
 
 /**

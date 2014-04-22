@@ -308,12 +308,12 @@ describe("Bricks (aka plugins)", function() {
 
   it("should add multiple binding's plugins", function() {
     var view = brick().add({
-      "class" : function(){},
-      "other" : function(){}
+      "foo" : function(){},
+      "bar" : function(){}
     });
 
-    assert.notEqual(view.bindings.plugins['class'],undefined);
-    assert.notEqual(view.bindings.plugins['other'],undefined);    
+    assert.notEqual(view.bindings.plugins['foo'],undefined);
+    assert.notEqual(view.bindings.plugins['bar'],undefined);
 
   });
 });
