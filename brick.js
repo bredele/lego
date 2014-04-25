@@ -56,51 +56,215 @@ require.define = function (name, exports) {
   };
 };
 
-require.register("bredele~each@master", function (exports, module) {
+require.register("component~indexof@0.0.3", function (exports, module) {
+module.exports = function(arr, obj){
+  if (arr.indexOf) return arr.indexOf(obj);
+  for (var i = 0; i < arr.length; ++i) {
+    if (arr[i] === obj) return i;
+  }
+  return -1;
+};
+});
+
+require.register("component~trim@0.0.1", function (exports, module) {
+
+exports = module.exports = trim;
+
+function trim(str){
+  if (str.trim) return str.trim();
+  return str.replace(/^\s*|\s*$/g, '');
+}
+
+exports.left = function(str){
+  if (str.trimLeft) return str.trimLeft();
+  return str.replace(/^\s*/, '');
+};
+
+exports.right = function(str){
+  if (str.trimRight) return str.trimRight();
+  return str.replace(/\s*$/, '');
+};
+
+});
+
+require.register("bredele~supplant@0.2.0", function (exports, module) {
 
 /**
- * Expose 'each'
+ * Module dependencies.
+ * @api private
  */
 
-module.exports = function(obj, fn, scope){
-  if( obj instanceof Array) {
-    array(obj, fn, scope);
-  } else if(typeof obj === 'object') {
-    object(obj, fn, scope);
-  }
+var indexOf = require("component~indexof@0.0.3");
+var trim = require("component~trim@0.0.1");
+var re = /\.\w+|\w+ *\(|"[^"]*"|'[^']*'|\/([^/]+)\/|[a-zA-Z_]\w*/g;
+var cache = {}; //should itbe in this?
+
+
+/**
+ * Expose 'Supplant'
+ */
+
+module.exports = Supplant;
+
+
+
+/**
+ * Get string identifiers.
+ * 
+ * @param  {String} str 
+ * @return {Array} 
+ * @api private
+ */
+
+function props(str) {
+  //benchmark with using match and uniq array
+  var arr = [];
+  str
+    .replace(/\.\w+|\w+ *\(|"[^"]*"|'[^']*'|\/([^/]+)\//g, '')
+    .replace(/[a-zA-Z_]\w*/g, function(expr) {
+      if(!~indexOf(arr, expr)) arr.push(expr);
+    });
+  return arr;
+}
+
+
+function fn(_) {
+  return 'model.' + _;
+}
+
+
+/**
+ * Prefix uniq identifiers with string
+ * model.
+ * 
+ * @param  {String} str 
+ * @api private
+ */
+
+function map(str) {
+  var arr = props(str);
+  return str.replace(re, function(_){
+    if ('(' == _[_.length - 1]) return fn(_);
+    if (!~indexOf(arr, _)) return _;
+    return fn(_);
+  });
+}
+
+
+/**
+ * Scope statement with object.
+ * 
+ * @param  {string} statement
+ * @return {Function}
+ * @api private      
+ */
+
+function scope(str) {
+  return new Function('model', 'return ' + map(str));
+}
+
+
+/**
+ * Supplant constructor.
+ * @api public
+ */
+
+function Supplant() {
+  this.match = /\{\{([^}]+)\}([^}]*)\}/g;
+  this.filters = {};
+}
+
+
+/**
+ * Variable substitution on string.
+ *
+ * @param {String} text
+ * @param {Object} model
+ * @return {String}
+ * @api public
+ */
+
+Supplant.prototype.text = function(text, model) {
+  var _this = this;
+  return text.replace(this.match, function(_, expr, filters) {
+    var val;
+    //is there fast regex? may be use or
+    if(/[\.\'\[\+\(\|]/.test(expr)) {
+      var fn = cache[expr] = cache[expr] || scope(expr);
+      val = fn(model) || '';
+    } else {
+      val = model[trim(expr)] || '';
+    }
+    if(filters) {
+      var list = filters.split('|');
+      for(var i = 1, l = list.length; i < l; i++) {
+        var filter = _this.filters[trim(list[i])];
+        if(filter) val = filter(val);
+      }
+    }
+    return val;
+  });
 };
 
 
 /**
- * Object iteration.
- * @param  {Object}   obj   
- * @param  {Function} fn    
- * @param  {Object}   scope 
- * @api private
+ * Get uniq identifiers from string.
+ * 
+ * Examples:
+ *
+ *    .props('{{olivier + bredele}}');
+ *    // => ['olivier', 'bredele']
+ *
+ * @param {String} text
+ * @return {Array}
+ * @api public
  */
 
-function object(obj, fn, scope) {
-  for (var i in obj) {
-    if (obj.hasOwnProperty(i)) {
-      fn.call(scope, i, obj[i]);
-    }
-  }
-}
+Supplant.prototype.props = function(text) {
+  var exprs = [];
+  //NOTE: may be cache expression for text
+  text.replace(this.match, function(_, expr){
+    var val = trim(expr);
+    if(!~indexOf(exprs, val)) exprs = exprs.concat(props(val));
+  });
+  return exprs;
+};
 
 
 /**
- * Array iteration.
- * @param  {Array}   obj   
- * @param  {Function} fn    
- * @param  {Object}   scope 
- * @api private
+ * Add substitution filter.
+ * 
+ * Examples:
+ *
+ *    .filter('hello', function(str) {
+ *      return 'hello ' + str;
+ *    });
+ *
+ * @param {String} name
+ * @param {Function} fn
+ * @return {Supplant}
+ * @api public
  */
 
-function array(obj, fn, scope){
-  for(var i = 0, l = obj.length; i < l; i++){
-    fn.call(scope, i, obj[i]);
-  }
-}
+Supplant.prototype.filter = function(name, fn) {
+  this.filters[name] = fn;
+  return this;
+};
+
+
+//var exprs = expr.match(/([^|].*?)[^|](?=(?:\||$)(?!\|))/g);
+//http://jsperf.com/split-vs-regexp-interpolation
+//
+//with split:
+// var list = expr.split('|'),
+//     val = model[trim(list.shift())] || '';
+// for(var i = 0, l = list.length; i < l; i++) {
+//  val = _this.filters[trim(list[i])](val)
+// }
+// return val;
+
+//{{} | hello}
+
 });
 
 require.register("bredele~clone@master", function (exports, module) {
@@ -141,6 +305,54 @@ function clone(obj){
     return copy;
   }
   return obj;
+}
+});
+
+require.register("bredele~looping@1.1.1", function (exports, module) {
+
+/**
+ * Expose 'looping'
+ */
+
+module.exports = function(obj, fn, scope){
+  scope = scope || this;
+  if( obj instanceof Array) {
+    array(obj, fn, scope);
+  } else if(typeof obj === 'object') {
+    object(obj, fn, scope);
+  }
+};
+
+
+/**
+ * Object iteration.
+ * @param  {Object}   obj   
+ * @param  {Function} fn    
+ * @param  {Object}   scope 
+ * @api private
+ */
+
+function object(obj, fn, scope) {
+  for (var i in obj) {
+    if (obj.hasOwnProperty(i)) {
+      fn.call(scope, i, obj[i]);
+    }
+  }
+}
+
+
+/**
+ * Array iteration.
+ * @param  {Array}   obj   
+ * @param  {Function} fn    
+ * @param  {Object}   scope 
+ * @api private
+ */
+
+function array(obj, fn, scope){
+  for(var i = 0, l = obj.length; i < l; i++){
+    fn.call(scope, i, obj[i]);
+  }
 }
 });
 
@@ -312,7 +524,51 @@ Emitter.prototype.hasListeners = function(event){
 
 });
 
-require.register("bredele~datastore@master", function (exports, module) {
+require.register("bredele~many@0.3.3", function (exports, module) {
+
+/**
+ * Module dependencies.
+ * @api private
+ */
+
+var loop = require("bredele~looping@1.1.1");
+
+
+/**
+ * Expose many.
+ *
+ * Only works when the first argument of a function
+ * is a string.
+ *
+ * Examples:
+ *
+ *   var fn = many(function(name, data) {
+ *     // do something
+ *   });
+ *   
+ *   fn('bar', {});
+ *   fn({
+ *     'foo' : {},
+ *     'beep' : {}
+ *   });
+ *
+ * @param {Function}
+ * @return {Function} 
+ * @api public
+ */
+
+module.exports = function(fn) {
+	var many = function(str) {
+		if(typeof str === 'object') loop(str, many, this);
+		else fn.apply(this, arguments);
+		return this;
+	};
+	return many;
+};
+
+});
+
+require.register("bredele~datastore@1.0.5", function (exports, module) {
 
 /**
  * Module dependencies.
@@ -321,10 +577,10 @@ require.register("bredele~datastore@master", function (exports, module) {
 
 var Emitter = require("component~emitter@1.1.2");
 var clone = require("bredele~clone@master");
-var each = require("bredele~each@master");
+var each = require("bredele~looping@1.1.1");
+var many = require("bredele~many@0.3.3");
 try {
   var storage = window.localStorage;
-
 } catch(_) {
   var storage = null;
 }
@@ -338,7 +594,9 @@ module.exports = Store;
 
 
 /**
- * Store constructor
+ * Store constructor.
+ *
+ * @param {Object} data
  * @api public
  */
 
@@ -349,14 +607,13 @@ function Store(data) {
 }
 
 
-//is an emitter
-
 Emitter(Store.prototype);
 
 
 /**
  * Set store attribute.
- * example:
+ * 
+ * Examples:
  *
  *   //set
  *   .set('name', 'bredele');
@@ -370,18 +627,15 @@ Emitter(Store.prototype);
  * @api public
  */
 
-Store.prototype.set = function(name, value, strict) { //add object options
+Store.prototype.set = many(function(name, value, strict) {
   var prev = this.data[name];
-  //TODO: what happend if update store-object with an array and vice versa?
-  if(typeof name === 'object') return each(name, this.set, this);
   if(prev !== value) {
     this.data[name] = value;
     if(!strict) this.emit('updated', name, value);
     this.emit('change', name, value, prev);
     this.emit('change ' + name, value, prev);
   }
-  return this;
-};
+});
 
 
 /**
@@ -406,11 +660,10 @@ Store.prototype.get = function(name) {
  * 
  * @param {String} name
  * @return {Boolean}
- * @api private
+ * @api public
  */
 
 Store.prototype.has = function(name) {
-  //NOTE: I don't know if it should be public
   return this.data.hasOwnProperty(name);
 };
 
@@ -441,9 +694,11 @@ Store.prototype.del = function(name, strict) {
 
 /**
  * Set format middleware.
+ * 
  * Call formatter everytime a getter is called.
  * A formatter should always return a value.
- * example:
+ * 
+ * Examples:
  *
  *   .format('name', function(val) {
  *     return val.toUpperCase();
@@ -463,8 +718,9 @@ Store.prototype.format = function(name, callback, scope) {
 
 
 /**
- * Compute store attributes
- * example:
+ * Compute store attributes.
+ * 
+ * Examples:
  *
  *   .compute('name', function() {
  *     return this.firstName + ' ' + this.lastName;
@@ -586,8 +842,13 @@ Store.prototype.local = function(name, bool) {
 
 /**
  * Use middlewares to extend store.
+ * 
  * A middleware is a function with the store
  * as first argument.
+ *
+ * Examples:
+ *
+ *   store.use(plugin, 'something');
  * 
  * @param  {Function} fn 
  * @return {this}
@@ -595,7 +856,8 @@ Store.prototype.local = function(name, bool) {
  */
 
 Store.prototype.use = function(fn) {
-  fn(this);
+  var args = [].slice.call(arguments, 1);
+  fn.apply(this, [this].concat(args));
   return this;
 };
 
@@ -610,223 +872,18 @@ Store.prototype.toJSON = function(replacer, space) {
   return JSON.stringify(this.data, replacer, space);
 };
 
-//TODO: localstorage middleware like
-
 });
 
-require.register("component~indexof@0.0.3", function (exports, module) {
-module.exports = function(arr, obj){
-  if (arr.indexOf) return arr.indexOf(obj);
-  for (var i = 0; i < arr.length; ++i) {
-    if (arr[i] === obj) return i;
-  }
-  return -1;
-};
-
-});
-
-require.register("component~trim@0.0.1", function (exports, module) {
-
-exports = module.exports = trim;
-
-function trim(str){
-  if (str.trim) return str.trim();
-  return str.replace(/^\s*|\s*$/g, '');
-}
-
-exports.left = function(str){
-  if (str.trimLeft) return str.trimLeft();
-  return str.replace(/^\s*/, '');
-};
-
-exports.right = function(str){
-  if (str.trimRight) return str.trimRight();
-  return str.replace(/\s*$/, '');
-};
-
-});
-
-require.register("bredele~supplant@master", function (exports, module) {
-var indexOf = require("component~indexof@0.0.3"),
-		trim = require("component~trim@0.0.1"),
-		re = /\.\w+|\w+ *\(|"[^"]*"|'[^']*'|\/([^/]+)\/|[a-zA-Z_]\w*/g,
-		cache = {}; //should be in this?
-
-
-/**
- * Expose 'Supplant'
- */
-
-module.exports = Supplant;
-
-
-
-/**
- * Get string identifiers.
- * 
- * @param  {String} str 
- * @return {Array} 
- * @api private
- */
-
-function props(str) {
-  //benchmark with using match and uniq array
-  var arr = [];
-  str.replace(/\.\w+|\w+ *\(|"[^"]*"|'[^']*'|\/([^/]+)\//g, '')
-    .replace(/[a-zA-Z_]\w*/g, function(expr) {
-      if(!~indexOf(arr, expr)) arr.push(expr);
-    });
-  return arr;
-}
-
-
-function fn(_) {
-  return 'model.' + _;
-}
-
-
-/**
- * Prefix uniq identifiers with string
- * model.
- * 
- * @param  {String} str 
- * @api private
- */
-
-function map(str) {
-  var arr = props(str);
-  return str.replace(re, function(_){
-    if ('(' == _[_.length - 1]) return fn(_);
-    if (!~indexOf(arr, _)) return _;
-    return fn(_);
-  });
-}
-
-
-/**
- * Scope statement with object.
- * 
- * @param  {string} statement
- * @return {Function}
- * @api private      
- */
-
-function scope(str) {
-  return new Function('model', 'return ' + map(str));
-}
-
-
-/**
- * Supplant constructor.
- * @api public
- */
-
-function Supplant() {
-	this.match = /\{\{([^}]+)\}([^}]*)\}/g;
-	this.filters = {};
-}
-
-
-/**
- * Variable substitution on string.
- *
- * @param {String} text
- * @param {Object} model
- * @return {String}
- * @api public
- */
-
-Supplant.prototype.text = function(text, model) {
-	var _this = this;
-	return text.replace(this.match, function(_, expr, filters) {
-		var val;
-		//is there fast regex? may be use or
-		if(/[\.\'\[\+\(\|]/.test(expr)) {
-			var fn = cache[expr] = cache[expr] || scope(expr);
-			val = fn(model) || '';
-		} else {
-			val = model[trim(expr)] || '';
-		}
-		if(filters) {
-			var list = filters.split('|');
-			for(var i = 1, l = list.length; i < l; i++) {
-				var filter = _this.filters[trim(list[i])];
-				if(filter) val = filter(val);
-			}
-		}
-		return val;
-	});
-};
-
-
-/**
- * Get uniq identifiers from string.
- * example:
- *
- *    .props('{{olivier + bredele}}');
- *    //['olivier', 'bredele']
- *
- * @param {String} text
- * @return {Array}
- * @api public
- */
-
-Supplant.prototype.props = function(text) {
-  var exprs = [];
-  //NOTE: may be cache expression for text
-  text.replace(this.match, function(_, expr){
-    var val = trim(expr);
-    if(!~indexOf(exprs, val)) exprs = exprs.concat(props(val));
-  });
-  return exprs;
-};
-
-
-/**
- * Add substitution filter.
- * example:
- *
- *    .filter('hello', function(str) {
- *      return 'hello ' + str;
- *    });
- *
- * @param {String} name
- * @param {Function} fn
- * @return {Supplant}
- * @api public
- */
-
-Supplant.prototype.filter = function(name, fn) {
-	this.filters[name] = fn;
-	return this;
-};
-
-
-//var exprs = expr.match(/([^|].*?)[^|](?=(?:\||$)(?!\|))/g);
-//http://jsperf.com/split-vs-regexp-interpolation
-//
-//with split:
-// var list = expr.split('|'),
-//     val = model[trim(list.shift())] || '';
-// for(var i = 0, l = list.length; i < l; i++) {
-// 	val = _this.filters[trim(list[i])](val)
-// }
-// return val;
-
-//{{} | hello}
-
-});
-
-require.register("bredele~cement@0.3.1", function (exports, module) {
+require.register("bredele~cement@0.3.2", function (exports, module) {
 
 /**
  * Module dependencies.
  * @api private
  */
 
-var Store = require("bredele~datastore@master");
+var Store = require("bredele~datastore@1.0.5");
 var indexOf = require("component~indexof@0.0.3");
-var Supplant = require("bredele~supplant@master");
+var Supplant = require("bredele~supplant@0.2.0");
 
 
 /**
@@ -996,6 +1053,39 @@ Cement.prototype.remove = function() {
 
 });
 
+require.register("bredele~stomach@0.1.0", function (exports, module) {
+
+/**
+ * Stomach constructor.
+ *
+ * Generate dom from string or html
+ * node.
+ *
+ * Examples:
+ *
+ *   stomach('<button>hello</button>');
+ *   stomach('#hello');
+ *   stomach(node);
+ *   
+ * @param {String | Element} tmpl
+ * @return {Element}
+ * @api public
+ */
+
+module.exports = function(tmpl) {
+  if(typeof tmpl === 'string') {
+     if(tmpl[0] === '<') {
+       var div = document.createElement('div');
+       div.insertAdjacentHTML('beforeend', tmpl);
+       return div.firstChild;
+     } 
+     return document.querySelector(tmpl);
+   }
+   return tmpl;
+};
+
+});
+
 require.register("brick", function (exports, module) {
 
 /**
@@ -1003,9 +1093,10 @@ require.register("brick", function (exports, module) {
  * @api private
  */
 
-var Store = require("bredele~datastore@master");
-var cement = require("bredele~cement@0.3.1");
-var each = require("bredele~each@master");
+var Store = require("bredele~datastore@1.0.5");
+var cement = require("bredele~cement@0.3.2");
+var each = require("bredele~looping@1.1.1");
+var many = require("bredele~many@0.3.3");
 
 
 /**
@@ -1058,6 +1149,51 @@ Brick.prototype = Store.prototype;
 
 
 /**
+ * Brick factory.
+ *
+ * Useful to reuse your bricks.
+ * Examples:
+ *
+ *   var btn = brick.extend('<button i18n>{{ label }}</button>')
+ *     .use(plugin)
+ *     .add('i18n', lang());
+ *
+ *   var view = btn({
+ *     label: 'my button'
+ *   }).build();
+ *   
+ * @param  {[type]} tmpl [description]
+ * @param  {[type]} data [description]
+ * @return {[type]}      [description]
+ */
+
+Brick.extend = function(tmpl, data) {
+  var plugins = [];
+  var bindings = {};
+  var factory = function(model) {
+    var view = new Brick(tmpl, model || data);
+    view.add(bindings);
+    each(plugins, function(key, plugin) {
+      view.use.apply(view, plugin);
+    });
+    return view;
+  };
+
+  factory.use = function(fn, opts) {
+    plugins.push([fn, opts]);
+    return factory;
+  };
+
+  //NOTE: add multiple
+  factory.add = many(function(name, binding) {
+    bindings[name] = binding;
+  });
+
+  return factory;
+};
+
+
+/**
  * Transform amything into dom.
  *
  * Examples:
@@ -1071,18 +1207,7 @@ Brick.prototype = Store.prototype;
  * @api public
  */
 
-Brick.dom = function(tmpl) {
-  if(typeof tmpl === 'string') {
-    if(tmpl[0] === '<') {
-      var div = document.createElement('div');
-      div.insertAdjacentHTML('beforeend', tmpl);
-      return div.firstChild;
-    } else {
-      return document.querySelector(tmpl);
-    }
-  }
-  return tmpl;
-};
+Brick.dom = require("bredele~stomach@0.1.0");
 
 
 /**
@@ -1102,15 +1227,9 @@ Brick.dom = function(tmpl) {
  * @api public
  */
 
-Brick.prototype.add = function(name, plug) {
-  if(typeof name !== 'string') {
-    each(name, this.add, this);
-  } else {
-    this.bindings.add(name, plug);
-    if(plug.init) plug.init(this);
-  }
-  return this;
-};
+Brick.prototype.add = many(function(name, plug) {
+  this.bindings.add(name, plug);
+});
 
 
 /**
@@ -1122,14 +1241,9 @@ Brick.prototype.add = function(name, plug) {
  * @api public 
  */
 
-Brick.prototype.filter = function(name, fn) {
-  if(typeof name!== 'string') {
-    each(name, this.filter, this);
-  } else {
-    this.bindings.subs.filter(name, fn);
-  }
-  return this;
-};
+Brick.prototype.filter = many(function(name, fn) {
+  this.bindings.subs.filter(name, fn);
+});
 
 
 /**
