@@ -8,7 +8,8 @@
     "bredele/cement": "*",
     "bredele/datastore": "*",
     "bredele/looping": "*",
-    "bredele/many": "~0.3.2"
+    "bredele/many": "~0.3.2",
+    "bredele/stomach": "~0.1.0"
   },
   "development": {},
   "license": "MIT",

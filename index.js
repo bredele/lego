@@ -118,18 +118,7 @@ Brick.extend = function(tmpl, data) {
  * @api public
  */
 
-Brick.dom = function(tmpl) {
-  if(typeof tmpl === 'string') {
-    if(tmpl[0] === '<') {
-      var div = document.createElement('div');
-      div.insertAdjacentHTML('beforeend', tmpl);
-      return div.firstChild;
-    } else {
-      return document.querySelector(tmpl);
-    }
-  }
-  return tmpl;
-};
+Brick.dom = require('stomach');
 
 
 /**
