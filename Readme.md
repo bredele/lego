@@ -58,19 +58,19 @@ Supporting IE8 is a pain but it's unfortunately still widely used in the industr
 IE7 requires the use of JSON and querySelector polyfill.    
 
 
-<!-- ## Plugins
+## Plugins
 
 Brick is also an ecosystem of plugins:
 
   - [events](http://github.com/bredele/gully) attach event handlers to your dom
-  - [repeat](http://github.com/bredele/repeat-brick) repeat dom
+  - [repeat](http://github.com/bredele/repit) repeat dom
   - [toggle and radio](http://github.com/bredele/control-brick) toggle or radio any dom elements
-  - [input](http://github.com/bredele/input-brick) double way binding
+  - [input](http://github.com/bredele/wired) double way binding
   - [hidden](http://github.com/bredele/hidden-brick) hide your elements
   - [nodes](http://github.com/bredele/nodes-brick) reference your dom nodes
- - [stack](http://github.com/bredele/stack-brick) stack your dom nodes 
+  - [stack](http://github.com/bredele/stack-brick) stack your dom nodes 
   - [html](http://github.com/bredele/html-brick) set inner html
-  - [attr](http://github.com/bredele/attr-brick) set html attribute -->
+  - [attr](http://github.com/bredele/attr-brick) set html attribute
 
 
 ## Concept
