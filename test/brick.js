@@ -31,7 +31,7 @@ describe("API", function() {
   });
 
   it("should have the following API", function() {
-    assert(obj.html);
+    assert(obj.dom);
     assert(obj.freeze);
     assert(obj.register);
     assert(obj.build);
@@ -42,20 +42,31 @@ describe("API", function() {
 
 describe("Basic rendering", function() {
 
-  it("should render string into dom", function() {
-    var obj = brick();
-    obj.html('<button>hello</button>');
+  var obj;
+  beforeEach(function() {
+    obj = brick();
+  });
 
+
+  it("should render string into dom", function() {
+    obj.dom('<button>hello</button>');
     assert.equal(obj.el.innerHTML, 'hello');
     assert.equal(obj.el.nodeName, 'BUTTON');
   });
 
-  it("should accept dom", function() {
-    var obj = brick();
+  it("should render from existing dom", function() {
     var div = document.createElement('ul');
-    obj.html(div);
+    obj.dom(div);
     
     assert.equal(obj.el.nodeName, 'UL');
+  });
+
+  it('should render from query selection', function() {
+    document.body.insertAdjacentHTML('beforeend', '<section class="brick-test">');
+    obj.dom('.brick-test');
+
+    assert.equal(obj.el.nodeName, 'SECTION');
+    assert.equal(obj.el.getAttribute('class'), 'brick-test');
   });
 
 });

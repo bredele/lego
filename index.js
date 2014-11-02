@@ -30,6 +30,7 @@ function Brick() {
 
 Brick.prototype = Store.prototype;
 
+
 /**
  * Transform amything into dom.
  *
@@ -47,17 +48,25 @@ Brick.prototype = Store.prototype;
 Brick.dom = require('stomach');
 
 
-Brick.prototype.html = function(arg) {
+/**
+ * Create brick dom element from
+ * string or existing dom element.
+ * 
+ * @param  {String | Element}  arg 
+ * @return {this}
+ * @api public
+ */
+
+Brick.prototype.dom = function(arg) {
   this.el = Brick.dom(arg);
+  return this;
 };
+
 
 Brick.prototype.attr = function() {
   
 };
 
-Brick.prototype.dom = function() {
-  
-};
 
 Brick.prototype.build = function() {
   
