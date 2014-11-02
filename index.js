@@ -84,6 +84,20 @@ Brick.prototype.dom = function(arg) {
 /**
  * Add attribute binding.
  *
+ * As seen below, a brick can bind
+ * existing attributes, dataset or
+ * custom attributes.
+ *
+ * Examples:
+ *
+ *   brick.attr('class', fn);
+ *   brick.attr('awesome', fn);
+ *   brick.attr('data-test', fn);
+ *   brick.attr({
+ *     class: fn,
+ *     'data-test': cb
+ *   })
+ *
  * @note using closure is more
  * efficient than using native bind.
  * 
