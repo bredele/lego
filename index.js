@@ -1,5 +1,12 @@
 
 /**
+ * Module dependencies.
+ */
+
+var Store = require('datastore');
+
+
+/**
  * Expose 'brick'
  */
 
@@ -12,11 +19,13 @@ module.exports = brick;
  */
 
 function brick() {
-  //do something
+  return new Brick();
 }
 
 
 function Brick() {
-
+  Store.call(this);
 }
 
+
+Brick.prototype = Store.prototype;

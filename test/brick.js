@@ -15,7 +15,7 @@ describe("API", function() {
   });
   
 
-  it("should be an component/emitter", function() {
+  it("should be a component/emitter", function() {
     assert(obj.emit);
     assert(obj.on);
     assert(obj.once);
@@ -29,4 +29,13 @@ describe("API", function() {
     assert(obj.reset);
     assert(obj.compute);
   });
+
+  it("should have the following API", function() {
+    assert(obj.dom);
+    assert(obj.freeze);
+    assert(obj.register);
+    assert(obj.build);
+    assert(obj.attr);
+  });
+  
 });

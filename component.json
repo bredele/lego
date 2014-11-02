@@ -5,11 +5,6 @@
   "version": "0.3.6",
   "keywords": [],
   "dependencies": {
-    "bredele/datastore": "^1.0.0",
-    "bredele/cement": "^0.3.1",
-    "bredele/looping": "^1.0.0",
-    "bredele/many": "^0.3.2",
-    "bredele/stomach": "^0.1.0"
   },
   "development": {},
   "license": "MIT",
