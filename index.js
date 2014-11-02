@@ -4,6 +4,7 @@
  */
 
 var Store = require('datastore');
+var Cement = require('cement');
 
 
 /**
@@ -25,6 +26,7 @@ function brick() {
 
 function Brick() {
   Store.call(this);
+  this.cement = new Cement();
 }
 
 
@@ -63,13 +65,40 @@ Brick.prototype.dom = function(arg) {
 };
 
 
-Brick.prototype.attr = function() {
-  
+/**
+ * Add attribute binding.
+ *
+ * @note using closure is more
+ * efficient than using native bind
+ * 
+ * @param  {String} name 
+ * @param  {Function} binding
+ * @return {this}
+ * @api public
+ */
+
+Brick.prototype.attr = function(name, binding) {
+  var that = this;
+  this.cement.bind(name, function(node, content) {
+    binding.call(that, node, content);
+  });
+  return this;
 };
 
 
+/**
+ * Apply bindings on dom
+ * element.
+ * 
+ * @return {this}
+ * @api public
+ */
+
 Brick.prototype.build = function() {
-  
+  this.cement.render(this.el, function() {
+
+  });
+  return this;
 };
 
 Brick.prototype.freeze = function() {

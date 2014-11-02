@@ -71,3 +71,28 @@ describe("Basic rendering", function() {
 
 });
 
+describe("Attribute bindings", function() {
+  
+  var obj;
+  beforeEach(function() {
+    obj = brick();
+    obj.dom('<section data-test="hello">');
+  });
+
+  it("should apply bindings", function(done) {
+    obj.attr('data-test', function(node, content) {
+      if(content === 'hello') done();
+    });
+    obj.build();
+  });
+
+  it('should scope binding with itself', function(done) {
+    obj.set('name', 'olivier');
+    obj.attr('data-test', function(node, content) {
+      if(this.get('name') === 'olivier') done();
+    });
+    obj.build();
+  });
+
+});
+
