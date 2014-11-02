@@ -19,13 +19,14 @@ module.exports = brick;
  * @api public
  */
 
-function brick() {
-  return new Brick();
+function brick(tmpl, data) {
+  return new Brick(tmpl, data);
 }
 
 
-function Brick() {
-  Store.call(this);
+function Brick(tmpl, data) {
+  Store.call(this, data);
+  this.dom(tmpl);
   this.cement = new Cement();
 }
 
@@ -69,7 +70,7 @@ Brick.prototype.dom = function(arg) {
  * Add attribute binding.
  *
  * @note using closure is more
- * efficient than using native bind
+ * efficient than using native bind.
  * 
  * @param  {String} name 
  * @param  {Function} binding

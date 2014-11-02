@@ -76,7 +76,7 @@ describe("Attribute bindings", function() {
   var obj;
   beforeEach(function() {
     obj = brick();
-    obj.dom('<section data-test="hello">');
+    obj.dom('<section data-test="hello">content</section>');
   });
 
   it("should apply bindings", function(done) {
@@ -95,4 +95,22 @@ describe("Attribute bindings", function() {
   });
 
 });
+
+describe("Constructor", function() {
+
+  it("should set template", function() {
+    var obj = brick('<button>hello</button>');
+    assert.equal(obj.el.innerHTML, 'hello');
+    assert.equal(obj.el.nodeName, 'BUTTON');
+  });
+  
+  it("should set model", function() {
+    var obj = brick('<button>hello</button>', {
+      name: 'olivier'
+    });
+    assert.equal(obj.get('name'), 'olivier');
+
+  });
+});
+
 
