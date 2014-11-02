@@ -141,9 +141,18 @@ Brick.prototype.build = function() {
  */
 
 Brick.prototype.freeze = function() {
-  // clone template
-  // clone bindings
   var brick = new Brick();
+  var clone = this.tmpl.cloneNode;
+  
+  // clone template
+  if(!clone) brick.dom(this.tmpl);
+  else brick.dom(this.tmpl.cloneNode(true));
+
+  // clone bindings
+  brick.attr(this.cement.bindings);
+
+  // clone data
+  brick.set(this.data);
   return brick;
 };
 
