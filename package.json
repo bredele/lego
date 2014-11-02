@@ -1,6 +1,6 @@
 {
   "name": "brickjs",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "description": "MVVM building block to create real time and large scale applications in a flash",
   "main": "index.js",
   "scripts": {
