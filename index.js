@@ -24,6 +24,19 @@ function brick(tmpl, data) {
 }
 
 
+/**
+ * Brick constructor.
+ *
+ * Examples:
+ *
+ *   var address = brick('<address>');
+ *   var address = brick('<address>', data);
+ * 
+ * @param {String | Element?} tmpl
+ * @param {Object?} data
+ * @api public
+ */
+
 function Brick(tmpl, data) {
   Store.call(this, data);
   this.dom(tmpl);
