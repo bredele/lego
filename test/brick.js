@@ -36,6 +36,7 @@ describe("API", function() {
     assert(obj.register);
     assert(obj.build);
     assert(obj.attr);
+    assert(obj.use);
   });
   
 });
@@ -76,10 +77,10 @@ describe("Attribute bindings", function() {
   var obj;
   beforeEach(function() {
     obj = brick();
-    obj.dom('<section data-test="hello">content</section>');
+    obj.dom('<section class="section" data-test="hello">content</section>');
   });
 
-  it("should apply bindings", function(done) {
+  it("should apply binding", function(done) {
     obj.attr('data-test', function(node, content) {
       if(content === 'hello') done();
     });
@@ -92,6 +93,20 @@ describe("Attribute bindings", function() {
       if(this.get('name') === 'olivier') done();
     });
     obj.build();
+  });
+
+  it('should apply multiple bindings', function() {
+    var result = '';
+    obj.attr({
+      'data-test' : function(node, content) {
+        result += content;
+      },
+      'class' : function(node, content) {
+        result += content;
+      }
+    });
+    obj.build();
+    assert.equal(result, 'sectionhello');
   });
 
 });
@@ -112,5 +127,23 @@ describe("Constructor", function() {
 
   });
 });
+
+describe("Freeze", function() {
+  
+  it("should return a new brick", function() {
+    var obj = brick('<section class="section">')
+      .use('section', function(node, content) {
+        node.innerHTML = content;
+      });
+
+    var other = obj.freeze();
+    other.build();
+
+    assert.equal(obj.el.innerHTML, '');
+    assert.equal(other.el.innerHTML = 'section');
+  });
+  
+});
+
 
 

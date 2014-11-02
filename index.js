@@ -5,6 +5,7 @@
 
 var Store = require('datastore');
 var Cement = require('cement');
+var many = require('many');
 
 
 /**
@@ -74,6 +75,7 @@ Brick.dom = require('stomach');
  */
 
 Brick.prototype.dom = function(arg) {
+  this.tmpl = arg;
   this.el = Brick.dom(arg);
   return this;
 };
@@ -91,13 +93,13 @@ Brick.prototype.dom = function(arg) {
  * @api public
  */
 
-Brick.prototype.attr = function(name, binding) {
+Brick.prototype.attr = many(function(name, binding) {
   var that = this;
   this.cement.bind(name, function(node, content) {
     binding.call(that, node, content);
   });
   return this;
-};
+});
 
 
 /**
@@ -115,9 +117,22 @@ Brick.prototype.build = function() {
   return this;
 };
 
+
+/**
+ * Return a new brick from
+ * its current state.
+ *
+ * 
+ * @return {Brick}
+ */
+
 Brick.prototype.freeze = function() {
-  
+  // clone template
+  // clone bindings
+  var brick = new Brick();
+  return brick;
 };
+
 
 Brick.prototype.register = function() {
   
