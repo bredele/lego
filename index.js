@@ -29,3 +29,44 @@ function Brick() {
 
 
 Brick.prototype = Store.prototype;
+
+/**
+ * Transform amything into dom.
+ *
+ * Examples:
+ *
+ *   brick.dom('<span>content</span>');
+ *   brick.dom(el);
+ *   brick.dom('.myEl');
+ * 
+ * @param  {String|Element} tmpl
+ * @return {Element}
+ * @api public
+ */
+
+Brick.dom = require('stomach');
+
+
+Brick.prototype.html = function(arg) {
+  this.el = Brick.dom(arg);
+};
+
+Brick.prototype.attr = function() {
+  
+};
+
+Brick.prototype.dom = function() {
+  
+};
+
+Brick.prototype.build = function() {
+  
+};
+
+Brick.prototype.freeze = function() {
+  
+};
+
+Brick.prototype.register = function() {
+  
+};

@@ -27,7 +27,8 @@
     "url": "https://github.com/bredele/brick/issues"
   },
   "dependencies": {
-    "datastore": "^1.0.6"
+    "datastore": "^1.0.6",
+    "stomach": "^0.1.0"
   },
   "devDependencies": {
     "mocha": "~1.17.1",

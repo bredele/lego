@@ -31,7 +31,7 @@ describe("API", function() {
   });
 
   it("should have the following API", function() {
-    assert(obj.dom);
+    assert(obj.html);
     assert(obj.freeze);
     assert(obj.register);
     assert(obj.build);
@@ -39,3 +39,24 @@ describe("API", function() {
   });
   
 });
+
+describe("Basic rendering", function() {
+
+  it("should render string into dom", function() {
+    var obj = brick();
+    obj.html('<button>hello</button>');
+
+    assert.equal(obj.el.innerHTML, 'hello');
+    assert.equal(obj.el.nodeName, 'BUTTON');
+  });
+
+  it("should accept dom", function() {
+    var obj = brick();
+    var div = document.createElement('ul');
+    obj.html(div);
+    
+    assert.equal(obj.el.nodeName, 'UL');
+  });
+
+});
+
