@@ -134,13 +134,10 @@ describe("Freeze", function() {
     var obj = brick('<section class="section">')
       .attr('class', function(node, content) {
         node.innerHTML = content;
-      });
+      }).freeze();
 
 
-    var other = obj.freeze();
-    other.build();
-
-    assert.equal(obj.el.innerHTML, '');
+    var other = obj().build();
     assert.equal(other.el.innerHTML ,'section');
   });
   

@@ -134,26 +134,46 @@ Brick.prototype.build = function() {
 
 /**
  * Return a new brick from
- * its current state.
+ * a brick current's state.
  *
+ * Freeze is better than a simple extend.
+ * You can freeze a living brick with
+ * its data.
+ *
+ * Examples;
+ *
+ *   var vehicle = brick(tmpl, data)
+ *     .attr('type', cb)
+ *     .freeze();
+ *
+ *   var car = vehicle();
+ *   car.build();
+ *
+ *
+ * @note freeze is still experimental 
+ * and will probably change a lot.
+ *
+ * @note should we return a factory
+ * or the a new brick right away?
  * 
- * @return {Brick}
+ * @return {Function} brick factory
+ * @api public
  */
 
 Brick.prototype.freeze = function() {
-  var brick = new Brick();
-  var clone = this.tmpl.cloneNode;
-  
-  // clone template
-  if(!clone) brick.dom(this.tmpl);
-  else brick.dom(this.tmpl.cloneNode(true));
+  var data = this.data;
+  var bindings = this.cement.bindings;
+  var dom = this.tmpl;
+  if(this.tmpl.cloneNode) dom = this.tmpl.cloneNode(true);
 
-  // clone bindings
-  brick.attr(this.cement.bindings);
-
-  // clone data
-  brick.set(this.data);
-  return brick;
+  return function(tmpl, obj) {
+    var brick = new Brick(tmpl || dom);
+    // @note we should clone data and pass in constructor
+    brick.set(data);
+    brick.set(obj);
+    brick.attr(bindings);
+    return brick;
+  };
 };
 
 
