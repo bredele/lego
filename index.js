@@ -128,6 +128,7 @@ Brick.prototype.attr = many(function(name, binding) {
 Brick.prototype.build = function() {
   var tmpl = mouth(this.data);
   this.cement.render(this.el, function(content, node) {
+    //@note benchmark indexOf('$') it seems it doesn't change anything
     node.nodeValue = tmpl(content);
   });
   return this;

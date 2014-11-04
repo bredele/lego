@@ -168,7 +168,7 @@ describe("Interpolation", function() {
       });
       obj.build();
       obj.set('label', 'bredele');
-      assert.equal(obj.el.innerHTML, 'bredele');  
+      assert.equal(obj.el.innerHTML, 'bredele');
     });
     
   });
@@ -190,6 +190,24 @@ describe("Freeze", function() {
   });
   
 });
+
+describe('benchmark', function() {
+  var result = 0;
+  function bench() {
+    var obj = brick('<section class="${test}"><ul class="${label}"><li class="ola"></li></ul></section>', {
+      label: 'olivier'
+    });
+
+    var to = performance.now();
+    obj.build();
+    result += performance.now() - to;
+  }
+
+  for(var l = 1000; l--;) {
+    bench();
+  }
+  console.log(result/ 1000);
+}); 
 
 
 
