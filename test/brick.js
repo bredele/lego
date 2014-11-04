@@ -140,7 +140,7 @@ describe("Interpolation", function() {
   });
 
   it("should substitue multiple expressions in the same node", function() {
-        var obj = brick('<button>${label} from ${country}</button>', {
+    var obj = brick('<button>${label} from ${country}</button>', {
       label: 'olivier',
       country: 'france'
     });
@@ -149,6 +149,16 @@ describe("Interpolation", function() {
     assert.equal(obj.el.innerHTML, 'olivier from france');
   });
   
+  it("should substitue every text node", function() {
+    var obj = brick('<button class="${country}">${label}</button>', {
+      label: 'olivier',
+      country: 'france'
+    });
+    obj.build();
+
+    assert.equal(obj.el.className, 'france');
+    assert.equal(obj.el.innerHTML, 'olivier');
+  });
   
 });
 
