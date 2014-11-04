@@ -130,7 +130,7 @@ describe("Constructor", function() {
 
 describe("Interpolation", function() {
 
-  it("should substitute sinple expression", function() {
+  it("should substitute single expression", function() {
     var obj = brick('<button>${label}</button>', {
       label: 'olivier'
     });
@@ -138,6 +138,17 @@ describe("Interpolation", function() {
 
     assert.equal(obj.el.innerHTML, 'olivier');
   });
+
+  it("should substitue multiple expressions in the same node", function() {
+        var obj = brick('<button>${label} from ${country}</button>', {
+      label: 'olivier',
+      country: 'france'
+    });
+    obj.build();
+
+    assert.equal(obj.el.innerHTML, 'olivier from france');
+  });
+  
   
 });
 
