@@ -30,7 +30,8 @@
     "datastore": "^1.0.6",
     "stomach": "^0.1.0",
     "cement": "^0.4.0",
-    "many": "^0.3.3"
+    "many": "^0.3.3",
+    "mouth": "0.0.0"
   },
   "devDependencies": {
     "mocha": "~1.17.1",

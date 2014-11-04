@@ -6,6 +6,7 @@
 var Store = require('datastore');
 var Cement = require('cement');
 var many = require('many');
+var mouth = require('mouth');
 
 
 /**
@@ -125,8 +126,9 @@ Brick.prototype.attr = many(function(name, binding) {
  */
 
 Brick.prototype.build = function() {
-  this.cement.render(this.el, function() {
-
+  var tmpl = mouth(this.data);
+  this.cement.render(this.el, function(content, node) {
+    node.nodeValue = tmpl(content);
   });
   return this;
 };

@@ -134,6 +134,7 @@ describe("Interpolation", function() {
     var obj = brick('<button>${label}</button>', {
       label: 'olivier'
     });
+    obj.build();
 
     assert.equal(obj.el.innerHTML, 'olivier');
   });
