@@ -159,6 +159,19 @@ describe("Interpolation", function() {
     assert.equal(obj.el.className, 'france');
     assert.equal(obj.el.innerHTML, 'olivier');
   });
+
+  describe('live interpolation', function() {
+
+    it("should update text node on model change", function() {
+      var obj = brick('<button>${label}</button>', {
+        label: 'olivier'
+      });
+      obj.build();
+      obj.set('label', 'bredele');
+      assert.equal(obj.el.innerHTML, 'bredele');  
+    });
+    
+  });
   
 });
 
