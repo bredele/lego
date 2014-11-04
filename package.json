@@ -31,7 +31,7 @@
     "stomach": "^0.1.0",
     "cement": "^0.4.0",
     "many": "^0.3.3",
-    "mouth": "0.0.0"
+    "mouth": "^0.1.2"
   },
   "devDependencies": {
     "mocha": "~1.17.1",

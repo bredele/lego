@@ -10,6 +10,14 @@ var mouth = require('mouth');
 
 
 /**
+ * Expression cache.
+ * @type {Object}
+ */
+
+var cache = {};
+
+
+/**
  * Expose 'brick'
  */
 
@@ -126,13 +134,30 @@ Brick.prototype.attr = many(function(name, binding) {
  */
 
 Brick.prototype.build = function() {
-  var tmpl = mouth(this.data);
+  var that = this;
   this.cement.render(this.el, function(content, node) {
+    // check if cached and don't need to compile
+    // if not cached, cache a new function if complex
+    // expression otherwise just get data from model.
+
     //@note benchmark indexOf('$') it seems it doesn't change anything
-    node.nodeValue = tmpl(content);
+    var compiled = mouth(content);
+    var props = compiled.props;
+    var fn = cache[content] = cache[content] || compiled.text;
+    var handle = function() {
+      node.nodeValue = fn(that.data);
+    };
+
+    handle();
+
+    for(var l = props.length; l--;) {
+      that.on('change ' + props[l], handle);
+    }
   });
   return this;
 };
+
+
 
 
 /**
