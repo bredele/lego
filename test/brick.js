@@ -128,6 +128,19 @@ describe("Constructor", function() {
   });
 });
 
+describe("Interpolation", function() {
+
+  it("should substitute sinple expression", function() {
+    var obj = brick('<button>${label}</button>', {
+      label: 'olivier'
+    });
+
+    assert.equal(obj.el.innerHTML, 'olivier');
+  });
+  
+});
+
+
 describe("Freeze", function() {
   
   it("should return a new brick", function() {
