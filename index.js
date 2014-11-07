@@ -208,6 +208,11 @@ Brick.prototype.freeze = function() {
 /**
  * Add custom element.
  *
+ * Brick allows you to create your
+ * own tags (with the web component
+ * standard) or to override existing
+ * one.
+ *
  * Examples:
  *
  *   var list = brick('<div><user /></div>');
@@ -225,15 +230,12 @@ Brick.prototype.freeze = function() {
  */
 
 Brick.prototype.tag = function(name, brick) {
-
   brick.build();
-
-  var nodes = this.el.querySelectorAll(name);
 
   loop(this.el.querySelectorAll(name), function(node) {
     var el = brick.el;
     replace(node, el);
-    loop(brick.el.querySelectorAll('content'), function(content) {
+    loop(el.querySelectorAll('content'), function(content) {
       var select = content.getAttribute('select');
       if(select) {
         replace(content, node.querySelector(select));
@@ -258,6 +260,7 @@ function loop(nodes, fn) {
   }
 }
 
+
 /**
  * Replace one node with another.
  *
@@ -271,8 +274,3 @@ function loop(nodes, fn) {
 function replace(old, el) {
   old.parentNode.replaceChild(el, old);
 }
-
-
-// this.el(); retourne host
-// this.el('.query'); retourne queryselector
-// this.el('tag', fn); applique une fonction sur l'element
