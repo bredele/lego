@@ -216,67 +216,52 @@ Brick.prototype.freeze = function() {
  *   list.tag('user', user);
  *
  * @todo  custom element from freezed brick
-
+ * @todo  custom element attribute binding 
+ * (using compiler and cache)
+ * 
  * @param  {String} name
  * @param  {Brick} brick
  * @return {this}
  */
 
 Brick.prototype.tag = function(name, brick) {
-    // note: tag devrait automatiquement appeller
-    // build parce que si on ne construit pas 
-    // user avant, parce qu'in remplace le tag brick
-    // croit que l'interpolation de de user et celui
-    // de list
-    //
-    //note: on doit etre sur que 
-    //le buile ne met pas la brick dans un fragment...
-    //juste parce que c'est peut deja dans le doc
-  brick.build();
-  // on devrait checker si brick a un element
-  // si non, est-ce qu'on devrait ecouter
-  // un evenement pour savoir quan?
 
-  // note1: should we do right away or wait for the
-  // build
+  brick.build();
+
   var nodes = this.el.querySelectorAll(name);
 
-  // step1 (replace custom element)
-  for(var i = 0, l = nodes.length; i < l; i++) {
-    var node = nodes[i];
-    // note2: replace or insert (to test)
-    replace(node, brick.el);
-
-    // step2
-    var contents = brick.el.querySelectorAll('content');
-    // on devrait avoir une methide qui prend un tag name
-    // et une fonction (comme va on se repete pas avec le loop)
-    for(var j = 0, h = contents.length; j < h; j++) {
-      var content = contents[j];
+  loop(this.el.querySelectorAll(name), function(node) {
+    var el = brick.el;
+    replace(node, el);
+    loop(brick.el.querySelectorAll('content'), function(content) {
       var select = content.getAttribute('select');
       if(select) {
         replace(content, node.querySelector(select));
       } else {
         var fragment = document.createDocumentFragment();
         var children = node.childNodes;
-
-        // note pn devrait peut etre faire ca de facon
-        // recursive, je pense c'estp lus rapide
-        // aussi regarder si children.item(0) est
-        // plus rapide
         for(var k = 0, g = children.length; k < g; k++) {
           fragment.appendChild(children[0]);
         }
         replace(content, fragment);
       }
-    }
-  }
+    });
+  });
+
   return this;
 };
 
 
+function loop(nodes, fn) {
+  for(var i = 0, l = nodes.length; i < l; i++) {
+    fn(nodes[i]);
+  }
+}
+
 /**
  * Replace one node with another.
+ *
+ * @note benchmark vs remove/insertBefore
  * 
  * @param {Element} old
  * @param {Element} el
