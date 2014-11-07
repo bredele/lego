@@ -206,6 +206,16 @@ Brick.prototype.freeze = function() {
 
 
 Brick.prototype.tag = function(name, brick) {
+    // note: tag devrait automatiquement appeller
+    // build parce que si on ne construit pas 
+    // user avant, parce qu'in remplace le tag brick
+    // croit que l'interpolation de de user et celui
+    // de list
+    //
+    //note: on doit etre sur que 
+    //le buile ne met pas la brick dans un fragment...
+    //juste parce que c'est peut deja dans le doc
+  brick.build();
   // on devrait checker si brick a un element
   // si non, est-ce qu'on devrait ecouter
   // un evenement pour savoir quan?
@@ -234,7 +244,6 @@ Brick.prototype.tag = function(name, brick) {
       } else {
         var fragment = document.createDocumentFragment();
         var children = node.childNodes;
-        console.log(children);
 
         // note pn devrait peut etre faire ca de facon
         // recursive, je pense c'estp lus rapide

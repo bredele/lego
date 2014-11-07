@@ -249,6 +249,42 @@ describe('custom element', function() {
     assert.equal(user.el.innerHTML, '<button>world</button>');
   });
 
+  it('should bind a custom element inner content', function() {
+    var list = brick('<div><user>${name}</user></div>', {
+      name: 'olivier'
+    });
+    var user = brick('<div>${name} and <content></content></div>', {
+      name: 'bruno'
+    });
+
+    list.tag('user', user);
+
+    list.build();
+
+    assert.equal(user.el.innerHTML, 'bruno and olivier');
+
+    list.set('name', 'bredele');
+
+    assert.equal(user.el.innerHTML, 'bruno and bredele');
+
+    user.set('name', 'amy');
+    assert.equal(user.el.innerHTML, 'amy and bredele');
+
+  });
+
+  // @note faire ca une fois qu'on est sur du templat eengine
+  // it('shoud bind the model of a brick and its custom element', function() {
+  //   var list = brick('<div><user title="${name}"></user></div>', {
+  //     name: 'olivier'
+  //   });
+  //   var user = brick('<div>${title}</div>');
+
+  //   list.tag('user', user);
+
+  //   list.build();
+
+  //   assert.equal(user.el.innerHTML, 'olivier');
+  // });
   
 });
 
