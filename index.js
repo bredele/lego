@@ -206,13 +206,34 @@ Brick.prototype.freeze = function() {
 
 
 Brick.prototype.tag = function(name, brick) {
+  // on devrait checker si brick a un element
+  // si non, est-ce qu'on devrait ecouter
+  // un evenement pour savoir quan?
+
   // note1: should we do right away or wait for the
   // build
   var nodes = this.el.querySelectorAll(name);
+
+  // step1 (replace custom element)
   for(var i = 0, l = nodes.length; i < l; i++) {
     var node = nodes[i];
     // note2: replace or insert (to test)
     var parent = node.parentNode;
     parent.replaceChild(brick.el, node);
+
+    // step2
+    var contents = brick.el.querySelectorAll('content');
+    // on devrait avoir une methide qui prend un tag name
+    // et une fonction (comme va on se repete pas avec le loop)
+    for(var j = 0, h = contents.length; j < h; j++) {
+      var content = contents[j];
+      content.parentNode.replaceChild(node.children[0], content);
+    }
   }
+
 };
+
+
+// this.el(); retourne host
+// this.el('.query'); retourne queryselector
+// this.el('tag', fn); applique une fonction sur l'element

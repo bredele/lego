@@ -192,7 +192,7 @@ describe("Freeze", function() {
 });
 
 describe('custom element', function() {
-  it("should replace custom element brick", function() {
+  it("should replace custom tag with brick", function() {
     var list = brick('<ul><user></user></ul>');
     var user = brick('<h1>user</h1>');
 
@@ -200,6 +200,24 @@ describe('custom element', function() {
     list.build();
 
     assert.equal(list.el.innerHTML, '<h1>user</h1>');
+  });
+
+  // note: une brick peut elle etre un custom element?
+  // dans ce cas on doit verifier le this.el (c pk il faudrait
+  // peut etre mettre la brick dans unf ragment par defaut)
+  //var list = brick('<user><span>hello world!</span></user>');
+
+  it('should replace the content of a custom element', function() {
+    var list = brick('<div><user>  <button>hello</button></user></div>');
+    var user = brick('<div><content></content></div>');
+
+    list.tag('user', user);
+    list.build();
+
+    // note on doit utiliser un fragment 
+    // ce sera plus rapide
+    assert.equal(user.el.innerHTML, '<button>hello</button>');
+
 
   });
   
