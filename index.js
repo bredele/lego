@@ -205,6 +205,14 @@ Brick.prototype.freeze = function() {
 };
 
 
-Brick.prototype.register = function() {
-  
+Brick.prototype.tag = function(name, brick) {
+  // note1: should we do right away or wait for the
+  // build
+  var nodes = this.el.querySelectorAll(name);
+  for(var i = 0, l = nodes.length; i < l; i++) {
+    var node = nodes[i];
+    // note2: replace or insert (to test)
+    var parent = node.parentNode;
+    parent.replaceChild(brick.el, node);
+  }
 };
