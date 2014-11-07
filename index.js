@@ -227,18 +227,24 @@ Brick.prototype.tag = function(name, brick) {
     // et une fonction (comme va on se repete pas avec le loop)
     for(var j = 0, h = contents.length; j < h; j++) {
       var content = contents[j];
-      var fragment = document.createDocumentFragment();
-      var children = node.childNodes;
-      console.log(children);
+      var select = content.getAttribute('select');
+      if(select) {
+        var selected = node.querySelector(select);
+        content.parentNode.replaceChild(selected, content);
+      } else {
+        var fragment = document.createDocumentFragment();
+        var children = node.childNodes;
+        console.log(children);
 
-      // note pn devrait peut etre faire ca de facon
-      // recursive, je pense c'estp lus rapide
-      // aussi regarder si children.item(0) est
-      // plus rapide
-      for(var k = 0, g = children.length; k < g; k++) {
-        fragment.appendChild(children[0]);
+        // note pn devrait peut etre faire ca de facon
+        // recursive, je pense c'estp lus rapide
+        // aussi regarder si children.item(0) est
+        // plus rapide
+        for(var k = 0, g = children.length; k < g; k++) {
+          fragment.appendChild(children[0]);
+        }
+        content.parentNode.replaceChild(fragment, content);
       }
-      content.parentNode.replaceChild(fragment, content);
     }
   }
 

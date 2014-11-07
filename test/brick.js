@@ -196,7 +196,7 @@ describe('element handler', function() {
 });
 
 describe('custom element', function() {
-  
+
   it("should replace custom tag with brick", function() {
     var list = brick('<ul><user></user></ul>');
     var user = brick('<h1>user</h1>');
@@ -235,6 +235,18 @@ describe('custom element', function() {
     // note on doit utiliser un fragment 
     // ce sera plus rapide
     assert.equal(user.el.innerHTML, '<h2>brick</h2>  <h1>hello</h1><button>world</button>');
+  });
+
+  it('should replace the content of a custom element with query selection', function() {
+    var list = brick('<div><user><h1>hello</h1><button>world</button></user></div>');
+    var user = brick('<div><content select="button"></content></div>');
+
+    list.tag('user', user);
+    list.build();
+
+    // note on doit utiliser un fragment 
+    // ce sera plus rapide
+    assert.equal(user.el.innerHTML, '<button>world</button>');
   });
 
   
