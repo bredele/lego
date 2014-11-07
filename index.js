@@ -205,6 +205,23 @@ Brick.prototype.freeze = function() {
 };
 
 
+/**
+ * Add custom element.
+ *
+ * Examples:
+ *
+ *   var list = brick('<div><user /></div>');
+ *   var user = brick('<button></button>');
+ *
+ *   list.tag('user', user);
+ *
+ * @todo  custom element from freezed brick
+
+ * @param  {String} name
+ * @param  {Brick} brick
+ * @return {this}
+ */
+
 Brick.prototype.tag = function(name, brick) {
     // note: tag devrait automatiquement appeller
     // build parce que si on ne construit pas 
@@ -228,8 +245,7 @@ Brick.prototype.tag = function(name, brick) {
   for(var i = 0, l = nodes.length; i < l; i++) {
     var node = nodes[i];
     // note2: replace or insert (to test)
-    var parent = node.parentNode;
-    parent.replaceChild(brick.el, node);
+    replace(node, brick.el);
 
     // step2
     var contents = brick.el.querySelectorAll('content');
@@ -239,8 +255,7 @@ Brick.prototype.tag = function(name, brick) {
       var content = contents[j];
       var select = content.getAttribute('select');
       if(select) {
-        var selected = node.querySelector(select);
-        content.parentNode.replaceChild(selected, content);
+        replace(content, node.querySelector(select));
       } else {
         var fragment = document.createDocumentFragment();
         var children = node.childNodes;
@@ -252,12 +267,25 @@ Brick.prototype.tag = function(name, brick) {
         for(var k = 0, g = children.length; k < g; k++) {
           fragment.appendChild(children[0]);
         }
-        content.parentNode.replaceChild(fragment, content);
+        replace(content, fragment);
       }
     }
   }
-
+  return this;
 };
+
+
+/**
+ * Replace one node with another.
+ * 
+ * @param {Element} old
+ * @param {Element} el
+ * @api private
+ */
+
+function replace(old, el) {
+  old.parentNode.replaceChild(el, old);
+}
 
 
 // this.el(); retourne host
