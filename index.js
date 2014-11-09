@@ -3,10 +3,10 @@
  * Module dependencies.
  */
 
-var Store = require('datastore');
 var Cement = require('cement');
-var many = require('many');
+var Store = require('datastore');
 var mouth = require('mouth');
+var many = require('many');
 
 
 /**
@@ -78,14 +78,14 @@ Brick.dom = require('stomach');
  * Create brick dom element from
  * string or existing dom element.
  * 
- * @param  {String | Element}  arg 
+ * @param  {String | Element}  tmpl 
  * @return {this}
  * @api public
  */
 
-Brick.prototype.dom = function(arg) {
-  this.tmpl = arg;
-  this.el = Brick.dom(arg);
+Brick.prototype.dom = function(tmpl) {
+  this.tmpl = tmpl;
+  this.el = Brick.dom(tmpl);
   return this;
 };
 
@@ -128,6 +128,9 @@ Brick.prototype.attr = many(function(name, binding) {
 /**
  * Apply bindings on dom
  * element.
+ *
+ * @todo  benchmark if indexOf('$' ) - it
+ * seems it doesn't change anything
  * 
  * @return {this}
  * @api public
@@ -136,14 +139,10 @@ Brick.prototype.attr = many(function(name, binding) {
 Brick.prototype.build = function() {
   var that = this;
   this.cement.render(this.el, function(content, node) {
-    // check if cached and don't need to compile
-    // if not cached, cache a new function if complex
-    // expression otherwise just get data from model.
-
-    //@note benchmark indexOf('$') it seems it doesn't change anything
     var compiled = mouth(content);
     var props = compiled.props;
     var fn = cache[content] = cache[content] || compiled.text;
+    // immediat anonuymous call?
     var handle = function() {
       node.nodeValue = fn(that.data);
     };
@@ -229,7 +228,7 @@ Brick.prototype.freeze = function() {
  * @return {this}
  */
 
-Brick.prototype.tag = function(name, brick) {
+Brick.prototype.tag = many(function(name, brick) {
   brick.build();
 
   loop(this.el.querySelectorAll(name), function(node) {
@@ -251,7 +250,7 @@ Brick.prototype.tag = function(name, brick) {
   });
 
   return this;
-};
+});
 
 
 function loop(nodes, fn) {

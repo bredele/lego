@@ -320,3 +320,21 @@ describe('custom element', function() {
 //   benchmark();
 
 
+
+var section = brick('<section>this is a test:<user><h1>${name}</h1><address>${address}</address></user></section>', {
+  name: 'olivier',
+  address: 'calgary'
+});
+
+var user = brick('<div><button>${title}</button><content select="h1"></content></div>', {
+  title: 'send'
+});
+
+section.tag('user', user);
+section.build();
+document.body.appendChild(section.el);
+
+setTimeout(function() {
+  section.set('name', 'amy');
+  user.set('title', 'sdsd');
+}, 4000);
