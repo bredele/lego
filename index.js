@@ -193,19 +193,15 @@ Brick.prototype.build = function() {
  */
 
 Brick.prototype.freeze = function() {
-  var data = this.data;
-  var bindings = this.cement.bindings;
-  var dom = this.tmpl;
-  // note: on devrait peut etre faire Brick,dom et avoir une
-  // option dans stomach pour clone
-  if(this.tmpl.cloneNode) dom = this.tmpl.cloneNode(true);
+  var that = this;
+  var dom = Brick.dom(this.tmpl, true);
 
   return function(tmpl, obj) {
     var brick = new Brick(tmpl || dom);
     // @note we should clone data and pass in constructor
-    brick.set(data);
+    brick.set(that.data);
     brick.set(obj);
-    brick.attr(bindings);
+    brick.attr(that.cement.bindings);
     return brick;
   };
 };
