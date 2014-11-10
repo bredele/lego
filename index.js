@@ -78,14 +78,15 @@ Brick.dom = require('stomach');
  * Create brick dom element from
  * string or existing dom element.
  * 
- * @param  {String | Element}  tmpl 
+ * @param  {String | Element}  tmpl
+ * @param {Boolean?} bool clone node
  * @return {this}
  * @api public
  */
 
-Brick.prototype.dom = function(tmpl) {
+Brick.prototype.dom = function(tmpl, bool) {
   this.tmpl = tmpl;
-  this.el = Brick.dom(tmpl);
+  this.el = Brick.dom(tmpl, bool);
   return this;
 };
 
