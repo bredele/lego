@@ -53,12 +53,12 @@ function Brick(tmpl, data) {
   this.cement = new Cement();
 }
 
-
+// note utiliser shallow
 Brick.prototype = Store.prototype;
 
 
 /**
- * Transform amything into dom.
+ * Transform anything into dom.
  *
  * Examples:
  *
@@ -139,9 +139,13 @@ Brick.prototype.attr = many(function(name, binding) {
 Brick.prototype.build = function() {
   var that = this;
   this.cement.render(this.el, function(content, node) {
+    // @note si cache existe on devrait pas
+    // faire mouth(content);
     var compiled = mouth(content);
     var props = compiled.props;
     var fn = cache[content] = cache[content] || compiled.text;
+    // la premier fois on devrait avoir le rendu 
+    // et apres on appelle la fonction pour chaque prop
     // immediat anonuymous call?
     var handle = function() {
       node.nodeValue = fn(that.data);
@@ -191,6 +195,8 @@ Brick.prototype.freeze = function() {
   var data = this.data;
   var bindings = this.cement.bindings;
   var dom = this.tmpl;
+  // note: on devrait peut etre faire Brick,dom et avoir une
+  // option dans stomach pour clone
   if(this.tmpl.cloneNode) dom = this.tmpl.cloneNode(true);
 
   return function(tmpl, obj) {
