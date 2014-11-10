@@ -185,8 +185,8 @@ Brick.prototype.build = function() {
  * @note freeze is still experimental 
  * and will probably change a lot.
  *
- * @note should we return a factory
- * or the a new brick right away?
+ * @note should we clone the data
+ * and pass t in the constructor
  * 
  * @return {Function} brick factory
  * @api public
@@ -194,15 +194,13 @@ Brick.prototype.build = function() {
 
 Brick.prototype.freeze = function() {
   var that = this;
-  var dom = Brick.dom(this.tmpl, true);
-
   return function(tmpl, obj) {
-    var brick = new Brick(tmpl || dom);
-    // @note we should clone data and pass in constructor
-    brick.set(that.data);
-    brick.set(obj);
-    brick.attr(that.cement.bindings);
-    return brick;
+    var brick = new Brick();
+    return brick
+      .dom(tmpl || that.tmpl, true)
+      .set(that.data)
+      .set(obj)
+      .attr(that.cement.bindings);
   };
 };
 
@@ -232,6 +230,7 @@ Brick.prototype.freeze = function() {
  */
 
 Brick.prototype.tag = many(function(name, brick) {
+  // note is internal state machine, if has been built will do nothing
   brick.build();
 
   loop(this.el.querySelectorAll(name), function(node) {
