@@ -7,6 +7,7 @@ var Cement = require('cement');
 var Store = require('datastore');
 var mouth = require('mouth');
 var many = require('many');
+var dom = require('stomach');
 
 
 /**
@@ -49,29 +50,12 @@ function brick(tmpl, data) {
 
 function Brick(tmpl, data) {
   Store.call(this, data);
-  this.dom(tmpl);
+  this.from(tmpl);
   this.cement = new Cement();
 }
 
-// note utiliser shallow
+
 Brick.prototype = Store.prototype;
-
-
-/**
- * Transform anything into dom.
- *
- * Examples:
- *
- *   brick.dom('<span>content</span>');
- *   brick.dom(el);
- *   brick.dom('.myEl');
- * 
- * @param  {String|Element} tmpl
- * @return {Element}
- * @api public
- */
-
-Brick.dom = require('stomach');
 
 
 /**
@@ -84,9 +68,9 @@ Brick.dom = require('stomach');
  * @api public
  */
 
-Brick.prototype.dom = function(tmpl, bool) {
+Brick.prototype.from = function(tmpl, bool) {
   this.tmpl = tmpl;
-  this.el = Brick.dom(tmpl, bool);
+  this.el = dom(tmpl, bool);
   return this;
 };
 
@@ -197,7 +181,7 @@ Brick.prototype.freeze = function() {
   return function(tmpl, obj) {
     var brick = new Brick();
     return brick
-      .dom(tmpl || that.tmpl, true)
+      .from(tmpl || that.tmpl, true)
       .set(that.data)
       .set(obj)
       .attr(that.cement.bindings);
@@ -241,6 +225,7 @@ Brick.prototype.tag = many(function(name, brick) {
       if(select) {
         replace(content, node.querySelector(select));
       } else {
+        // note on pourrair avoir une methode fragmen
         var fragment = document.createDocumentFragment();
         var children = node.childNodes;
         for(var k = 0, g = children.length; k < g; k++) {

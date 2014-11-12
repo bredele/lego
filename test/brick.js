@@ -31,7 +31,7 @@ describe("API", function() {
   });
 
   it("should have the following API", function() {
-    assert(obj.dom);
+    assert(obj.from);
     assert(obj.freeze);
     assert(obj.tag);
     assert(obj.build);
@@ -50,21 +50,21 @@ describe("Basic rendering", function() {
 
 
   it("should render string into dom", function() {
-    obj.dom('<button>hello</button>');
+    obj.from('<button>hello</button>');
     assert.equal(obj.el.innerHTML, 'hello');
     assert.equal(obj.el.nodeName, 'BUTTON');
   });
 
   it("should render from existing dom", function() {
     var div = document.createElement('ul');
-    obj.dom(div);
+    obj.from(div);
     
     assert.equal(obj.el.nodeName, 'UL');
   });
 
   it('should render from query selection', function() {
     document.body.insertAdjacentHTML('beforeend', '<section class="brick-test">');
-    obj.dom('.brick-test');
+    obj.from('.brick-test');
 
     assert.equal(obj.el.nodeName, 'SECTION');
     assert.equal(obj.el.getAttribute('class'), 'brick-test');
@@ -77,7 +77,7 @@ describe("Attribute bindings", function() {
   var obj;
   beforeEach(function() {
     obj = brick();
-    obj.dom('<section class="section" data-test="hello">content</section>');
+    obj.from('<section class="section" data-test="hello">content</section>');
   });
 
   it("should apply binding", function(done) {
@@ -336,5 +336,5 @@ document.body.appendChild(section.el);
 
 setTimeout(function() {
   section.set('name', 'amy');
-  user.set('title', 'sdsd');
+  user.set('title', 'send');
 }, 4000);
