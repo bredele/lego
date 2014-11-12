@@ -34,7 +34,7 @@ describe("API", function() {
     assert(obj.from);
     assert(obj.freeze);
     assert(obj.tag);
-    assert(obj.build);
+    assert(obj.mold);
     assert(obj.attr);
     assert(obj.use);
   });
@@ -84,7 +84,7 @@ describe("Attribute bindings", function() {
     obj.attr('data-test', function(node, content) {
       if(content === 'hello') done();
     });
-    obj.build();
+    obj.mold();
   });
 
   it('should scope binding with itself', function(done) {
@@ -92,7 +92,7 @@ describe("Attribute bindings", function() {
     obj.attr('data-test', function(node, content) {
       if(this.get('name') === 'olivier') done();
     });
-    obj.build();
+    obj.mold();
   });
 
   it('should apply multiple bindings', function() {
@@ -105,7 +105,7 @@ describe("Attribute bindings", function() {
         result += content;
       }
     });
-    obj.build();
+    obj.mold();
     assert.equal(result, 'sectionhello');
   });
 
@@ -134,7 +134,7 @@ describe("Interpolation", function() {
     var obj = brick('<button>${label}</button>', {
       label: 'olivier'
     });
-    obj.build();
+    obj.mold();
 
     assert.equal(obj.el.innerHTML, 'olivier');
   });
@@ -144,7 +144,7 @@ describe("Interpolation", function() {
       label: 'olivier',
       country: 'france'
     });
-    obj.build();
+    obj.mold();
 
     assert.equal(obj.el.innerHTML, 'olivier from france');
   });
@@ -154,7 +154,7 @@ describe("Interpolation", function() {
       label: 'olivier',
       country: 'france'
     });
-    obj.build();
+    obj.mold();
 
     assert.equal(obj.el.className, 'france');
     assert.equal(obj.el.innerHTML, 'olivier');
@@ -166,7 +166,7 @@ describe("Interpolation", function() {
       var obj = brick('<button>${label}</button>', {
         label: 'olivier'
       });
-      obj.build();
+      obj.mold();
       obj.set('label', 'bredele');
       assert.equal(obj.el.innerHTML, 'bredele');
     });
@@ -185,7 +185,7 @@ describe("Freeze", function() {
       }).freeze();
 
 
-    var other = obj().build();
+    var other = obj().mold();
     assert.equal(other.el.innerHTML ,'section');
   });
   
@@ -202,7 +202,7 @@ describe('custom element', function() {
     var user = brick('<h1>user</h1>');
 
     list.tag('user', user);
-    list.build();
+    list.mold();
 
     assert.equal(list.el.innerHTML, '<h1>user</h1>');
   });
@@ -217,7 +217,7 @@ describe('custom element', function() {
     var user = brick('<div><content></content></div>');
 
     list.tag('user', user);
-    list.build();
+    list.mold();
 
     // note on doit utiliser un fragment 
     // ce sera plus rapide
@@ -230,7 +230,7 @@ describe('custom element', function() {
     var user = brick('<div><h2>brick</h2><content></content></div>');
 
     list.tag('user', user);
-    list.build();
+    list.mold();
 
     // note on doit utiliser un fragment 
     // ce sera plus rapide
@@ -242,7 +242,7 @@ describe('custom element', function() {
     var user = brick('<div><content select="button"></content></div>');
 
     list.tag('user', user);
-    list.build();
+    list.mold();
 
     // note on doit utiliser un fragment 
     // ce sera plus rapide
@@ -259,7 +259,7 @@ describe('custom element', function() {
 
     list.tag('user', user);
 
-    list.build();
+    list.mold();
 
     assert.equal(user.el.innerHTML, 'bruno and olivier');
 
@@ -281,7 +281,7 @@ describe('custom element', function() {
 
   //   list.tag('user', user);
 
-  //   list.build();
+  //   list.mold();
 
   //   assert.equal(user.el.innerHTML, 'olivier');
   // });
@@ -297,7 +297,7 @@ describe('custom element', function() {
 //     });
 
 //     var to = performance.now();
-//     obj.build();
+//     obj.mold();
 //     result += performance.now() - to;
 //   }
 
@@ -331,7 +331,7 @@ var user = brick('<div><button>${title}</button><content select="h1"></content><
 });
 
 section.tag('user', user);
-section.build();
+section.mold();
 document.body.appendChild(section.el);
 
 setTimeout(function() {

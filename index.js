@@ -121,7 +121,7 @@ Brick.prototype.attr = many(function(name, binding) {
  * @api public
  */
 
-Brick.prototype.build = function() {
+Brick.prototype.mold = function() {
   var that = this;
   this.cement.render(this.el, function(content, node) {
     // @note si cache existe on devrait pas
@@ -163,7 +163,7 @@ Brick.prototype.build = function() {
  *     .freeze();
  *
  *   var car = vehicle();
- *   car.build();
+ *   car.mold();
  *
  *
  * @note freeze is still experimental 
@@ -215,7 +215,7 @@ Brick.prototype.freeze = function() {
 
 Brick.prototype.tag = many(function(name, brick) {
   // note is internal state machine, if has been built will do nothing
-  brick.build();
+  brick.mold();
 
   loop(this.el.getElementsByTagName(name), function(node) {
     var el = brick.el;
