@@ -217,10 +217,10 @@ Brick.prototype.tag = many(function(name, brick) {
   // note is internal state machine, if has been built will do nothing
   brick.build();
 
-  loop(this.el.querySelectorAll(name), function(node) {
+  loop(this.el.getElementsByTagName(name), function(node) {
     var el = brick.el;
     replace(node, el);
-    loop(el.querySelectorAll('content'), function(content) {
+    loop(el.getElementsByTagName('content'), function(content) {
       var select = content.getAttribute('select');
       if(select) {
         replace(content, node.querySelector(select));
