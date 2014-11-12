@@ -116,6 +116,8 @@ Brick.prototype.attr = many(function(name, binding) {
  *
  * @todo  benchmark if indexOf('$' ) - it
  * seems it doesn't change anything
+ *
+ * @note mold should render only once
  * 
  * @return {this}
  * @api public
@@ -214,9 +216,7 @@ Brick.prototype.freeze = function() {
  */
 
 Brick.prototype.tag = many(function(name, brick) {
-  // note is internal state machine, if has been built will do nothing
   brick.mold();
-
   elements(this.el, name, function(node) {
     var el = brick.el;
     replace(node, el);
@@ -231,7 +231,6 @@ Brick.prototype.tag = many(function(name, brick) {
   });
   return this;
 });
-
 
 
 /**
