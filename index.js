@@ -217,33 +217,60 @@ Brick.prototype.tag = many(function(name, brick) {
   // note is internal state machine, if has been built will do nothing
   brick.mold();
 
-  loop(this.el.getElementsByTagName(name), function(node) {
+  elements(this.el, name, function(node) {
     var el = brick.el;
     replace(node, el);
-    loop(el.getElementsByTagName('content'), function(content) {
+    elements(el, 'content', function(content) {
       var select = content.getAttribute('select');
       if(select) {
         replace(content, node.querySelector(select));
       } else {
-        // note on pourrair avoir une methode fragmen
-        var fragment = document.createDocumentFragment();
-        var children = node.childNodes;
-        for(var k = 0, g = children.length; k < g; k++) {
-          fragment.appendChild(children[0]);
-        }
-        replace(content, fragment);
+        replace(content, fragment(node));
       }
     });
   });
-
   return this;
 });
 
 
-function loop(nodes, fn) {
+
+/**
+ * Get elements by 
+ * tag name.
+ * 
+ * @param  {Element}   el
+ * @param  {String}   name
+ * @param  {Function} fn 
+ * @api private
+ */
+
+function elements(el, name, fn) {
+  var nodes = el.getElementsByTagName(name);
   for(var i = 0, l = nodes.length; i < l; i++) {
     fn(nodes[i]);
   }
+}
+
+
+/**
+ * Wrap node child nodes
+ * into a fragment.
+ *
+ * @todo should also work
+ * with simple node.
+ * 
+ * @param  {Element} node
+ * @return {DocumentFragment}
+ * @api private
+ */
+
+function fragment(node) {
+  var nodes = node.childNodes;
+  var frag = document.createDocumentFragment();
+  for(var l = nodes.length; l--;) {
+    frag.appendChild(nodes[0]);
+  }
+  return frag;
 }
 
 
