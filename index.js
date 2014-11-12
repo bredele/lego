@@ -22,17 +22,9 @@ var cache = {};
  * Expose 'brick'
  */
 
-module.exports = brick;
-
-
-/**
- * brick constructor.
- * @api public
- */
-
-function brick(tmpl, data) {
+module.exports = function(tmpl, data) {
   return new Brick(tmpl, data);
-}
+};
 
 
 /**
@@ -49,6 +41,7 @@ function brick(tmpl, data) {
  */
 
 function Brick(tmpl, data) {
+
   Store.call(this, data);
   this.from(tmpl);
   this.cement = new Cement();
