@@ -41,7 +41,7 @@ describe("API", function() {
   
 });
 
-describe("Basic rendering", function() {
+describe("#from", function() {
 
   var obj;
   beforeEach(function() {
@@ -72,7 +72,7 @@ describe("Basic rendering", function() {
 
 });
 
-describe("Attribute bindings", function() {
+describe("#attr", function() {
   
   var obj;
   beforeEach(function() {
@@ -111,6 +111,7 @@ describe("Attribute bindings", function() {
 
 });
 
+
 describe("Constructor", function() {
 
   it("should set template", function() {
@@ -128,7 +129,7 @@ describe("Constructor", function() {
   });
 });
 
-describe("Interpolation", function() {
+describe("#mold", function() {
 
   it("should substitute single expression", function() {
     var obj = brick('<button>${label}</button>', {
@@ -175,8 +176,7 @@ describe("Interpolation", function() {
   
 });
 
-
-describe("Freeze", function() {
+describe("#freeze", function() {
   
   it("should return a new brick", function() {
     var obj = brick('<section class="section">')
@@ -191,11 +191,7 @@ describe("Freeze", function() {
   
 });
 
-describe('element handler', function() {
-
-});
-
-describe('custom element', function() {
+describe('#tag', function() {
 
   it("should replace custom tag with brick", function() {
     var list = brick('<ul><user></user></ul>');
@@ -274,5 +270,23 @@ describe('custom element', function() {
 
 });
 
+describe("#to", function() {
+
+  var doc;
+  beforeEach(function() {
+    doc = document.createElement('div');
+  });
+
+  it("should build a brick", function() {
+    var obj = brick('<button class="${name}">', {
+      name: 'olivier'
+    });
+    obj.to(doc);
+
+    assert.equal(doc.firstChild, obj.el);
+    assert.equal(obj.el.className, 'olivier');
+  });
+  
+});
 
 

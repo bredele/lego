@@ -218,6 +218,12 @@ Brick.prototype.tag = many(function(name, brick) {
 });
 
 
+Brick.prototype.to = function(el) {
+  this.mold();
+  el.appendChild(this.el);
+};
+
+
 /**
  * Get elements by 
  * tag name.
