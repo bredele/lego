@@ -98,7 +98,6 @@ Brick.prototype.attr = many(function(name, binding) {
   this.cement.bind(name, function(node, content) {
     binding.call(that, node, content);
   });
-  return this;
 });
 
 
@@ -214,7 +213,6 @@ Brick.prototype.tag = many(function(name, brick) {
       }
     });
   });
-  return this;
 });
 
 
