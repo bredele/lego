@@ -272,21 +272,30 @@ describe('#tag', function() {
 
 describe("#to", function() {
 
-  var doc;
+  var doc, obj;
   beforeEach(function() {
     doc = document.createElement('div');
-  });
-
-  it("should build a brick", function() {
-    var obj = brick('<button class="${name}">', {
+    obj = brick('<button class="${name}">', {
       name: 'olivier'
     });
-    obj.to(doc);
+  });
 
+  it("should append a brick into a dom element", function() {
+    obj.to(doc);
     assert.equal(doc.firstChild, obj.el);
+  });
+
+  it("should also build a brick", function() {
+    obj.to(doc);
     assert.equal(obj.el.className, 'olivier');
   });
   
+  it("should query select a dom element and append the brick to it", function() {
+    document.body.insertAdjacentHTML('beforeend', '<article class="article">');
+    obj.to('.article');
+    assert.equal(document.querySelector('.article').firstChild, obj.el);
+  });
+
 });
 
 

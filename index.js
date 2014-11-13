@@ -218,9 +218,18 @@ Brick.prototype.tag = many(function(name, brick) {
 });
 
 
+/**
+ * Append brick to
+ * dom element.
+ * 
+ * @param  {Element} el
+ * @return {this}
+ * @api public
+ */
+
 Brick.prototype.to = function(el) {
   this.mold();
-  el.appendChild(this.el);
+  dom(el).appendChild(this.el);
 };
 
 
