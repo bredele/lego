@@ -221,8 +221,18 @@ Brick.prototype.tag = many(function(name, brick) {
 /**
  * Append brick to
  * dom element.
+ *
+ * Examples:
+ *
+ *   // dom element
+ *   var foo = brick(tmpl);
+ *   foo.to(document.body);
+ *
+ *   // query selector
+ *   var bar = brick(tmpl);
+ *   bar.to('.article');
  * 
- * @param  {Element} el
+ * @param  {Element | String} el
  * @return {this}
  * @api public
  */
