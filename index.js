@@ -41,7 +41,6 @@ module.exports = function(tmpl, data) {
  */
 
 function Brick(tmpl, data) {
-
   Store.call(this, data);
   this.from(tmpl);
   this.cement = new Cement();
@@ -119,20 +118,13 @@ Brick.prototype.attr = many(function(name, binding) {
 Brick.prototype.mold = function() {
   var that = this;
   this.cement.render(this.el, function(content, node) {
-    // @note si cache existe on devrait pas
-    // faire mouth(content);
     var compiled = mouth(content);
     var props = compiled.props;
     var fn = cache[content] = cache[content] || compiled.text;
-    // la premier fois on devrait avoir le rendu 
-    // et apres on appelle la fonction pour chaque prop
-    // immediat anonuymous call?
     var handle = function() {
       node.nodeValue = fn(that.data);
     };
-
     handle();
-
     for(var l = props.length; l--;) {
       that.on('change ' + props[l], handle);
     }

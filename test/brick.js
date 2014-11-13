@@ -272,69 +272,7 @@ describe('custom element', function() {
 
   });
 
-  // @note faire ca une fois qu'on est sur du templat eengine
-  // it('shoud bind the model of a brick and its custom element', function() {
-  //   var list = brick('<div><user title="${name}"></user></div>', {
-  //     name: 'olivier'
-  //   });
-  //   var user = brick('<div>${title}</div>');
-
-  //   list.tag('user', user);
-
-  //   list.mold();
-
-  //   assert.equal(user.el.innerHTML, 'olivier');
-  // });
-  
 });
 
 
-// function benchmark() {
-//   var result = 0;
-//   function bench() {
-//     var obj = brick('<section class="${test}"><ul class="${label}"><li class="ola"></li></ul></section>', {
-//       label: 'olivier'
-//     });
 
-//     var to = performance.now();
-//     obj.mold();
-//     result += performance.now() - to;
-//   }
-
-//   for(var l = 1000; l--;) {
-//     bench();
-//   }
-//   console.log(result/ 1000);
-// }
-
-
-
-//   benchmark();
-//   benchmark();
-//   benchmark();
-//   benchmark();
-//   benchmark();
-//   benchmark();
-//   benchmark();
-//   benchmark();
-//   benchmark();
-
-
-
-var section = brick('<section>this is a test:<user><h1>${name}</h1><address>${address}</address></user></section>', {
-  name: 'olivier',
-  address: 'calgary'
-});
-
-var user = brick('<div><button>${title}</button><content select="h1"></content></div>', {
-  title: 'send'
-});
-
-section.tag('user', user);
-section.mold();
-document.body.appendChild(section.el);
-
-setTimeout(function() {
-  section.set('name', 'amy');
-  user.set('title', 'send');
-}, 4000);
