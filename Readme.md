@@ -35,6 +35,7 @@ user.emit('bruh');
 
 ### brick automatically bind your dom
 
+Brick has been built on top of [cement](http://github.com/bredele/cement) and substite every text node with the brick's data.
 
 ```js
 user.from('<div class="${gender}">${hello}</div>');
