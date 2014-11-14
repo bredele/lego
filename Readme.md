@@ -1,8 +1,8 @@
 # Brick
 
-## Brick is your living dom
+## Brick is your living data
 
-### brick is a datastore
+### brick is a [datastore](http://github.com/bredele/datastore)
 
 ```js
 var user = brick();
@@ -15,6 +15,27 @@ user.compute('hello', function() {
 ```
 see [datastore](http://github.com/bredele/datastore) for full API.
 
+### brick is an [emitter](http://github.com/component/emitter)
+
+A brick is an observable. You can subscribe for any change of data or publish your own events.
+
+```js
+user.on('change hello', function(val) { 
+  // => hello bredele
+});
+user.set('first', 'bredele');
+
+user.emit('bruh');
+```
+
+## Brick is your living dom
+
+### brick automatically bind your dome
+
+
+```js
+
+```
 
 ## License
 
