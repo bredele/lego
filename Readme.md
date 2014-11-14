@@ -30,12 +30,22 @@ user.emit('bruh');
 
 ## Brick is your living dom
 
-### brick automatically bind your dome
+### brick automatically bind your dom
 
 
 ```js
+var user = brick('<div class="${gender}">${name}</div>', {
+  name: 'olivier'
+});
 
+user.set({
+  gender: 'female',
+  name: 'amy'
+})
 ```
+see [live example]()
+
+
 
 ## License
 
