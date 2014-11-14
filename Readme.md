@@ -25,6 +25,9 @@ user.on('change hello', function(val) {
 });
 user.set('name', 'bredele');
 
+user.on('bruh', function() {
+  // do something
+});
 user.emit('bruh');
 ```
 
