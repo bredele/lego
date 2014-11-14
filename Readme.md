@@ -6,11 +6,11 @@
 
 ```js
 var user = brick();
-user.set('first','olivier');
-user.set('city','calgary');
-user.get('first');
+user.set('name','olivier');
+user.set('gender','male');
+user.get('name'); // => olivier
 user.compute('hello', function() {
-  return 'hello ' + this.first;
+  return 'hello ' + this.name;
 });
 ```
 see [datastore](http://github.com/bredele/datastore) for full API.
@@ -23,7 +23,7 @@ A brick is an observable. You can subscribe for any change of data or publish yo
 user.on('change hello', function(val) { 
   // => hello bredele
 });
-user.set('first', 'bredele');
+user.set('name', 'bredele');
 
 user.emit('bruh');
 ```
@@ -34,9 +34,7 @@ user.emit('bruh');
 
 
 ```js
-var user = brick('<div class="${gender}">${name}</div>', {
-  name: 'olivier'
-});
+user.from('<div class="${gender}">${hello}</div>');
 
 user.set({
   gender: 'female',
