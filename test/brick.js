@@ -335,5 +335,11 @@ describe("#states", function() {
     assert.equal(obj.state, 'locked');
   });
 
+  it('should perform transition without callback', function() {
+    obj.states('created', 'lock', 'locked');
+    obj.emit('lock');
+    assert.equal(obj.state, 'locked');
+  });
+
 });
 

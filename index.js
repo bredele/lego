@@ -52,6 +52,10 @@ Brick.prototype = Store.prototype;
 
 
 Brick.prototype.states = function(before, ev, cb, after) {
+  if(typeof cb === 'string') {
+    after = cb;
+    cb = null;
+  }
   var that = this;
   this.on(ev, function() {
     if(that.state === before) {
