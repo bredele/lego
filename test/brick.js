@@ -341,5 +341,12 @@ describe("#states", function() {
     assert.equal(obj.state, 'locked');
   });
 
+  it('should pass arguments', function(done) {
+    obj.states('created', 'lock', function(hello, world){
+      if(hello === 'hello') done();
+    });
+    obj.emit('lock', 'hello');
+  });
+
 });
 
