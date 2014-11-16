@@ -32,9 +32,9 @@ describe("API", function() {
 
   it("should have the following API", function() {
     assert(obj.from);
-    assert(obj.freeze);
-    assert(obj.tag);
     assert(obj.mold);
+    assert(obj.tag);
+    assert(obj.render);
     assert(obj.attr);
     assert(obj.use);
   });
@@ -84,7 +84,7 @@ describe("#attr", function() {
     obj.attr('data-test', function(node, content) {
       if(content === 'hello') done();
     });
-    obj.mold();
+    obj.render();
   });
 
   it('should scope binding with itself', function(done) {
@@ -92,7 +92,7 @@ describe("#attr", function() {
     obj.attr('data-test', function(node, content) {
       if(this.get('name') === 'olivier') done();
     });
-    obj.mold();
+    obj.render();
   });
 
   it('should apply multiple bindings', function() {
@@ -105,7 +105,7 @@ describe("#attr", function() {
         result += content;
       }
     });
-    obj.mold();
+    obj.render();
     assert.equal(result, 'sectionhello');
   });
 
@@ -135,7 +135,7 @@ describe("#mold", function() {
     var obj = brick('<button>${label}</button>', {
       label: 'olivier'
     });
-    obj.mold();
+    obj.render();
 
     assert.equal(obj.el.innerHTML, 'olivier');
   });
@@ -145,7 +145,7 @@ describe("#mold", function() {
       label: 'olivier',
       country: 'france'
     });
-    obj.mold();
+    obj.render();
 
     assert.equal(obj.el.innerHTML, 'olivier from france');
   });
@@ -155,7 +155,7 @@ describe("#mold", function() {
       label: 'olivier',
       country: 'france'
     });
-    obj.mold();
+    obj.render();
 
     assert.equal(obj.el.className, 'france');
     assert.equal(obj.el.innerHTML, 'olivier');
@@ -167,7 +167,7 @@ describe("#mold", function() {
       var obj = brick('<button>${label}</button>', {
         label: 'olivier'
       });
-      obj.mold();
+      obj.render();
       obj.set('label', 'bredele');
       assert.equal(obj.el.innerHTML, 'bredele');
     });
@@ -176,16 +176,16 @@ describe("#mold", function() {
   
 });
 
-describe("#freeze", function() {
+describe("#mold", function() {
   
   it("should return a new brick", function() {
     var obj = brick('<section class="section">')
       .attr('class', function(node, content) {
         node.innerHTML = content;
-      }).freeze();
+      }).mold();
 
 
-    var other = obj().mold();
+    var other = obj().render();
     assert.equal(other.el.innerHTML ,'section');
   });
   
@@ -198,7 +198,7 @@ describe('#tag', function() {
     var user = brick('<h1>user</h1>');
 
     list.tag('user', user);
-    list.mold();
+    list.render();
 
     assert.equal(list.el.innerHTML, '<h1>user</h1>');
   });
@@ -213,7 +213,7 @@ describe('#tag', function() {
     var user = brick('<div><content></content></div>');
 
     list.tag('user', user);
-    list.mold();
+    list.render();
 
     // note on doit utiliser un fragment 
     // ce sera plus rapide
@@ -226,7 +226,7 @@ describe('#tag', function() {
     var user = brick('<div><h2>brick</h2><content></content></div>');
 
     list.tag('user', user);
-    list.mold();
+    list.render();
 
     // note on doit utiliser un fragment 
     // ce sera plus rapide
@@ -238,7 +238,7 @@ describe('#tag', function() {
     var user = brick('<div><content select="button"></content></div>');
 
     list.tag('user', user);
-    list.mold();
+    list.render();
 
     // note on doit utiliser un fragment 
     // ce sera plus rapide
@@ -255,7 +255,7 @@ describe('#tag', function() {
 
     list.tag('user', user);
 
-    list.mold();
+    list.render();
 
     assert.equal(user.el.innerHTML, 'bruno and olivier');
 

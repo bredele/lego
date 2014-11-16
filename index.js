@@ -114,7 +114,7 @@ Brick.prototype.attr = many(function(name, binding) {
  * @api public
  */
 
-Brick.prototype.mold = function() {
+Brick.prototype.render = function() {
   var that = this;
   this.cement.render(this.el, function(content, node) {
     var compiled = mouth(content);
@@ -146,13 +146,13 @@ Brick.prototype.mold = function() {
  *
  *   var vehicle = brick(tmpl, data)
  *     .attr('type', cb)
- *     .freeze();
+ *     .mold();
  *
  *   var car = vehicle();
- *   car.mold();
+ *   car.render();
  *
  *
- * @note freeze is still experimental 
+ * @note mold is still experimental 
  * and will probably change a lot.
  *
  * @note should we clone the data
@@ -162,7 +162,7 @@ Brick.prototype.mold = function() {
  * @api public
  */
 
-Brick.prototype.freeze = function() {
+Brick.prototype.mold = function() {
   var that = this;
   return function(tmpl, obj) {
     var brick = new Brick();
@@ -200,7 +200,7 @@ Brick.prototype.freeze = function() {
  */
 
 Brick.prototype.tag = many(function(name, brick) {
-  brick.mold();
+  brick.render();
   elements(this.el, name, function(node) {
     var el = brick.el;
     replace(node, el);
@@ -236,7 +236,7 @@ Brick.prototype.tag = many(function(name, brick) {
  */
 
 Brick.prototype.to = function(el) {
-  this.mold();
+  this.render();
   dom(el).appendChild(this.el);
 };
 
