@@ -329,5 +329,11 @@ describe("#states", function() {
     assert.equal(obj.state, 'created');
   });
 
+  it('should always change state', function() {
+    obj.states('created', 'lock', null, 'locked');
+    obj.emit('lock');
+    assert.equal(obj.state, 'locked');
+  });
+
 });
 

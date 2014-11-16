@@ -55,7 +55,7 @@ Brick.prototype.states = function(before, ev, cb, after) {
   var that = this;
   this.on(ev, function() {
     if(that.state === before) {
-      cb.apply(that, arguments);
+      cb && cb.apply(that, arguments);
       if(after) that.state = after;
     }
   });
