@@ -52,8 +52,13 @@ Brick.prototype = Store.prototype;
 
 
 Brick.prototype.states = function(before, ev, cb, after) {
-  // @note should we call transition?
-  
+  var that = this;
+  this.on(ev, function() {
+    if(that.state === before) {
+      cb.apply(that, arguments);
+      that.state = after;
+    }
+  });
 };
 
 

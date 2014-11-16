@@ -310,5 +310,12 @@ describe("#states", function() {
     assert.equal(obj.state, 'created');
   });
 
+  it("should add transition", function(done) {
+    obj.states('created', 'lock', function() {
+      done();
+    }, 'locked');
+    obj.emit('lock');
+  });
+
 });
 
