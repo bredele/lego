@@ -36,6 +36,7 @@ describe("API", function() {
     assert(obj.tag);
     assert(obj.render);
     assert(obj.attr);
+    assert(obj.states);
     assert(obj.use);
   });
   
@@ -294,6 +295,19 @@ describe("#to", function() {
     document.body.insertAdjacentHTML('beforeend', '<article class="article">');
     obj.to('.article');
     assert.equal(document.querySelector('.article').firstChild, obj.el);
+  });
+
+});
+
+describe("#states", function() {
+
+  var obj;
+  beforeEach(function() {
+    obj = brick();
+  });
+
+  it('should have an initial state', function() {
+    assert.equal(obj.state, 'created');
   });
 
 });

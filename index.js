@@ -42,12 +42,19 @@ module.exports = function(tmpl, data) {
 
 function Brick(tmpl, data) {
   Store.call(this, data);
+  this.state = 'created';
   this.from(tmpl);
   this.cement = new Cement();
 }
 
 
 Brick.prototype = Store.prototype;
+
+
+Brick.prototype.states = function(before, ev, cb, after) {
+  // @note should we call transition?
+  
+};
 
 
 /**
@@ -108,7 +115,7 @@ Brick.prototype.attr = many(function(name, binding) {
  * @todo  benchmark if indexOf('$' ) - it
  * seems it doesn't change anything
  *
- * @note mold should render only once
+ * @note should render only once
  * 
  * @return {this}
  * @api public
@@ -132,13 +139,11 @@ Brick.prototype.render = function() {
 };
 
 
-
-
 /**
  * Return a new brick from
  * a brick current's state.
  *
- * Freeze is better than a simple extend.
+ * Mold is better than a simple extend.
  * You can freeze a living brick with
  * its data.
  *
@@ -157,6 +162,9 @@ Brick.prototype.render = function() {
  *
  * @note should we clone the data
  * and pass t in the constructor
+ *
+ * @todo  we should mold the
+ * plugins as well
  * 
  * @return {Function} brick factory
  * @api public
