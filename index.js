@@ -51,7 +51,7 @@ function Brick(tmpl, data) {
 Brick.prototype = Store.prototype;
 
 
-Brick.prototype.states = function(before, ev, cb, after) {
+Brick.prototype.hook = function(before, ev, cb, after) {
   if(typeof cb === 'string') {
     after = cb;
     cb = null;

@@ -36,7 +36,7 @@ describe("API", function() {
     assert(obj.tag);
     assert(obj.render);
     assert(obj.attr);
-    assert(obj.states);
+    assert(obj.hook);
     assert(obj.use);
   });
   
@@ -311,38 +311,38 @@ describe("#states", function() {
   });
 
   it("should add transition", function(done) {
-    obj.states('created', 'lock', function() {
+    obj.hook('created', 'lock', function() {
       done();
     }, 'locked');
     obj.emit('lock');
   });
 
   it("should set current state", function() {
-    obj.states('created', 'lock', function(){}, 'locked');
+    obj.hook('created', 'lock', function(){}, 'locked');
     obj.emit('lock');
     assert.equal(obj.state, 'locked');
   });
 
   it('should not change current state', function() {
-    obj.states('created', 'lock', function(){});
+    obj.hook('created', 'lock', function(){});
     obj.emit('lock');
     assert.equal(obj.state, 'created');
   });
 
   it('should always change state', function() {
-    obj.states('created', 'lock', null, 'locked');
+    obj.hook('created', 'lock', null, 'locked');
     obj.emit('lock');
     assert.equal(obj.state, 'locked');
   });
 
   it('should perform transition without callback', function() {
-    obj.states('created', 'lock', 'locked');
+    obj.hook('created', 'lock', 'locked');
     obj.emit('lock');
     assert.equal(obj.state, 'locked');
   });
 
   it('should pass arguments', function(done) {
-    obj.states('created', 'lock', function(hello, world){
+    obj.hook('created', 'lock', function(hello, world){
       if(hello === 'hello') done();
     });
     obj.emit('lock', 'hello');
