@@ -32,8 +32,8 @@ module.exports = function(tmpl, data) {
  *
  * Examples:
  *
- *   var address = brick('<address>');
- *   var address = brick('<address>', data);
+ *   var lego = brick('<button>');
+ *   var lego = brick('<button>', data);
  * 
  * @param {String | Element?} tmpl
  * @param {Object?} data
@@ -51,6 +51,32 @@ function Brick(tmpl, data) {
 Brick.prototype = Store.prototype;
 
 
+/**
+ * Add state machine transition
+ * aka hook.
+ *
+ * Listen to a change of state or
+ * define a state transition callback.
+ *
+ * Examples:
+ *
+ *   // transition on event lock
+ *   lego.hook('created', 'lock', 'locked');
+ *   lego.emit('lock');
+ *   
+ *   // with callback
+ *   lego.hook('created', 'lock', function() {
+ *     // do something
+ *   }, 'locked');
+ * 
+ * @param  {String}   before
+ * @param  {String}   ev
+ * @param  {Function?} cb
+ * @param  {String?}   after
+ * @return {this}
+ * @api public
+ */
+
 Brick.prototype.hook = function(before, ev, cb, after) {
   if(typeof cb === 'string') {
     after = cb;
@@ -63,6 +89,7 @@ Brick.prototype.hook = function(before, ev, cb, after) {
       if(after) that.state = after;
     }
   });
+  return this;
 };
 
 
@@ -92,10 +119,10 @@ Brick.prototype.from = function(tmpl, bool) {
  *
  * Examples:
  *
- *   brick.attr('class', fn);
- *   brick.attr('awesome', fn);
- *   brick.attr('data-test', fn);
- *   brick.attr({
+ *   lego.attr('class', fn);
+ *   lego.attr('awesome', fn);
+ *   lego.attr('data-test', fn);
+ *   lego.attr({
  *     class: fn,
  *     'data-test': cb
  *   })
