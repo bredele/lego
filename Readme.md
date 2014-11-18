@@ -11,7 +11,7 @@ see [live example]()
 
 Brick doesn't stop there though. 
 
-<!--Despite its small size (3kb) Brick allows you to create or extend attributes, create or extend elements and way more.-->
+<!--Despite its small size (2kb) Brick allows you to create or extend attributes, create or extend elements and way more.-->
 
 
 
