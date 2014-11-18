@@ -4,7 +4,7 @@ Brick reduces boilerplate and implement amongst others, reactive one way binding
 
 ```js
 brick('<button>{{ hello }}</button>', {
-  name: 'bredele'
+  hello: 'bredele'
 }).to(document.body);
 ```
 see [live example]()
