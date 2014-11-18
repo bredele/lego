@@ -1,5 +1,23 @@
 # Brick
 
+Brick reduces boilerplate and implement amongst others, reactive one way binding.
+
+```js
+brick('<button>{{ hello }}</button>', {
+  name: 'bredele'
+}).to(document.body);
+```
+
+Brick doesn't stop there though. 
+
+<!--Despite its small size (3kb) Brick allows you to create or extend attributes, create or extend elements and way more.-->
+
+
+
+<!--It put aside the concept of MVC-->
+
+<!--What if MVC is not the right solution? It's more an architectural pattern and a UI library should not force you-->
+
 ## Brick is your living data
 
 ### brick is a [datastore](http://github.com/bredele/datastore)
