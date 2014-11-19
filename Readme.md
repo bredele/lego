@@ -30,7 +30,7 @@ see [datastore](http://github.com/bredele/datastore) for full API.
 
 ### brick is an [emitter](http://github.com/component/emitter)
 
-A brick is an observable. You can subscribe for any change of data or publish your own events.
+A brick is an observable and allows to get notified when there has been a change of data or in its [state]().
 
 ```js
 user.on('change hello', function(val) { 
@@ -43,6 +43,9 @@ user.on('bruh', function() {
 });
 user.emit('bruh');
 ```
+
+This notifications allows the brick to produce updated output and HTML.
+
 
 <!-- ## Brick is your living dom -->
 
