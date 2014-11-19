@@ -60,14 +60,14 @@ see [live example]()
 Brick has been built on top of [cement](http://github.com/bredele/cement) and [mouth](http://github.com/bredele/mouth) and offers data interpolation on every possible HTML node. It also works with SVG and can embed more complex expressions:
 
 ```html
-<svg id="twitter" class="${theme}">
+<svg class="twitter ${theme}">
   <text fill="url(#filler)">${ text }</text>
 	<text>${ text.length } character${text.length > 0 ? 's' : ''}</text>
 </svg>
 ```
 
 ```js
-brick('#twitter', {
+brick('.twitter', {
   text: 'tweet tweet!',
   theme: 'dark'
 });
