@@ -1,25 +1,19 @@
 # Brick
 
-Brick reduces boilerplate and implement amongst others, reactive one way binding.
+Brick reduces boilerplate by implementing amongst others, reactive one way binding.
 
 ```js
-brick('<button>{{ hello }}</button>', {
+brick('<button>${ hello }</button>', {
   hello: 'bredele'
 }).to(document.body);
 ```
 see [live example]()
 
-Brick doesn't stop there though. 
+Brick doesn't stop there though. Despite its small size (2kb) it has a fair bit of power under the hood and a ridiculously small learning curve. 
 
-<!--Despite its small size (2kb) Brick allows you to create or extend attributes, create or extend elements and way more.-->
+## Learn BRICK in 5 minutes
 
-
-
-<!--It put aside the concept of MVC-->
-
-<!--What if MVC is not the right solution? It's more an architectural pattern and a UI library should not force you-->
-
-## Brick is your living data
+<!-- ## Brick is your living data -->
 
 ### brick is a [datastore](http://github.com/bredele/datastore)
 
@@ -50,7 +44,7 @@ user.on('bruh', function() {
 user.emit('bruh');
 ```
 
-## Brick is your living dom
+<!-- ## Brick is your living dom -->
 
 ### brick automatically bind your dom
 
