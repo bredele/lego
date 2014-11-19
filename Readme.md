@@ -20,28 +20,23 @@ Brick doesn't stop there though. Despite its small size (2kb) it has a fair bit 
 ```js
 var user = brick();
 user.set('name','olivier');
-user.set('gender','male');
+user.set('age', 26);
 user.get('name'); // => olivier
-user.compute('hello', function() {
-  return 'hello ' + this.name;
+user.compute('birthday', function() {
+  return this.name + 'is ' + this.age;
 });
 ```
 see [datastore](http://github.com/bredele/datastore) for full API.
 
 ### brick is an [emitter](http://github.com/component/emitter)
 
-A brick is an observable and allows to get notified when there has been a change of data or in its [state]().
+A brick is an observable. it allows you to publish/subscribe events and also to get notified when there has been a change of data or in its [state]().
 
 ```js
-user.on('change hello', function(val) { 
-  // => hello bredele
+user.on('change birthday', function(val) { 
+  // => olivier is 27
 });
-user.set('name', 'bredele');
-
-user.on('bruh', function() {
-  // do something
-});
-user.emit('bruh');
+user.set('age', 27);
 ```
 
 This notifications allows the brick to produce updated output and HTML.
