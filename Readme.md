@@ -46,6 +46,7 @@ user.emit('bruh');
 
 This notifications allows the brick to produce updated output and HTML.
 
+see [emitter](http://github.com/component/emitter) for full API.
 
 <!-- ## Brick is your living dom -->
 
