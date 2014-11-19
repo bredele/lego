@@ -45,19 +45,34 @@ see [emitter](http://github.com/component/emitter) for full API.
 
 <!-- ## Brick is your living dom -->
 
-### brick automatically bind your dom
+### brick is reactive 
 
-Brick has been built on top of [cement](http://github.com/bredele/cement) and [mouth](http://github.com/bredele/mouth). It substitutes every text node with the brick's data.
+Brick updates your HTML whenever the underlying data changes.
 
 ```js
-user.from('<div class="${gender}">${hello}</div>');
-
-user.set({
-  gender: 'female',
-  name: 'amy'
-})
+var birthday = brick('<div>${name} is ${age}</div>');
+birthday.set('name', 'olivier');
+birthday.set('age', 27);
 ```
+
 see [live example]()
+
+Brick has been built on top of [cement](http://github.com/bredele/cement) and [mouth](http://github.com/bredele/mouth) and offers data interpolation on every possible HTML node. It also works with SVG and can embed more complex expressions:
+
+```html
+<svg id="twitter" class="${theme}">
+  <text fill="url(#filler)">${ text }</text>
+	<text>${ text.length } character${text.length > 0 ? 's' : ''}</text>
+</svg>
+```
+
+```js
+brick('#twitter', {
+  text: 'tweet tweet!',
+  theme: 'dark'
+});
+
+```
 
 
 
