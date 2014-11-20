@@ -17,6 +17,8 @@ Brick doesn't stop there though. Despite its small size (2kb) it has a fair bit 
 
 ### brick is a [datastore](http://github.com/bredele/datastore)
 
+A brick is a datastore, a bloat-free layer to manipulate your data.
+
 ```js
 var user = brick();
 user.set('name','olivier');
