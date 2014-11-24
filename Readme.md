@@ -68,6 +68,20 @@ Did you see the expressions surrounded by ```${}```? That's the template engine 
 </div>
 ```
 
+### brick is declarative
+
+Data interpolation is not all. You also can extend existing DOM attributes or even create new ones.
+
+```js
+var link = brick('<a href="brickjs"></a>')
+link.attr('src', function(node, content) {
+  node.href = 'http://github.com/bredele' + content;
+});
+```
+
+See [result on live]().
+
+
 
 ## License
 
