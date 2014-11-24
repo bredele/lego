@@ -3,8 +3,8 @@
 Brick reduces boilerplate by implementing amongst others, reactive one way binding.
 
 ```js
-brick('<button>${ hello }</button>', {
-  hello: 'bredele'
+brick('<div>Hello ${ name }</div>', {
+  name: 'olivier'
 }).to(document.body);
 ```
 see [live example]()
@@ -57,25 +57,16 @@ birthday.set('name', 'olivier');
 birthday.set('age', 27);
 ```
 
-see [live example]()
+It eliminates DOM manipulation from the list of things you have to worry about.
 
-Brick has been built on top of [cement](http://github.com/bredele/cement) and [mouth](http://github.com/bredele/mouth) and offers data interpolation on every possible HTML node. It also works with SVG and can embed more complex expressions:
+Did you see the expressions surrounded by ```${}```? That's the template engine provided by Brick also called data interpolation. It works on every DOM and SVG nodes and is basically a subset of JavaScript:
 
 ```html
-<svg class="twitter ${theme}">
-  <text fill="url(#filler)">${ text }</text>
-	<text>${ text.length } character${text.length > 0 ? 's' : ''}</text>
-</svg>
+<div class="twitter ${theme}">
+	<p>${text}</p>
+	<span>${ text.length } character${text.length > 0 ? 's' : ''}</span>
+</div>
 ```
-
-```js
-brick('.twitter', {
-  text: 'tweet tweet!',
-  theme: 'dark'
-});
-
-```
-
 
 
 ## License

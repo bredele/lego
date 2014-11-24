@@ -43,8 +43,8 @@ module.exports = function(tmpl, data) {
 function Brick(tmpl, data) {
   Store.call(this, data);
   this.state = 'created';
-  this.from(tmpl);
   this.cement = new Cement();
+  this.from(tmpl);
 }
 
 
