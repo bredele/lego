@@ -1,235 +1,340 @@
 
 /**
  * Module dependencies.
- * @api private
  */
 
+var Cement = require('cement');
 var Store = require('datastore');
-var cement = require('cement');
-var each = require('looping');
+var mouth = require('mouth');
 var many = require('many');
+var dom = require('stomach');
 
 
 /**
- * Expose 'Brick'
+ * Expression cache.
+ * @type {Object}
  */
 
-module.exports = Brick;
+var cache = {};
+
+
+/**
+ * Expose 'brick'
+ */
+
+module.exports = function(tmpl, data) {
+  return new Brick(tmpl, data);
+};
 
 
 /**
  * Brick constructor.
- * 
- * Examples:
- * 
- *   var brick = require('brick');
- *   
- *   brick('<span>brick</span>');
- *   brick('<span>{{ label }}</span>', {
- *     label: 'brick'
- *   });
  *
- * @event 'before ready'
- * @event 'ready' 
+ * Examples:
+ *
+ *   var lego = brick('<button>');
+ *   var lego = brick('<button>', data);
+ * 
+ * @param {String | Element?} tmpl
+ * @param {Object?} data
  * @api public
  */
 
 function Brick(tmpl, data) {
- if(!(this instanceof Brick)) return new Brick(tmpl, data);
- //Store.call(this);
- this.data = data || {};
-
- //refactor binding
- this.bindings = cement();
- this.bindings.model = this;
- 
- this.formatters = {};
- this.el = null;
- this.dom(tmpl);
- this.once('before inserted', function(bool) {
-  this.emit('before ready');
-  this.bindings.scan(this.el, bool);
-  this.emit('ready');
- }, this);
+  Store.call(this, data);
+  this.state = 'created';
+  this.cement = new Cement();
+  this.from(tmpl);
 }
 
-
-//mixin
 
 Brick.prototype = Store.prototype;
 
 
 /**
- * Brick factory.
+ * Add state machine transition
+ * aka hook.
  *
- * Useful to reuse your bricks.
+ * Listen to a change of state or
+ * define a state transition callback.
+ *
  * Examples:
  *
- *   var btn = brick.extend('<button i18n>{{ label }}</button>')
- *     .use(plugin)
- *     .add('i18n', lang());
- *
- *   var view = btn({
- *     label: 'my button'
- *   }).build();
+ *   // transition on event lock
+ *   lego.hook('created', 'lock', 'locked');
+ *   lego.emit('lock');
  *   
- * @param  {[type]} tmpl [description]
- * @param  {[type]} data [description]
- * @return {[type]}      [description]
- */
-
-Brick.extend = function(tmpl, data) {
-  var plugins = [];
-  var bindings = {};
-  var factory = function(model) {
-    var view = new Brick(tmpl, model || data);
-    view.add(bindings);
-    each(plugins, function(key, plugin) {
-      view.use.apply(view, plugin);
-    });
-    return view;
-  };
-
-  factory.use = function(fn, opts) {
-    plugins.push([fn, opts]);
-    return factory;
-  };
-
-  //NOTE: add multiple
-  factory.add = many(function(name, binding) {
-    bindings[name] = binding;
-  });
-
-  return factory;
-};
-
-
-/**
- * Transform amything into dom.
- *
- * Examples:
- *
- *   brick.dom('<span>content</span>');
- *   brick.dom(el);
- *   brick.dom('.myEl');
+ *   // with callback
+ *   lego.hook('created', 'lock', function() {
+ *     // do something
+ *   }, 'locked');
  * 
- * @param  {String|Element} tmpl
- * @return {Element}
- * @api public
- */
-
-Brick.dom = require('stomach');
-
-
-/**
- * Add attribure binding.
- * 
- * Examples:
- *
- *   view.add('on', event(obj));
- *   view.add({
- *     'on' : event(obj).
- *     'repeat' : repeat()
- *   });
- *   
- * @param {String|Object} name
- * @param {Function} plug 
+ * @param  {String}   before
+ * @param  {String}   ev
+ * @param  {Function?} cb
+ * @param  {String?}   after
  * @return {this}
  * @api public
  */
 
-Brick.prototype.add = many(function(name, plug) {
-  this.bindings.add(name, plug);
-});
-
-
-/**
- * Filter brick.
- * 
- * @param  {String}   name
- * @param  {Function} fn
- * @return {this}
- * @api public 
- */
-
-Brick.prototype.filter = many(function(name, fn) {
-  this.bindings.subs.filter(name, fn);
-});
-
-
-/**
- * Render template into dom.
- * 
- * Examples:
- *
- *   view.dom('<span>brick</span>');
- *   view.dom(dom);
- *   view.dom('#id');
- *   
- * @param  {String|Element} tmpl
- * @return {this}
- * @event 'rendered' 
- * @api public
- */
-
-Brick.prototype.dom = function(tmpl) {
-  this.el = Brick.dom(tmpl);
-  this.emit('rendered');
-  return this;
-};
-
-
-/**
- * Substitute variable and apply
- * attribute bindings.
- * 
- * Examples:
- *
- *    view.build();
- *    view.build(el);
- *
- *    //only apply attribute bindings
- *    view.build)(el, true);
- *    
- * @param  {Element} parent
- * @param {Boolean} query
- * @return {this}
- * @event 'before inserted'
- * @event 'inserted' 
- * @api public
- */
-
-Brick.prototype.build = function(parent, query) {
-  if(this.el) {
-    this.emit('before inserted', query); //should we pass parent?
-    if(parent) {
-      parent.appendChild(this.el); //use cross browser insertAdjacentElement
-      this.emit('inserted');
+Brick.prototype.hook = function(before, ev, cb, after) {
+  if(typeof cb === 'string') {
+    after = cb;
+    cb = null;
+  }
+  var that = this;
+  this.on(ev, function() {
+    if(that.state === before) {
+      cb && cb.apply(that, arguments);
+      if(after) that.state = after;
     }
-  }
+  });
   return this;
 };
 
 
 /**
- * Remove attribute bindings, store
- * listeners and remove dom.
+ * Create brick dom element from
+ * string or existing dom element.
  * 
+ * @param  {String | Element}  tmpl
+ * @param {Boolean?} bool clone node
  * @return {this}
- * @event 'before removed'
- * @event 'removed' 
  * @api public
  */
 
-Brick.prototype.remove = function() {
-  var parent = this.el.parentElement;
-  this.emit('before removed');
-  this.bindings.remove();
-  if(parent) {
-      parent.removeChild(this.el);
-  }
-  this.emit('removed');
+Brick.prototype.from = function(tmpl, bool) {
+  this.tmpl = tmpl;
+  this.el = dom(tmpl, bool);
   return this;
 };
 
-//partials, stack
+
+/**
+ * Add attribute binding.
+ *
+ * As seen below, a brick can bind
+ * existing attributes, dataset or
+ * custom attributes.
+ *
+ * Examples:
+ *
+ *   lego.attr('class', fn);
+ *   lego.attr('awesome', fn);
+ *   lego.attr('data-test', fn);
+ *   lego.attr({
+ *     class: fn,
+ *     'data-test': cb
+ *   })
+ *
+ * @note using closure is more
+ * efficient than using native bind.
+ * 
+ * @param  {String} name 
+ * @param  {Function} binding
+ * @return {this}
+ * @api public
+ */
+
+Brick.prototype.attr = many(function(name, binding) {
+  var that = this;
+  this.cement.bind(name, function(node, content) {
+    binding.call(that, node, content);
+  });
+});
+
+
+/**
+ * Apply bindings on dom
+ * element.
+ *
+ * @todo  benchmark if indexOf('$' ) - it
+ * seems it doesn't change anything
+ *
+ * @note should render only once
+ * 
+ * @return {this}
+ * @api public
+ */
+
+Brick.prototype.render = function() {
+  var that = this;
+  this.cement.render(this.el, function(content, node) {
+    var compiled = mouth(content);
+    var props = compiled.props;
+    var fn = cache[content] = cache[content] || compiled.text;
+    var handle = function() {
+      node.nodeValue = fn(that.data);
+    };
+    handle();
+    for(var l = props.length; l--;) {
+      that.on('change ' + props[l], handle);
+    }
+  });
+  return this;
+};
+
+
+/**
+ * Return a new brick from
+ * a brick current's state.
+ *
+ * Mold is better than a simple extend.
+ * You can freeze a living brick with
+ * its data.
+ *
+ * Examples;
+ *
+ *   var vehicle = brick(tmpl, data)
+ *     .attr('type', cb)
+ *     .mold();
+ *
+ *   var car = vehicle();
+ *   car.render();
+ *
+ *
+ * @note mold is still experimental 
+ * and will probably change a lot.
+ *
+ * @note should we clone the data
+ * and pass t in the constructor
+ *
+ * @todo  we should mold the
+ * plugins as well
+ * 
+ * @return {Function} brick factory
+ * @api public
+ */
+
+Brick.prototype.mold = function() {
+  var that = this;
+  return function(tmpl, obj) {
+    var brick = new Brick();
+    return brick
+      .from(tmpl || that.tmpl, true)
+      .set(that.data)
+      .set(obj)
+      .attr(that.cement.bindings);
+  };
+};
+
+
+/**
+ * Add custom element.
+ *
+ * Brick allows you to create your
+ * own tags (with the web component
+ * standard) or to override existing
+ * one.
+ *
+ * Examples:
+ *
+ *   var list = brick('<div><user /></div>');
+ *   var user = brick('<button></button>');
+ *
+ *   list.tag('user', user);
+ *
+ * @todo  custom element from freezed brick
+ * @todo  custom element attribute binding 
+ * (using compiler and cache)
+ * 
+ * @param  {String} name
+ * @param  {Brick} brick
+ * @return {this}
+ */
+
+Brick.prototype.tag = many(function(name, brick) {
+  brick.render();
+  elements(this.el, name, function(node) {
+    var el = brick.el;
+    replace(node, el);
+    elements(el, 'content', function(content) {
+      var select = content.getAttribute('select');
+      if(select) {
+        replace(content, node.querySelector(select));
+      } else {
+        replace(content, fragment(node));
+      }
+    });
+  });
+});
+
+
+/**
+ * Append brick to
+ * dom element.
+ *
+ * Examples:
+ *
+ *   // dom element
+ *   var foo = brick(tmpl);
+ *   foo.to(document.body);
+ *
+ *   // query selector
+ *   var bar = brick(tmpl);
+ *   bar.to('.article');
+ * 
+ * @param  {Element | String} el
+ * @return {this}
+ * @api public
+ */
+
+Brick.prototype.to = function(el) {
+  this.render();
+  dom(el).appendChild(this.el);
+};
+
+
+/**
+ * Get elements by 
+ * tag name.
+ * 
+ * @param  {Element}   el
+ * @param  {String}   name
+ * @param  {Function} fn 
+ * @api private
+ */
+
+function elements(el, name, fn) {
+  var nodes = el.getElementsByTagName(name);
+  for(var i = 0, l = nodes.length; i < l; i++) {
+    fn(nodes[i]);
+  }
+}
+
+
+/**
+ * Wrap node child nodes
+ * into a fragment.
+ *
+ * @todo should also work
+ * with simple node.
+ * 
+ * @param  {Element} node
+ * @return {DocumentFragment}
+ * @api private
+ */
+
+function fragment(node) {
+  var nodes = node.childNodes;
+  var frag = document.createDocumentFragment();
+  for(var l = nodes.length; l--;) {
+    frag.appendChild(nodes[0]);
+  }
+  return frag;
+}
+
+
+/**
+ * Replace one node with another.
+ *
+ * @note benchmark vs remove/insertBefore
+ * 
+ * @param {Element} old
+ * @param {Element} el
+ * @api private
+ */
+
+function replace(old, el) {
+  old.parentNode.replaceChild(el, old);
+}

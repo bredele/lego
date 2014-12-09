@@ -1,6 +1,6 @@
 {
   "name": "brickjs",
-  "version": "0.3.6",
+  "version": "0.8.0",
   "description": "MVVM building block to create real time and large scale applications in a flash",
   "main": "index.js",
   "scripts": {
@@ -27,11 +27,11 @@
     "url": "https://github.com/bredele/brick/issues"
   },
   "dependencies": {
-    "datastore": "^1.0.0",
-    "cement": "^0.3.1",
-    "looping": "^1.0.0",
-    "many": "^0.3.2",
-    "stomach": "^0.1.0"
+    "datastore": "^1.1.1",
+    "stomach": "^0.1.1",
+    "cement": "^0.4.0",
+    "many": "^1.0.2",
+    "mouth": "^0.1.2"
   },
   "devDependencies": {
     "mocha": "~1.17.1",

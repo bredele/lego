@@ -2,15 +2,9 @@
   "name": "brick",
   "repo": "bredele/brick",
   "description": "MVVM bricks to create realtime and large scale applications in a flash",
-  "version": "0.3.6",
+  "version": "0.8.0",
   "keywords": [],
-  "dependencies": {
-    "bredele/datastore": "^1.0.0",
-    "bredele/cement": "^0.3.1",
-    "bredele/looping": "^1.0.0",
-    "bredele/many": "^0.3.2",
-    "bredele/stomach": "^0.1.0"
-  },
+  "dependencies": {},
   "development": {},
   "license": "MIT",
   "main": "index.js",
