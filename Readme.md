@@ -70,7 +70,7 @@ Did you see the expressions surrounded by ```${}```? That's the template engine 
  -->
 ### brick is declarative
 
-Data interpolation is not all. You also can extend existing DOM attributes or even create new ones.
+You also can extend existing DOM attributes or even create new ones with plugins.
 
 ```js
 var user = brick('<a href="bredele"></a>');
@@ -81,6 +81,7 @@ link.attr('href', function(node, content) {
 
 See [result on live]().
 
+A plugin is as simple as a function but the possibilities are [numerous]().
 
 
 ### brick is a state machine
@@ -103,7 +104,20 @@ user.hook('present', 'sick', function() {
 user.emit('sick');
 ```
 
-<!--### brick is composable-->
+### brick is composable
+
+What if developing an application was as easy as putting pieces of Lego together? With brick you can extend or create your own tags.
+
+```js
+var user = brick('<span>${name}</span>, {
+	name: 'world'
+});
+
+var welcome = brick('<h1>Hello <user></user></h1>');
+welcome.tag('user', user);
+```
+
+It follows the [web component](http://w3c.github.io/webcomponents/spec/custom/) syntax with the power of a simple and concise API.
 
 ## License
 
