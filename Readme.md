@@ -15,7 +15,7 @@ Brick doesn't stop there though. Despite its small size (2kb) it has a fair bit 
 
 <!-- ## Brick is your living data -->
 
-### brick is a [datastore](http://github.com/bredele/datastore)
+### brick is a datastore
 
 A brick is a datastore, a bloat-free layer to manipulate your data.
 
@@ -30,9 +30,9 @@ user.compute('birthday', function() {
 ```
 see [datastore](http://github.com/bredele/datastore) for full API.
 
-### brick is an [emitter](http://github.com/component/emitter)
+### brick is an emitter
 
-A brick is an observable. it allows you to publish/subscribe events and also to get notified when there has been a change of data or in its [state]().
+A brick is an observable. it allows you to publish/subscribe events and also to get notified when there has been a change of data or in its [state](#brick-is-a-state-machine).
 
 ```js
 user.on('change birthday', function(val) { 
