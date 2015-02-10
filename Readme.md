@@ -49,7 +49,7 @@ see [emitter](http://github.com/component/emitter) for full API.
 
 ### brick is reactive 
 
-Brick updates your HTML whenever the underlying data changes.
+Brick intelligently updates your HTML whenever the underlying data changes.
 
 ```js
 var user = brick('<div>${name} is ${age}</div>');
@@ -57,9 +57,8 @@ user.set('name', 'olivier');
 user.set('age', 27);
 ```
 
-It eliminates DOM manipulation from the list of things you have to worry about.
+It eliminates DOM manipulation from the list of things you have to worry about. Brick will also work with SVG nodes or even server side!
 
-Did you see the expressions surrounded by ```${}```? That's the template engine provided by Brick also called data interpolation. It works on every DOM and SVG nodes and is basically a subset of JavaScript:
 <!-- 
 ```html
 <div class="twitter ${theme}">
