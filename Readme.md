@@ -80,7 +80,7 @@ link.attr('href', function(node, content) {
 
 See [result on live]().
 
-A plugin is as simple as a function but the possibilities are [numerous]().
+A plugin is as simple as a function but the possibilities are numerous. There is plugins to listen DOM events, synchronize a brick data with a database and more.
 
 
 ### brick is a state machine
