@@ -109,7 +109,7 @@ user.emit('sick');
 What if developing an application was as easy as putting pieces of Lego together? With brick you can extend or create your own tags.
 
 ```js
-var user = brick('<span>${name}</span>, {
+var user = brick('<span>${name}</span>', {
 	name: 'world'
 });
 
