@@ -52,36 +52,58 @@ see [emitter](http://github.com/component/emitter) for full API.
 Brick updates your HTML whenever the underlying data changes.
 
 ```js
-var birthday = brick('<div>${name} is ${age}</div>');
-birthday.set('name', 'olivier');
-birthday.set('age', 27);
+var user = brick('<div>${name} is ${age}</div>');
+user.set('name', 'olivier');
+user.set('age', 27);
 ```
 
 It eliminates DOM manipulation from the list of things you have to worry about.
 
 Did you see the expressions surrounded by ```${}```? That's the template engine provided by Brick also called data interpolation. It works on every DOM and SVG nodes and is basically a subset of JavaScript:
-
+<!-- 
 ```html
 <div class="twitter ${theme}">
 	<p>${text}</p>
 	<span>${ text.length } character${text.length > 0 ? 's' : ''}</span>
 </div>
 ```
-
+ -->
 ### brick is declarative
 
 Data interpolation is not all. You also can extend existing DOM attributes or even create new ones.
 
 ```js
-var link = brick('<a href="brickjs"></a>')
-link.attr('src', function(node, content) {
-  node.href = 'http://github.com/bredele' + content;
+var user = brick('<a href="bredele"></a>');
+link.attr('href', function(node, content) {
+  node.href = 'http://github.com/' + content;
 });
 ```
 
 See [result on live]().
 
 
+
+### brick is a state machine
+
+Brick will notify you at different step of it's lifecycle.
+
+```js
+user.on('mounted', function() {
+  // do something on mounted 
+})
+```
+
+But that's not all! It is also a [finite state machine](http://en.wikipedia.org/wiki/Finite-state_machine), allowing you to create your own states and sequence of actions. 
+
+```js
+user.hook('present', 'sick', function() {
+	// transition present -> absent on sick condition
+}, 'absent');
+
+user.emit('sick');
+```
+
+<!--### brick is composable-->
 
 ## License
 
