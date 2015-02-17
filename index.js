@@ -105,7 +105,9 @@ Brick.prototype.hook = function(before, ev, cb, after) {
 
 Brick.prototype.from = function(tmpl, bool) {
   this.tmpl = tmpl;
-  this.el = dom(tmpl, bool);
+  this.el = (typeof tmpl === 'function') ?
+    tmpl(this) :
+    dom(tmpl, bool);
   return this;
 };
 
