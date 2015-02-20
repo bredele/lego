@@ -127,7 +127,7 @@ An application is also made of reusable pieces. It's a bit like assembling Lego 
 var lego = brick('<span>${color}</span>').mold();
 
 var yellow = lego();
-var green = Lego();
+var green = lego();
 var blue = lego();
 ```
 
