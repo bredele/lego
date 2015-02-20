@@ -126,9 +126,9 @@ An application is also made of reusable pieces. It's a bit like assembling Lego 
 ```js
 var lego = brick('<span>${color}</span>').mold();
 
-var yellow = user();
-var green = user();
-var blue = user();
+var yellow = lego();
+var green = Lego();
+var blue = lego();
 ```
 
 No classes. You can create a brick and `mold` it anytime. Calling `mold` freezes a brick as well as its current state and data. 
