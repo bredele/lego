@@ -16,8 +16,8 @@ describe("server side rendering", function() {
 		assert.equal(el.innerHTML, 'hello');
 	});
 
-	it('should interpolate templat with data', function() {
-		var span = brick('<span>${label}</span>', {
+	it('should interpolate template with data', function() {
+		var span = brick('<span class="${label}">${label}</span>', {
 			label: 'hello'
 		});
 		span.render();
@@ -25,6 +25,6 @@ describe("server side rendering", function() {
 		assert.equal(el.innerHTML, 'hello');
 
 		span.set('label', 'world');
-		assert.equal(el.innerHTML, 'world');
+		assert.equal(el.outerHTML, '<span class="world">world</span>');
 	});
 });
