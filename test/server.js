@@ -15,4 +15,13 @@ describe("server side rendering", function() {
 		assert.equal(el.localName, 'span');
 		assert.equal(el.innerHTML, 'hello');
 	});
+
+	it('should interpolate templat with data', function() {
+		var span = brick('<span>${label}</span>', {
+			label: 'hello'
+		});
+		span.render();
+		var el = span.el;
+		assert.equal(el.innerHTML, 'hello');
+	});
 });
