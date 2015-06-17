@@ -23,5 +23,8 @@ describe("server side rendering", function() {
 		span.render();
 		var el = span.el;
 		assert.equal(el.innerHTML, 'hello');
+
+		span.set('label', 'world');
+		assert.equal(el.innerHTML, 'world');
 	});
 });
