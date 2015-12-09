@@ -7,7 +7,7 @@
     "test": "zuul -- test/*.js",
     "test-local": "zuul --local -- test/*.js",
     "standalone": "component build --standalone brick --name brick --out .",
-    "test-server" : "mocha test/server.js"
+    "test-server": "mocha test/server.js"
   },
   "repository": {
     "type": "git",
@@ -28,11 +28,7 @@
     "url": "https://github.com/bredele/brick/issues"
   },
   "dependencies": {
-    "datastore": "^1.1.1",
-    "stomach": "^0.1.1",
-    "cement": "^0.4.0",
-    "many": "^1.0.2",
-    "mouth": "^0.1.2"
+    "grout": "git://github.com/bredele/grout"
   },
   "devDependencies": {
     "mocha": "^2.2.5",
