@@ -28,8 +28,10 @@
     "url": "https://github.com/bredele/brick/issues"
   },
   "dependencies": {
+    "cement": "git://github.com/bredele/cement",
     "datastore": "git://github.com/bredele/datastore",
-    "grout": "git://github.com/bredele/grout"
+    "grout": "git://github.com/bredele/grout",
+    "stomach": "git://github.com/bredele/stomach"
   },
   "devDependencies": {
     "mocha": "^2.2.5",
