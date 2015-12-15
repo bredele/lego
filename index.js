@@ -2,18 +2,14 @@
  * Brick dependencies.
  */ 
 
- var grout = require('grout');
+var Store = require('datastore');
 
 
 /**
  * Expose 'brick'
  */
 
-module.exports = function(cb) {
-  return new Brick(cb);
+module.exports = function() {
+
 };
 
-
-function Brick(cb) {
-  this.el = cb(grout)();
-}

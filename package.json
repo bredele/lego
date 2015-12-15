@@ -28,6 +28,7 @@
     "url": "https://github.com/bredele/brick/issues"
   },
   "dependencies": {
+    "datastore": "git://github.com/bredele/datastore",
     "grout": "git://github.com/bredele/grout"
   },
   "devDependencies": {
