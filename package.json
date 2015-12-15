@@ -33,8 +33,7 @@
     "fragment": "git://github.com/bredele/fragment",
     "grout": "git://github.com/bredele/grout",
     "many": "git://github.com/bredele/many",
-    "mouth": "git://github.com/bredele/mouth",
-    "stomach": "git://github.com/bredele/stomach"
+    "mouth": "git://github.com/bredele/mouth"
   },
   "devDependencies": {
     "mocha": "^2.2.5",

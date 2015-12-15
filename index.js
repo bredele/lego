@@ -5,7 +5,6 @@
 var Cement = require('cement');
 var Store = require('datastore');
 var mouth = require('mouth');
-var dom = require('stomach');
 var many = require('many');
 var fragment = require('fragment');
 
@@ -40,38 +39,12 @@ function Brick(tmpl, data) {
 
 
 Brick.prototype = Store.prototype;
-// @todo mixin refactor
-for (var key in Cement.prototype) {
-  Brick.prototype[key] = Cement.prototype[key];
-}
-
-
-/**
- * Create brick dom element from
- * string or existing dom element.
- * 
- * @param  {String | Element}  tmpl
- * @param {Boolean?} bool clone node
- * @return {this}
- * @api public
- */
-
-Brick.prototype.from = function(tmpl, bool) {
-  this.el = (typeof tmpl === 'function')
-    ? tmpl(this)
-    : dom(tmpl, bool);
-  return this;
-};
+Cement(Brick.prototype);
 
 
 /**
  * Apply bindings on dom
  * element.
- *
- * @todo  benchmark if indexOf('$' ) - it
- * seems it doesn't change anything
- *
- * @note should render only once
  * 
  * @return {this}
  * @api public

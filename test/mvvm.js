@@ -28,15 +28,20 @@ describe("API", function() {
     assert(obj.del);
     assert(obj.reset);
     assert(obj.compute);
+    assert(obj.use);
   });
 
   it("should be a bredele/cement", function() {
     assert(obj.from);
     assert(obj.attr);
-    assert(obj.use);
-    //assert(obj.tag);
+    assert(obj.node);
+    assert(obj.query);
+  });
+
+  it("should add the following api", function() {
+    assert(obj.tag);
     //assert(obj.hook);
-    //assert(obj.bind);
+    assert(obj.bind);
   });
   
 });
