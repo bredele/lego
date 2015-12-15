@@ -144,6 +144,14 @@ describe('bind', function() {
     obj.bind();
     assert.equal(obj.el.outerHTML, '<button>olivier</button>');
   });
+
+  it("should update dom when data change", function() {
+    obj.from('<button>${name}</button>');
+    obj.set('name', 'olivier');
+    obj.bind();
+    obj.set('name', 'bruno');
+    assert.equal(obj.el.outerHTML, '<button>bruno</button>');
+  });
 })
 
 // describe("#attr", function() {
