@@ -6,14 +6,8 @@ var Cement = require('cement');
 var Store = require('datastore');
 var mouth = require('mouth');
 var dom = require('stomach');
-
-
-/**
- * Expression cache.
- * @type {Object}
- */
-
-var cache = {};
+var many = require('many');
+var fragment = require('fragment');
 
 
 
@@ -42,7 +36,6 @@ module.exports = function(tmpl, data) {
 function Brick(tmpl, data) {
   Store.call(this, data);
   this.from(tmpl);
-  this.state = 'created';
 }
 
 
@@ -51,49 +44,6 @@ Brick.prototype = Store.prototype;
 for (var key in Cement.prototype) {
   Brick.prototype[key] = Cement.prototype[key];
 }
-
-
-/**
- * Add state machine transition
- * aka hook.
- *
- * Listen to a change of state or
- * define a state transition callback.
- *
- * Examples:
- *
- *   // transition on event lock
- *   lego.hook('created', 'lock', 'locked');
- *   lego.emit('lock');
- *   
- *   // with callback
- *   lego.hook('created', 'lock', function() {
- *     // do something
- *   }, 'locked');
- * 
- * @param  {String}   before
- * @param  {String}   ev
- * @param  {Function?} cb
- * @param  {String?}   after
- * @return {this}
- * @api public
- */
-
-Brick.prototype.hook = function(before, ev, cb, after) {
-  if(typeof cb === 'string') {
-    after = cb;
-    cb = null;
-  }
-  var that = this;
-  this.on(ev, function() {
-    if(that.state === before) {
-      cb && cb.apply(that, arguments);
-      if(after) that.state = after;
-    }
-  });
-  return this;
-};
-
 
 
 /**
@@ -112,8 +62,6 @@ Brick.prototype.from = function(tmpl, bool) {
     : dom(tmpl, bool);
   return this;
 };
-
-
 
 
 /**
@@ -147,28 +95,56 @@ Brick.prototype.bind = function() {
 };
 
 
-
-
 /**
- * Append brick to
- * dom element.
+ * Add custom element.
+ *
+ * Brick allows you to create your
+ * own tags (with the web component
+ * standard) or to override existing
+ * one.
  *
  * Examples:
  *
- *   // dom element
- *   var foo = brick(tmpl);
- *   foo.to(document.body);
+ *   var list = brick('<div><user /></div>');
+ *   var user = brick('<button></button>');
  *
- *   // query selector
- *   var bar = brick(tmpl);
- *   bar.to('.article');
+ *   list.tag('user', user);
+ *
+ * @todo  custom element from freezed brick
+ * @todo  custom element attribute binding 
+ * (using compiler and cache)
  * 
- * @param  {Element | String} el
+ * @param  {String} name
+ * @param  {Brick} brick
  * @return {this}
- * @api public
  */
 
-Brick.prototype.to = function(el) {
-  this.render();
-  dom(el).appendChild(this.el);
-};
+Brick.prototype.tag = many(function(name, brick) {
+  brick.bind();
+  this.query(name, function(node) {
+  	replace(node, brick.el);
+  	brick.query('content', function(content) {
+  	  var select = content.getAttribute('select');
+  	  if(select) {
+  	    replace(content, node.querySelector(select));
+  	  } else {
+  	    replace(content, fragment([].slice.call(node.childNodes)));
+  	  }
+  	});
+  });
+});
+
+
+/**
+ * Replace one node with another.
+ *
+ * @note benchmark vs remove/insertBefore
+ * 
+ * @param {Element} old
+ * @param {Element} el
+ * @api private
+ */
+
+function replace(old, el) {
+  old.parentNode.replaceChild(el, old);
+}

@@ -30,9 +30,8 @@ describe("API", function() {
     assert(obj.compute);
   });
 
-  it("should have the following API", function() {
+  it("should be a bredele/cement", function() {
     assert(obj.from);
-    assert(obj.to);
     assert(obj.attr);
     assert(obj.use);
     //assert(obj.tag);
@@ -42,56 +41,56 @@ describe("API", function() {
   
 });
 
-describe("#hook", function() {
+// describe("#hook", function() {
 
-  var obj;
-  beforeEach(function() {
-    obj = brick();
-  });
+//   var obj;
+//   beforeEach(function() {
+//     obj = brick();
+//   });
 
-  it('should have an initial state', function() {
-    assert.equal(obj.state, 'created');
-  });
+//   it('should have an initial state', function() {
+//     assert.equal(obj.state, 'created');
+//   });
 
-  it("should add transition", function(done) {
-    obj.hook('created', 'lock', function() {
-      done();
-    }, 'locked');
-    obj.emit('lock');
-  });
+//   it("should add transition", function(done) {
+//     obj.hook('created', 'lock', function() {
+//       done();
+//     }, 'locked');
+//     obj.emit('lock');
+//   });
 
-  it("should set current state", function() {
-    obj.hook('created', 'lock', function(){}, 'locked');
-    obj.emit('lock');
-    assert.equal(obj.state, 'locked');
-  });
+//   it("should set current state", function() {
+//     obj.hook('created', 'lock', function(){}, 'locked');
+//     obj.emit('lock');
+//     assert.equal(obj.state, 'locked');
+//   });
 
-  it('should not change current state', function() {
-    obj.hook('created', 'lock', function(){});
-    obj.emit('lock');
-    assert.equal(obj.state, 'created');
-  });
+//   it('should not change current state', function() {
+//     obj.hook('created', 'lock', function(){});
+//     obj.emit('lock');
+//     assert.equal(obj.state, 'created');
+//   });
 
-  it('should always change state', function() {
-    obj.hook('created', 'lock', null, 'locked');
-    obj.emit('lock');
-    assert.equal(obj.state, 'locked');
-  });
+//   it('should always change state', function() {
+//     obj.hook('created', 'lock', null, 'locked');
+//     obj.emit('lock');
+//     assert.equal(obj.state, 'locked');
+//   });
 
-  it('should perform transition without callback', function() {
-    obj.hook('created', 'lock', 'locked');
-    obj.emit('lock');
-    assert.equal(obj.state, 'locked');
-  });
+//   it('should perform transition without callback', function() {
+//     obj.hook('created', 'lock', 'locked');
+//     obj.emit('lock');
+//     assert.equal(obj.state, 'locked');
+//   });
 
-  it('should pass arguments', function(done) {
-    obj.hook('created', 'lock', function(hello, world){
-      if(hello === 'hello') done();
-    });
-    obj.emit('lock', 'hello');
-  });
+//   it('should pass arguments', function(done) {
+//     obj.hook('created', 'lock', function(hello, world){
+//       if(hello === 'hello') done();
+//     });
+//     obj.emit('lock', 'hello');
+//   });
 
-});
+// });
 
 
 describe("#from", function() {
@@ -154,167 +153,86 @@ describe('bind', function() {
   });
 })
 
+describe('#tag', function() {
+
+  it("should replace custom tag with brick", function() {
+    var list = brick('<ul><user></user></ul>');
+    var user = brick('<h1>user</h1>');
+
+    list.tag('user', user);
+    list.bind();
+
+    assert.equal(list.el.innerHTML, '<h1>user</h1>');
+  });
+
+  // note: une brick peut elle etre un custom element?
+  // dans ce cas on doit verifier le this.el (c pk il faudrait
+  // peut etre mettre la brick dans unf ragment par defaut)
+  //var list = brick('<user><span>hello world!</span></user>');
+
+  it('should replace the content of a custom element with 1 node', function() {
+    var list = brick('<div><user>  <button>hello</button></user></div>');
+    var user = brick('<div><content></content></div>');
+
+    list.tag('user', user);
+    list.bind();
+
+    // note on doit utiliser un fragment 
+    // ce sera plus rapide
+    assert.equal(user.el.innerHTML, '  <button>hello</button>');
+  });
 
 
-// describe("Constructor", function() {
+  it('should replace the content of a custom element with multiple nodes', function() {
+    var list = brick('<div><user>  <h1>hello</h1><button>world</button></user></div>');
+    var user = brick('<div><h2>brick</h2><content></content></div>');
 
-//   it("should set template", function() {
-//     var obj = brick('<button>hello</button>');
-//     assert.equal(obj.el.innerHTML, 'hello');
-//     assert.equal(obj.el.nodeName, 'BUTTON');
-//   });
-  
-//   it("should set model", function() {
-//     var obj = brick('<button>hello</button>', {
-//       name: 'olivier'
-//     });
-//     assert.equal(obj.get('name'), 'olivier');
+    list.tag('user', user);
+    list.bind();
 
-//   });
-// });
+    // note on doit utiliser un fragment 
+    // ce sera plus rapide
+    assert.equal(user.el.innerHTML, '<h2>brick</h2>  <h1>hello</h1><button>world</button>');
+  });
 
-// describe("#mold", function() {
+  it('should replace the content of a custom element with query selection', function() {
+    var list = brick('<div><user><h1>hello</h1><button>world</button></user></div>');
+    var user = brick('<div><content select="button"></content></div>');
 
-//   it("should substitute single expression", function() {
-//     var obj = brick('<button>${label}</button>', {
-//       label: 'olivier'
-//     });
-//     obj.render();
+    list.tag('user', user);
+    list.bind();
 
-//     assert.equal(obj.el.innerHTML, 'olivier');
-//   });
+    // note on doit utiliser un fragment 
+    // ce sera plus rapide
+    assert.equal(user.el.innerHTML, '<button>world</button>');
+  });
 
-//   it("should substitue multiple expressions in the same node", function() {
-//     var obj = brick('<button>${label} from ${country}</button>', {
-//       label: 'olivier',
-//       country: 'france'
-//     });
-//     obj.render();
+  it('should bind a custom element inner content', function() {
+    var list = brick('<div><user>${name}</user></div>', {
+      name: 'olivier'
+    });
+    var user = brick('<div>${name} and <content></content></div>', {
+      name: 'bruno'
+    });
 
-//     assert.equal(obj.el.innerHTML, 'olivier from france');
-//   });
-  
-//   it("should substitue every text node", function() {
-//     var obj = brick('<button class="${country}">${label}</button>', {
-//       label: 'olivier',
-//       country: 'france'
-//     });
-//     obj.render();
+    list.tag('user', user);
 
-//     assert.equal(obj.el.className, 'france');
-//     assert.equal(obj.el.innerHTML, 'olivier');
-//   });
+    list.bind();
 
-//   describe('live interpolation', function() {
+    assert.equal(user.el.innerHTML, 'bruno and olivier');
 
-//     it("should update text node on model change", function() {
-//       var obj = brick('<button>${label}</button>', {
-//         label: 'olivier'
-//       });
-//       obj.render();
-//       obj.set('label', 'bredele');
-//       assert.equal(obj.el.innerHTML, 'bredele');
-//     });
-    
-//   });
-  
-// });
+    list.set('name', 'bredele');
 
-// describe("#mold", function() {
-  
-//   it("should return a new brick", function() {
-//     var obj = brick('<section class="section">')
-//       .attr('class', function(node, content) {
-//         node.innerHTML = content;
-//       }).mold();
+    assert.equal(user.el.innerHTML, 'bruno and bredele');
 
+    user.set('name', 'amy');
+    assert.equal(user.el.innerHTML, 'amy and bredele');
 
-//     var other = obj().render();
-//     assert.equal(other.el.innerHTML ,'section');
-//   });
-  
-// });
+  });
 
-// describe('#tag', function() {
+});
 
-//   it("should replace custom tag with brick", function() {
-//     var list = brick('<ul><user></user></ul>');
-//     var user = brick('<h1>user</h1>');
-
-//     list.tag('user', user);
-//     list.render();
-
-//     assert.equal(list.el.innerHTML, '<h1>user</h1>');
-//   });
-
-//   // note: une brick peut elle etre un custom element?
-//   // dans ce cas on doit verifier le this.el (c pk il faudrait
-//   // peut etre mettre la brick dans unf ragment par defaut)
-//   //var list = brick('<user><span>hello world!</span></user>');
-
-//   it('should replace the content of a custom element with 1 node', function() {
-//     var list = brick('<div><user>  <button>hello</button></user></div>');
-//     var user = brick('<div><content></content></div>');
-
-//     list.tag('user', user);
-//     list.render();
-
-//     // note on doit utiliser un fragment 
-//     // ce sera plus rapide
-//     assert.equal(user.el.innerHTML, '  <button>hello</button>');
-//   });
-
-
-//   it('should replace the content of a custom element with multiple nodes', function() {
-//     var list = brick('<div><user>  <h1>hello</h1><button>world</button></user></div>');
-//     var user = brick('<div><h2>brick</h2><content></content></div>');
-
-//     list.tag('user', user);
-//     list.render();
-
-//     // note on doit utiliser un fragment 
-//     // ce sera plus rapide
-//     assert.equal(user.el.innerHTML, '<h2>brick</h2>  <h1>hello</h1><button>world</button>');
-//   });
-
-//   it('should replace the content of a custom element with query selection', function() {
-//     var list = brick('<div><user><h1>hello</h1><button>world</button></user></div>');
-//     var user = brick('<div><content select="button"></content></div>');
-
-//     list.tag('user', user);
-//     list.render();
-
-//     // note on doit utiliser un fragment 
-//     // ce sera plus rapide
-//     assert.equal(user.el.innerHTML, '<button>world</button>');
-//   });
-
-//   it('should bind a custom element inner content', function() {
-//     var list = brick('<div><user>${name}</user></div>', {
-//       name: 'olivier'
-//     });
-//     var user = brick('<div>${name} and <content></content></div>', {
-//       name: 'bruno'
-//     });
-
-//     list.tag('user', user);
-
-//     list.render();
-
-//     assert.equal(user.el.innerHTML, 'bruno and olivier');
-
-//     list.set('name', 'bredele');
-
-//     assert.equal(user.el.innerHTML, 'bruno and bredele');
-
-//     user.set('name', 'amy');
-//     assert.equal(user.el.innerHTML, 'amy and bredele');
-
-//   });
-
-// });
-
-// describe("#to", function() {
+// describe("#append", function() {
 
 //   var doc, obj;
 //   beforeEach(function() {
@@ -339,5 +257,17 @@ describe('bind', function() {
 //     obj.to('.article');
 //     assert.equal(document.querySelector('.article').firstChild, obj.el);
 //   });
+
+// });
+
+
+// describe('constructor', function() {
+
+//   it('should ', function() {
+//     var div = document.createElement('div');
+//     var lego = brick('<button>hello</button>', div);
+//     assert.equal(div.innerHTML, '<button>hello</button>');
+//   });
+
 
 // });
