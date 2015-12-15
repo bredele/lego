@@ -130,6 +130,22 @@ describe("#from", function() {
 
 });
 
+
+describe('bind', function() {
+
+  var obj;
+  beforeEach(function() {
+    obj = brick();
+  });
+
+  it("should bind dom with data", function() {
+    obj.from('<button>${name}</button>');
+    obj.set('name', 'olivier');
+    obj.bind();
+    assert.equal(obj.el.outerHTML, '<button>olivier</button>');
+  });
+})
+
 // describe("#attr", function() {
   
 //   var obj;
