@@ -365,15 +365,15 @@ describe("#to", function() {
 // btn.to(document.body);
 // console.log(performance.now() - t0);
 
-var t0 = performance.now();
-for(var l = 10000; l--;) {
-  var btn = brick('<button>${label}</button>', {
-    label: 'klara'
-  });
-  btn.build();
-  btn.to(document.body);
-}
-console.log(performance.now() - t0);
+// var t0 = performance.now();
+// for(var l = 10000; l--;) {
+//   var btn = brick('<button>${label}</button>', {
+//     label: 'klara'
+//   });
+//   btn.build();
+//   btn.to(document.body);
+// }
+// console.log(performance.now() - t0);
 
 // var btn = brick('<button>${label}</button>');
 

@@ -12,14 +12,6 @@ var many = require('many');
 
 
 /**
- * Expression cache.
- * @type {Object}
- */
-
-var cache = {};
-
-
-/**
  * Expose 'brick'
  */
 
@@ -187,7 +179,6 @@ Brick.prototype.build = function() {
   // @note use looping
   walk(this.el, function(node) {
     if(node.nodeType === 1) {
-      //loop.array(node.attributes, that.bind, that);
       var attrs = node.attributes;
       for(var i = 0, l = attrs.length; i < l; i++) {
         that.bind(attrs[i]);
@@ -211,10 +202,9 @@ Brick.prototype.bind = function(node) {
   var data = this.data;
   var content = node.nodeValue;
   var compiled = mouth(content, data);
-  var cb = cache[content] = cache[content] || compiled[0];
   var keys = compiled[1];
   var fn = function() {
-    node.nodeValue = cb(data);
+    node.nodeValue = compiled[0](data);
   };
   fn();
   for(var l = keys.length; l--;) {
