@@ -118,10 +118,10 @@ Brick.prototype.from = function(tmpl, bool) {
  *   lego.attr({
  *     class: fn,
  *     'data-test': cb
- *   })
+ *   });
  * 
- * @param  {String} name 
- * @param  {Function} binding
+ * @param  {String | Object} name 
+ * @param  {Function?} binding
  * @return {this}
  * @api public
  */
@@ -239,6 +239,7 @@ Brick.prototype.tag = many(function(name, brick) {
       }
     });
   });
+  return this;
 });
 
 
@@ -263,6 +264,7 @@ Brick.prototype.tag = many(function(name, brick) {
 
 Brick.prototype.to = function(el) {
   dom(el).appendChild(this.el);
+  return this;
 };
 
 
