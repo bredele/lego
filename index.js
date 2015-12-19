@@ -3,11 +3,11 @@
  * Module dependencies.
  */
 
-var Cement = require('cement');
 var Store = require('datastore');
 var mouth = require('mouth');
 var many = require('many');
 var dom = require('stomach');
+var walk = require('domwalk');
 
 
 /**
@@ -43,7 +43,6 @@ module.exports = function(tmpl, data) {
 function Brick(tmpl, data) {
   Store.call(this, data);
   this.state = 'created';
-  this.cement = new Cement();
   this.from(tmpl);
 }
 
@@ -139,12 +138,33 @@ Brick.prototype.from = function(tmpl, bool) {
  */
 
 Brick.prototype.attr = many(function(name, binding) {
-  var that = this;
-  this.cement.bind(name, function(node, content) {
-    binding.call(that, node, content);
+  var that = this
+  if(that.el.hasAttribute(name)) binding.call(that, that.el, that.el.getAttribute(name));
+  that.query('[' + name + ']', function(node) {
+    binding.call(that, node, node.getAttribute(name));
   });
+  return that;
 });
 
+
+/**
+ * Query all nodes.
+ *
+ * Examples:
+ *
+ *  lego.query('input', function() {
+ *    // do something
+ *  })
+ * 
+ * @param {String} selector
+ * @param {Function} cb
+ * @api private
+ */
+
+Cement.prototype.query = function(selector, cb) {
+  loop(this.el.querySelectorAll(selector), cb);
+  return this;
+};
 
 /**
  * Apply bindings on dom
