@@ -5,7 +5,7 @@ Brick reduces boilerplate by implementing amongst others, reactive one way bindi
 ```js
 brick('<div>Hello ${ name }</div>', {
   name: 'olivier'
-}).to(document.body);
+}, document.body);
 ```
 see [live example]()
 

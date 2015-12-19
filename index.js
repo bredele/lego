@@ -15,8 +15,10 @@ var many = require('many');
  * Expose 'brick'
  */
 
-module.exports = function(tmpl, data) {
-  return new Brick(tmpl, data);
+module.exports = function(tmpl, data, anchor) {
+   var brick = new Brick(tmpl, data);
+   if(anchor) brick.build().to(anchor);
+   return brick;
 };
 
 
@@ -183,7 +185,7 @@ Brick.prototype.build = function() {
 
 
 /**
- * Bind DOM node wit data using
+ * Bind DOM node with data using
  * mouth template engine.
  *
  * @return {Element} node

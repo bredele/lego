@@ -354,6 +354,19 @@ describe("#to", function() {
 
 });
 
+
+describe('constructor', function() {
+  
+  it('should build brick if anchor is specified', function() {
+    var anchor = document.createElement('div');
+    var lego = brick('<button>${name}</button>', {
+      name: 'olivier'
+    }, anchor);
+    assert.equal(lego.el.outerHTML, '<button>olivier</button>');
+  });
+
+});
+
 // var anchor = document.createElement('div');
 // for(var l = 1000; l--;) {
 //   anchor.insertAdjacentHTML('beforeend', '<span>${ label }</span>');
