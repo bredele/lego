@@ -96,9 +96,9 @@ Brick.prototype.hook = function(before, ev, cb, after) {
  */
 
 Brick.prototype.from = function(tmpl, bool) {
-  this.el = (typeof tmpl === 'function') ?
-    tmpl(this) :
-    dom(tmpl, bool);
+  this.el = (typeof tmpl === 'function')
+    ? tmpl(this)
+    : dom(tmpl, bool);
   return this;
 };
 
@@ -119,9 +119,6 @@ Brick.prototype.from = function(tmpl, bool) {
  *     class: fn,
  *     'data-test': cb
  *   })
- *
- * @note using closure is more
- * efficient than using native bind.
  * 
  * @param  {String} name 
  * @param  {Function} binding
@@ -139,7 +136,7 @@ Brick.prototype.attr = many(function(name, binding) {
 
 
 /**
- * Query all nodes.
+ * Query all nodes inside a brick.
  *
  * Examples:
  *
@@ -162,13 +159,8 @@ Brick.prototype.query = function(selector, cb) {
 
 
 /**
- * Apply bindings on dom
+ * Apply data bindings on brick dom
  * element.
- *
- * @todo  benchmark if indexOf('$' ) - it
- * seems it doesn't change anything
- *
- * @note should render only once
  * 
  * @return {this}
  * @api public
@@ -176,7 +168,6 @@ Brick.prototype.query = function(selector, cb) {
 
 Brick.prototype.build = function() {
   var that = this;
-  // @note use looping
   walk(this.el, function(node) {
     if(node.nodeType === 1) {
       var attrs = node.attributes;
@@ -187,6 +178,7 @@ Brick.prototype.build = function() {
       that.bind(node);
     }
   });
+  return this;
 };
 
 
@@ -210,6 +202,7 @@ Brick.prototype.bind = function(node) {
   for(var l = keys.length; l--;) {
     this.on('change ' + keys[l], fn);
   }
+  return this;
 };
 
 
@@ -227,10 +220,6 @@ Brick.prototype.bind = function(node) {
  *   var user = brick('<button></button>');
  *
  *   list.tag('user', user);
- *
- * @todo  custom element from freezed brick
- * @todo  custom element attribute binding 
- * (using compiler and cache)
  * 
  * @param  {String} name
  * @param  {Brick} brick
