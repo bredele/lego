@@ -313,14 +313,14 @@ describe('#tag', function() {
     list.tag('user', user);
     list.build();
 
-    // assert.equal(user.el.innerHTML, 'bruno and olivier');
+    assert.equal(user.el.innerHTML, 'bruno and olivier');
 
-    // list.set('name', 'bredele');
+    list.set('name', 'bredele');
 
-    // assert.equal(user.el.innerHTML, 'bruno and bredele');
+    assert.equal(user.el.innerHTML, 'bruno and bredele');
 
-    // user.set('name', 'amy');
-    // assert.equal(user.el.innerHTML, 'amy and bredele');
+    user.set('name', 'amy');
+    assert.equal(user.el.innerHTML, 'amy and bredele');
 
   });
 
@@ -356,16 +356,22 @@ describe("#to", function() {
 
 
 describe('constructor', function() {
+  var anchor;
+  beforeEach(function() {
+    anchor = document.createElement('div');
+  });
   
   it('should build brick if data and anchor are specified', function() {
-    var anchor = document.createElement('div');
-    var lego = brick('<button>${name}</button>', {
+    brick('<button>${name}</button>', {
       name: 'olivier'
     }, anchor);
-    assert.equal(lego.el.outerHTML, '<button>olivier</button>');
+    assert.equal(anchor.firstChild.outerHTML, '<button>olivier</button>');
   });
 
-  it('should build brick if anchor is specified ');
+  it('should build brick if anchor is specified', function() {
+    brick('<button>olivier</button>', anchor);
+    assert.equal(anchor.firstChild.outerHTML, '<button>olivier</button>');
+  });
 });
 
 // var anchor = document.createElement('div');

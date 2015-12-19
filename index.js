@@ -16,9 +16,13 @@ var many = require('many');
  */
 
 module.exports = function(tmpl, data, anchor) {
-   var brick = new Brick(tmpl, data);
-   if(anchor) brick.build().to(anchor);
-   return brick;
+  if(data instanceof Element) {
+    anchor = data;
+    data = {};
+  }
+  var brick = new Brick(tmpl, data);
+  if(anchor) brick.build().to(anchor);
+  return brick;
 };
 
 
