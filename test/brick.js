@@ -357,7 +357,7 @@ describe("#to", function() {
 
 describe('constructor', function() {
   
-  it('should build brick if anchor is specified', function() {
+  it('should build brick if data and anchor are specified', function() {
     var anchor = document.createElement('div');
     var lego = brick('<button>${name}</button>', {
       name: 'olivier'
@@ -365,6 +365,7 @@ describe('constructor', function() {
     assert.equal(lego.el.outerHTML, '<button>olivier</button>');
   });
 
+  it('should build brick if anchor is specified ');
 });
 
 // var anchor = document.createElement('div');
