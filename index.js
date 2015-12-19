@@ -3,11 +3,12 @@
  * Module dependencies.
  */
 
+var fragment = require('fragment');
 var Store = require('datastore');
-var mouth = require('mouth');
-var many = require('many');
-var dom = require('stomach');
 var walk = require('domwalk');
+var mouth = require('mouth');
+var dom = require('stomach');
+var many = require('many');
 
 
 /**
@@ -103,7 +104,6 @@ Brick.prototype.hook = function(before, ev, cb, after) {
  */
 
 Brick.prototype.from = function(tmpl, bool) {
-  this.tmpl = tmpl;
   this.el = (typeof tmpl === 'function') ?
     tmpl(this) :
     dom(tmpl, bool);
@@ -138,12 +138,11 @@ Brick.prototype.from = function(tmpl, bool) {
  */
 
 Brick.prototype.attr = many(function(name, binding) {
-  var that = this
-  if(that.el.hasAttribute(name)) binding.call(that, that.el, that.el.getAttribute(name));
-  that.query('[' + name + ']', function(node) {
-    binding.call(that, node, node.getAttribute(name));
+  if(this.el.hasAttribute(name)) binding.call(this, this.el, this.el.getAttribute(name));
+  this.query('[' + name + ']', function(node) {
+    binding.call(this, node, node.getAttribute(name));
   });
-  return that;
+  return this;
 });
 
 
@@ -161,10 +160,14 @@ Brick.prototype.attr = many(function(name, binding) {
  * @api private
  */
 
-Cement.prototype.query = function(selector, cb) {
-  loop(this.el.querySelectorAll(selector), cb);
+Brick.prototype.query = function(selector, cb) {
+  var els = this.el.querySelectorAll(selector);
+  for(var i = 0, l = els.length; i < l; i++) {
+    cb.call(this, els[i]);
+  }
   return this;
 };
+
 
 /**
  * Apply bindings on dom
@@ -179,65 +182,44 @@ Cement.prototype.query = function(selector, cb) {
  * @api public
  */
 
-Brick.prototype.render = function() {
+Brick.prototype.build = function() {
   var that = this;
-  this.cement.render(this.el, function(content, node) {
-    var compiled = mouth(content);
-    var props = compiled.props;
-    var fn = cache[content] = cache[content] || compiled.text;
-    var handle = function() {
-      node.nodeValue = fn(that.data);
-    };
-    handle();
-    for(var l = props.length; l--;) {
-      that.on('change ' + props[l], handle);
+  // @note use looping
+  walk(this.el, function(node) {
+    if(node.nodeType === 1) {
+      //loop.array(node.attributes, that.bind, that);
+      var attrs = node.attributes;
+      for(var i = 0, l = attrs.length; i < l; i++) {
+        that.bind(attrs[i]);
+      }
+    } else {
+      that.bind(node);
     }
   });
-  return this;
 };
 
 
 /**
- * Return a new brick from
- * a brick current's state.
+ * Bind DOM node wit data using
+ * mouth template engine.
  *
- * Mold is better than a simple extend.
- * You can freeze a living brick with
- * its data.
- *
- * Examples;
- *
- *   var vehicle = brick(tmpl, data)
- *     .attr('type', cb)
- *     .mold();
- *
- *   var car = vehicle();
- *   car.render();
- *
- *
- * @note mold is still experimental 
- * and will probably change a lot.
- *
- * @note should we clone the data
- * and pass t in the constructor
- *
- * @todo  we should mold the
- * plugins as well
- * 
- * @return {Function} brick factory
- * @api public
+ * @return {Element} node
+ * @api private
  */
 
-Brick.prototype.mold = function() {
-  var that = this;
-  return function(tmpl, obj) {
-    var brick = new Brick();
-    return brick
-      .from(tmpl || that.tmpl, true)
-      .set(that.data)
-      .set(obj)
-      .attr(that.cement.bindings);
+Brick.prototype.bind = function(node) {
+  var data = this.data;
+  var content = node.nodeValue;
+  var compiled = mouth(content, data);
+  var cb = cache[content] = cache[content] || compiled[0];
+  var keys = compiled[1];
+  var fn = function() {
+    node.nodeValue = cb(data);
   };
+  fn();
+  for(var l = keys.length; l--;) {
+    this.on('change ' + keys[l], fn);
+  }
 };
 
 
@@ -266,16 +248,15 @@ Brick.prototype.mold = function() {
  */
 
 Brick.prototype.tag = many(function(name, brick) {
-  brick.render();
-  elements(this.el, name, function(node) {
-    var el = brick.el;
-    replace(node, el);
-    elements(el, 'content', function(content) {
+  brick.build();
+  this.query(name, function(node) {
+    replace(node, brick.el);
+    brick.query('content', function(content) {
       var select = content.getAttribute('select');
       if(select) {
         replace(content, node.querySelector(select));
       } else {
-        replace(content, fragment(node));
+        replace(content, fragment([].slice.call(node.childNodes)));
       }
     });
   });
@@ -302,49 +283,8 @@ Brick.prototype.tag = many(function(name, brick) {
  */
 
 Brick.prototype.to = function(el) {
-  this.render();
   dom(el).appendChild(this.el);
 };
-
-
-/**
- * Get elements by 
- * tag name.
- * 
- * @param  {Element}   el
- * @param  {String}   name
- * @param  {Function} fn 
- * @api private
- */
-
-function elements(el, name, fn) {
-  var nodes = el.getElementsByTagName(name);
-  for(var i = 0, l = nodes.length; i < l; i++) {
-    fn(nodes[i]);
-  }
-}
-
-
-/**
- * Wrap node child nodes
- * into a fragment.
- *
- * @todo should also work
- * with simple node.
- * 
- * @param  {Element} node
- * @return {DocumentFragment}
- * @api private
- */
-
-function fragment(node) {
-  var nodes = node.childNodes;
-  var frag = document.createDocumentFragment();
-  for(var l = nodes.length; l--;) {
-    frag.appendChild(nodes[0]);
-  }
-  return frag;
-}
 
 
 /**

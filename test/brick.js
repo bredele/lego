@@ -32,9 +32,9 @@ describe("API", function() {
 
   it("should have the following API", function() {
     assert(obj.from);
-    assert(obj.mold);
+    //assert(obj.mold);
     assert(obj.tag);
-    assert(obj.render);
+    assert(obj.build);
     assert(obj.attr);
     assert(obj.hook);
     assert(obj.use);
@@ -142,7 +142,7 @@ describe("#attr", function() {
     obj.attr('data-test', function(node, content) {
       if(content === 'hello') done();
     });
-    obj.render();
+    obj.build();
   });
 
   it('should scope binding with itself', function(done) {
@@ -150,7 +150,7 @@ describe("#attr", function() {
     obj.attr('data-test', function(node, content) {
       if(this.get('name') === 'olivier') done();
     });
-    obj.render();
+    obj.build();
   });
 
   it('should apply multiple bindings', function() {
@@ -163,8 +163,8 @@ describe("#attr", function() {
         result += content;
       }
     });
-    obj.render();
-    assert.equal(result, 'sectionhello');
+    obj.build();
+    assert.equal(result, 'hellosection');
   });
 
 });
@@ -187,67 +187,67 @@ describe("Constructor", function() {
   });
 });
 
-describe("#mold", function() {
+// describe("#mold", function() {
 
-  it("should substitute single expression", function() {
-    var obj = brick('<button>${label}</button>', {
-      label: 'olivier'
-    });
-    obj.render();
+//   it("should substitute single expression", function() {
+//     var obj = brick('<button>${label}</button>', {
+//       label: 'olivier'
+//     });
+//     obj.build();
 
-    assert.equal(obj.el.innerHTML, 'olivier');
-  });
+//     assert.equal(obj.el.innerHTML, 'olivier');
+//   });
 
-  it("should substitue multiple expressions in the same node", function() {
-    var obj = brick('<button>${label} from ${country}</button>', {
-      label: 'olivier',
-      country: 'france'
-    });
-    obj.render();
+//   it("should substitue multiple expressions in the same node", function() {
+//     var obj = brick('<button>${label} from ${country}</button>', {
+//       label: 'olivier',
+//       country: 'france'
+//     });
+//     obj.build();
 
-    assert.equal(obj.el.innerHTML, 'olivier from france');
-  });
+//     assert.equal(obj.el.innerHTML, 'olivier from france');
+//   });
   
-  it("should substitue every text node", function() {
-    var obj = brick('<button class="${country}">${label}</button>', {
-      label: 'olivier',
-      country: 'france'
-    });
-    obj.render();
+//   it("should substitue every text node", function() {
+//     var obj = brick('<button class="${country}">${label}</button>', {
+//       label: 'olivier',
+//       country: 'france'
+//     });
+//     obj.build();
 
-    assert.equal(obj.el.className, 'france');
-    assert.equal(obj.el.innerHTML, 'olivier');
-  });
+//     assert.equal(obj.el.className, 'france');
+//     assert.equal(obj.el.innerHTML, 'olivier');
+//   });
 
-  describe('live interpolation', function() {
+//   describe('live interpolation', function() {
 
-    it("should update text node on model change", function() {
-      var obj = brick('<button>${label}</button>', {
-        label: 'olivier'
-      });
-      obj.render();
-      obj.set('label', 'bredele');
-      assert.equal(obj.el.innerHTML, 'bredele');
-    });
+//     it("should update text node on model change", function() {
+//       var obj = brick('<button>${label}</button>', {
+//         label: 'olivier'
+//       });
+//       obj.build();
+//       obj.set('label', 'bredele');
+//       assert.equal(obj.el.innerHTML, 'bredele');
+//     });
     
-  });
+//   });
   
-});
+// });
 
-describe("#mold", function() {
+// describe("#mold", function() {
   
-  it("should return a new brick", function() {
-    var obj = brick('<section class="section">')
-      .attr('class', function(node, content) {
-        node.innerHTML = content;
-      }).mold();
+//   it("should return a new brick", function() {
+//     var obj = brick('<section class="section">')
+//       .attr('class', function(node, content) {
+//         node.innerHTML = content;
+//       }).mold();
 
 
-    var other = obj().render();
-    assert.equal(other.el.innerHTML ,'section');
-  });
+//     var other = obj().build();
+//     assert.equal(other.el.innerHTML ,'section');
+//   });
   
-});
+// });
 
 describe('#tag', function() {
 
@@ -256,7 +256,7 @@ describe('#tag', function() {
     var user = brick('<h1>user</h1>');
 
     list.tag('user', user);
-    list.render();
+    list.build();
 
     assert.equal(list.el.innerHTML, '<h1>user</h1>');
   });
@@ -271,7 +271,7 @@ describe('#tag', function() {
     var user = brick('<div><content></content></div>');
 
     list.tag('user', user);
-    list.render();
+    list.build();
 
     // note on doit utiliser un fragment 
     // ce sera plus rapide
@@ -284,7 +284,7 @@ describe('#tag', function() {
     var user = brick('<div><h2>brick</h2><content></content></div>');
 
     list.tag('user', user);
-    list.render();
+    list.build();
 
     // note on doit utiliser un fragment 
     // ce sera plus rapide
@@ -296,7 +296,7 @@ describe('#tag', function() {
     var user = brick('<div><content select="button"></content></div>');
 
     list.tag('user', user);
-    list.render();
+    list.build();
 
     // note on doit utiliser un fragment 
     // ce sera plus rapide
@@ -310,19 +310,17 @@ describe('#tag', function() {
     var user = brick('<div>${name} and <content></content></div>', {
       name: 'bruno'
     });
-
     list.tag('user', user);
+    list.build();
 
-    list.render();
+    // assert.equal(user.el.innerHTML, 'bruno and olivier');
 
-    assert.equal(user.el.innerHTML, 'bruno and olivier');
+    // list.set('name', 'bredele');
 
-    list.set('name', 'bredele');
+    // assert.equal(user.el.innerHTML, 'bruno and bredele');
 
-    assert.equal(user.el.innerHTML, 'bruno and bredele');
-
-    user.set('name', 'amy');
-    assert.equal(user.el.innerHTML, 'amy and bredele');
+    // user.set('name', 'amy');
+    // assert.equal(user.el.innerHTML, 'amy and bredele');
 
   });
 
@@ -343,10 +341,10 @@ describe("#to", function() {
     assert.equal(doc.firstChild, obj.el);
   });
 
-  it("should also build a brick", function() {
-    obj.to(doc);
-    assert.equal(obj.el.className, 'olivier');
-  });
+  // it("should also build a brick", function() {
+  //   obj.to(doc);
+  //   assert.equal(obj.el.className, 'olivier');
+  // });
   
   it("should query select a dom element and append the brick to it", function() {
     document.body.insertAdjacentHTML('beforeend', '<article class="article">');
@@ -368,10 +366,11 @@ describe("#to", function() {
 // console.log(performance.now() - t0);
 
 var t0 = performance.now();
-for(var l = 1000; l--;) {
+for(var l = 10000; l--;) {
   var btn = brick('<button>${label}</button>', {
-    label: 'amy'
+    label: 'klara'
   });
+  btn.build();
   btn.to(document.body);
 }
 console.log(performance.now() - t0);

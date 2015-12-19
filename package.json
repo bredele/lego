@@ -30,6 +30,7 @@
   "dependencies": {
     "datastore": "git://github.com/bredele/datastore",
     "domwalk": "git://github.com/bredele/domwalk",
+    "fragment": "git://github.com/bredele/fragment",
     "many": "git://github.com/bredele/many",
     "mouth": "git://github.com/bredele/mouth",
     "stomach": "git://github.com/bredele/stomach"
