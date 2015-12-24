@@ -7,6 +7,7 @@ var dom = require('stomach');
 var mouth = require('mouth');
 var walk = require('domwalk');
 var Store = require('datastore');
+var fragment = require('fragment');
 
 
 /**
@@ -61,6 +62,25 @@ Brick.prototype.from = function(tmpl, bool) {
   return this;
 };
 
+
+/**
+ * Append brick to
+ * dom element.
+ *
+ * Examples:
+ *
+ *   // dom element
+ *   var foo = brick(tmpl);
+ *   foo.to(document.body);
+ *
+ *   // query selector
+ *   var bar = brick(tmpl);
+ *   bar.to('.article');
+ * 
+ * @param  {Element | String} el
+ * @return {this}
+ * @api public
+ */
 
 Brick.prototype.to = function(anchor) {
   dom(anchor).appendChild(this.el);
@@ -170,3 +190,33 @@ Brick.prototype.query = function(selector, cb) {
 };
 
 
+Brick.prototype.mold = function(selector, brick) {
+  brick.build();
+  this.query(selector, function(node) {
+    replace(node, brick.el);
+    brick.query('content', function(content) {
+      var select = content.getAttribute('select');
+      if(select) {
+        replace(content, node.querySelector(select));
+      } else {
+        replace(content, fragment([].slice.call(node.childNodes)));
+      }
+    });
+  });
+  return this;
+};
+
+
+/**
+ * Replace one node with another.
+ *
+ * @note benchmark vs remove/insertBefore
+ * 
+ * @param {Element} old
+ * @param {Element} el
+ * @api private
+ */
+
+function replace(old, el) {
+  old.parentNode.replaceChild(el, old);
+}

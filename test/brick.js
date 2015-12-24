@@ -182,3 +182,51 @@ describe('to', function() {
 
 
 });
+
+
+describe('mold', function() {
+
+  it("should replace custom tag with brick", function() {
+    var list = brick('<ul><user></user></ul>');
+    var user = brick('<h1>user</h1>');
+    list.mold('user', user);
+    assert.equal(list.el.innerHTML, '<h1>user</h1>');
+  });
+
+  it('should replace the content of a custom element', function() {
+    var list = brick('<div><user>  <button>hello</button></user></div>');
+    var user = brick('<div><content></content></div>');
+    list.mold('user', user);
+    assert.equal(user.el.innerHTML, '  <button>hello</button>');
+  });
+
+  it('should replace the content of a custom element with multiple nodes', function() {
+    var list = brick('<div><user>  <h1>hello</h1><button>world</button></user></div>');
+    var user = brick('<div><h2>brick</h2><content></content></div>');
+    list.mold('user', user);
+    assert.equal(user.el.innerHTML, '<h2>brick</h2>  <h1>hello</h1><button>world</button>');
+  });
+
+  it('should replace the content of a custom element with query selection', function() {
+    var list = brick('<div><user><h1>hello</h1><button>world</button></user></div>');
+    var user = brick('<div><content select="button"></content></div>');
+    list.mold('user', user);
+    assert.equal(user.el.innerHTML, '<button>world</button>');
+  });
+
+  it('should bind a custom element inner content', function() {
+    var list = brick('<div><user>${name}</user></div>', {
+      name: 'olivier'
+    }).build();
+    var user = brick('<div>${name} and <content></content></div>', {
+      name: 'bruno'
+    }).build();
+    list.mold('user', user);
+
+    assert.equal(user.el.innerHTML, 'bruno and olivier');
+    list.set('name', 'bredele');
+    assert.equal(user.el.innerHTML, 'bruno and bredele');
+    user.set('name', 'amy');
+    assert.equal(user.el.innerHTML, 'amy and bredele');
+  });
+});
