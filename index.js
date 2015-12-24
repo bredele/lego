@@ -46,6 +46,16 @@ function Brick(tmpl, data) {
 Brick.prototype = Store.prototype;
 
 
+/**
+ * Create brick dom element from
+ * string or existing dom element.
+ * 
+ * @param  {String | Element}  tmpl
+ * @param {Boolean?} bool clone node
+ * @return {this}
+ * @api public
+ */
+
 Brick.prototype.from = function(tmpl, bool) {
   this.el = dom(tmpl, bool);
   return this;
@@ -53,7 +63,7 @@ Brick.prototype.from = function(tmpl, bool) {
 
 
 Brick.prototype.to = function(anchor) {
-  anchor.appendChild(this.el);
+  dom(anchor).appendChild(this.el);
   return this;
 };
 

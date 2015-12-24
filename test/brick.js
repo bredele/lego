@@ -163,5 +163,22 @@ describe('from', function() {
     assert.equal(lego.el, document.body);
   });
 
+});
+
+describe('to', function() {
+
+  it('should append brick to html element', function() {
+    var anchor = document.createElement('div');
+    var lego = brick('<button></button>');
+    lego.to(anchor);
+    assert.equal(anchor.innerHTML, '<button></button>');
+  });
+
+  it('should append brick to html element using query selector', function() {
+    var lego = brick('<button class="btn"></button>');
+    lego.to('body');
+    assert(document.querySelector('button.btn'));
+  });
+
 
 });
