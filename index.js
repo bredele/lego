@@ -192,6 +192,26 @@ Brick.prototype.query = function(selector, cb) {
 };
 
 
+/**
+ * Add custom element.
+ *
+ * Brick allows you to create your
+ * own tags (with the web component
+ * standard) or to override existing
+ * one.
+ *
+ * Examples:
+ *
+ *   var list = brick('<div><user /></div>');
+ *   var user = brick('<button></button>');
+ *
+ *   list.tag('user', user);
+ * 
+ * @param  {String} name
+ * @param  {Brick} brick
+ * @return {this}
+ */
+
 Brick.prototype.mold = many(function(selector, brick) {
   brick.build();
   this.query(selector, function(node) {
