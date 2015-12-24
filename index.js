@@ -46,10 +46,11 @@ function Brick(tmpl, data) {
 Brick.prototype = Store.prototype;
 
 
-Brick.prototype.from = function(tmpl) {
-  this.el = dom(tmpl);
+Brick.prototype.from = function(tmpl, bool) {
+  this.el = dom(tmpl, bool);
   return this;
 };
+
 
 Brick.prototype.to = function(anchor) {
   anchor.appendChild(this.el);

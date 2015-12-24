@@ -134,3 +134,34 @@ describe('attribute binding', function() {
   });
 
 });
+
+
+describe('from', function() {
+
+  it('should accept html element', function() {
+    var lego = brick();
+    lego.from(document.body);
+    assert.equal(lego.el, document.body);
+  });
+
+  it('should clone html element', function() {
+    var btn = document.createElement('button');
+    var lego = brick().from(btn, true);
+    assert.equal(lego.el.outerHTML, '<button></button>');
+    assert.notEqual(btn, lego.el);
+  });
+
+  it('should accept html string', function() {
+    var lego = brick();
+    lego.from('<button>hello world</button>');
+    assert.equal(lego.el.outerHTML, '<button>hello world</button>');
+  });
+
+  it('should accept html query selector', function() {
+    var lego = brick();
+    lego.from('body');
+    assert.equal(lego.el, document.body);
+  });
+
+
+});
