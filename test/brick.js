@@ -114,3 +114,23 @@ describe('data binding', function() {
   })
 
 });
+
+describe('attribute binding', function() {
+
+  it('should apply attribute binding on root element', function() {
+    var lego = brick('<button class="hello"></button>');
+    lego.attr('class', function(node, content) {
+      node.innerHTML = content;
+    });
+    assert.equal(lego.el.outerHTML, '<button class="hello">hello</button>');
+  });
+
+  it('should apply attribute binding to all children', function() {
+    var lego = brick('<ul><li class="item"></li><li class="item"></li></ul>');
+    lego.attr('class', function(node, value) {
+      node.innerHTML = value;
+    });
+    assert.equal(lego.el.outerHTML, '<ul><li class="item">item</li><li class="item">item</li></ul>');
+  });
+
+});

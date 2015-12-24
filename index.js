@@ -103,3 +103,59 @@ Brick.prototype.build = function() {
   return this;
 };
 
+
+/**
+ * Add attribute binding.
+ *
+ * As seen below, a brick can bind
+ * existing attributes, dataset or
+ * custom attributes.
+ *
+ * Examples:
+ *
+ *   lego.attr('class', fn);
+ *   lego.attr('awesome', fn);
+ *   lego.attr('data-test', fn);
+ *   lego.attr({
+ *     class: fn,
+ *     'data-test': cb
+ *   });
+ * 
+ * @param  {String | Object} name 
+ * @param  {Function?} binding
+ * @return {this}
+ * @api public
+ */
+
+Brick.prototype.attr = function(name, binding) {
+  if(this.el.hasAttribute(name)) binding.call(this, this.el, this.el.getAttribute(name));
+  this.query('[' + name + ']', function(node) {
+    binding.call(this, node, node.getAttribute(name));
+  });
+  return this;
+};
+
+
+/**
+ * Query all nodes inside a brick.
+ *
+ * Examples:
+ *
+ *  lego.query('input', function() {
+ *    // do something
+ *  })
+ * 
+ * @param {String} selector
+ * @param {Function} cb
+ * @api private
+ */
+
+Brick.prototype.query = function(selector, cb) {
+  var els = this.el.querySelectorAll(selector);
+  for(var i = 0, l = els.length; i < l; i++) {
+    cb.call(this, els[i]);
+  }
+  return this;
+};
+
+
