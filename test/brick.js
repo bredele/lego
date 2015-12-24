@@ -133,6 +133,18 @@ describe('attribute binding', function() {
     assert.equal(lego.el.outerHTML, '<ul><li class="item">item</li><li class="item">item</li></ul>');
   });
 
+  it('should apply multiple bindings', function() {
+    var cb = function(node, content) {
+      node.innerHTML += content;
+    };
+    var lego = brick('<button id="hello" class="world"></button>');
+    lego.attr({
+      id: cb,
+      class: cb
+    });
+    assert.equal(lego.el.innerHTML, 'helloworld');
+  });
+
 });
 
 
@@ -228,6 +240,17 @@ describe('mold', function() {
     assert.equal(user.el.innerHTML, 'bruno and bredele');
     user.set('name', 'amy');
     assert.equal(user.el.innerHTML, 'amy and bredele');
+  });
+
+  it('should apply multiple custom elements', function() {
+    var list = brick('<section><first></first><last></last></section>');
+    var other = brick('<span>hello</span>');
+    list.mold({
+      first : other,
+      last: other
+    });
+    assert.equal(list.el.innerHTML, '<span>hello</span><span>hello</span>');
+
   });
 
 });

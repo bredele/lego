@@ -3,6 +3,7 @@
  * Module dependencies.
  */
 
+var many = require('many');
 var dom = require('stomach');
 var mouth = require('mouth');
 var walk = require('domwalk');
@@ -159,13 +160,13 @@ Brick.prototype.build = function() {
  * @api public
  */
 
-Brick.prototype.attr = function(name, binding) {
+Brick.prototype.attr = many(function(name, binding) {
   if(this.el.hasAttribute(name)) binding.call(this, this.el, this.el.getAttribute(name));
   this.query('[' + name + ']', function(node) {
     binding.call(this, node, node.getAttribute(name));
   });
   return this;
-};
+});
 
 
 /**
@@ -191,7 +192,7 @@ Brick.prototype.query = function(selector, cb) {
 };
 
 
-Brick.prototype.mold = function(selector, brick) {
+Brick.prototype.mold = many(function(selector, brick) {
   brick.build();
   this.query(selector, function(node) {
     replace(node, brick.el);
@@ -205,7 +206,7 @@ Brick.prototype.mold = function(selector, brick) {
     });
   });
   return this;
-};
+});
 
 
 /**
