@@ -41,6 +41,7 @@ module.exports = function(tmpl, data, anchor) {
 function Brick(tmpl, data) {
   Store.call(this, data || {});
   this.from(tmpl);
+  this.state = 'created';
 }
 
 
@@ -202,6 +203,48 @@ Brick.prototype.mold = function(selector, brick) {
         replace(content, fragment([].slice.call(node.childNodes)));
       }
     });
+  });
+  return this;
+};
+
+
+/**
+ * Add state machine transition
+ * aka hook.
+ *
+ * Listen to a change of state or
+ * define a state transition callback.
+ *
+ * Examples:
+ *
+ *   // transition on event lock
+ *   lego.hook('created', 'lock', 'locked');
+ *   lego.emit('lock');
+ *   
+ *   // with callback
+ *   lego.hook('created', 'lock', function() {
+ *     // do something
+ *   }, 'locked');
+ * 
+ * @param  {String}   before
+ * @param  {String}   ev
+ * @param  {Function?} cb
+ * @param  {String?}   after
+ * @return {this}
+ * @api public
+ */
+
+Brick.prototype.hook = function(before, ev, cb, after) {
+  var that = this;
+  if(typeof cb === 'string') {
+    after = cb;
+    cb = null;
+  }
+  this.on(ev, function() {
+    if(that.state === before) {
+      cb && cb.apply(that, arguments);
+      if(after) that.state = after;
+    }
   });
   return this;
 };
