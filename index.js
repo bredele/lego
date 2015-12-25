@@ -255,20 +255,20 @@ Brick.prototype.mold = many(function(selector, brick) {
  * @api public
  */
 
-Brick.prototype.hook = function(before, ev, cb, after) {
-  var that = this;
-  if(typeof cb === 'string') {
-    after = cb;
-    cb = null;
-  }
-  this.on(ev, function() {
-    if(that.state === before) {
-      cb && cb.apply(that, arguments);
-      if(after) that.state = after;
-    }
-  });
-  return this;
-};
+// Brick.prototype.hook = function(before, ev, cb, after) {
+//   var that = this;
+//   if(typeof cb === 'string') {
+//     after = cb;
+//     cb = null;
+//   }
+//   this.on(ev, function() {
+//     if(that.state === before) {
+//       cb && cb.apply(that, arguments);
+//       if(after) that.state = after;
+//     }
+//   });
+//   return this;
+// };
 
 
 /**
