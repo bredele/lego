@@ -60,9 +60,30 @@ Brick.prototype = Store.prototype;
  */
 
 Brick.prototype.from = function(tmpl, bool) {
-  this.el = dom(tmpl, bool);
+  this.el = (typeof tmpl === 'function')
+    ? tmpl(grout())
+    : dom(tmpl, bool);
   return this;
 };
+
+
+/**
+ * Virtual dom implementation.
+ *
+ * @api private
+ */
+
+function grout() {
+  return function(selector, content) {
+    var el = document.createElement(selector);
+    if(content) inner(el, content);
+    return el;
+  };
+}
+
+function inner(el, content) {
+  el.innerHTML = content;
+}
 
 
 /**

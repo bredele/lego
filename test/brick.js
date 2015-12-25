@@ -306,3 +306,40 @@ describe('mold', function() {
 
 // });
 
+
+
+describe('virtual dom', function() {
+
+  it('should create element', function() {
+    var lego = brick(function(dom) {
+      return dom('button');
+    });
+    assert.equal(lego.el.outerHTML, '<button></button>');
+  });
+
+  describe('inner content', function() {
+
+    it('should set inner text', function() {
+      var lego = brick(function(dom) {
+        return dom('button', 'hello world');
+      });
+      assert.equal(lego.el.outerHTML, '<button>hello world</button>');
+    });
+
+  });
+
+  describe('attributes', function() {
+
+    it('should set attributes', function() {
+      var lego = brick(function(dom) {
+        return dom('button', {
+          class: 'btn',
+          id: 'button'
+        });
+      });
+      assert.equal(lego.el.outerHTML, '<button id="button" class="btn"></button>')
+    });
+
+  });
+
+});
