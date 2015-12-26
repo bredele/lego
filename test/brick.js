@@ -408,6 +408,22 @@ describe('virtual dom', function() {
        assert.equal(lego.el.outerHTML, '<button class="olivier"></button>');
     });
 
+    describe('styles', function() {
+
+      it('should set object as attribute styles', function() {
+        var lego = brick(function(dom) {
+          return dom('button', {
+            style: {
+              background: 'red',
+              width: '100px'
+            }
+          })
+        });
+        assert.equal(lego.el.getAttribute('style'), 'background:red;width:100px;');
+      });
+    });
+
   });
+
 
 });

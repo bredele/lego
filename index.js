@@ -327,9 +327,27 @@ function inner(el, content, brick) {
 function attributes(el, attrs, brick) {
   for(var key in attrs) {
     var node = document.createAttribute(key);
-    node.nodeValue = attrs[key];
+    var value = attrs[key];
+    if(typeof value === 'object') value = styles(value);
+    node.nodeValue = value;
     brick.bind(node);
     el.attributes.setNamedItem(node);
   }
+}
+
+/**
+ * Render virtual dom styles.
+ *
+ * @param {Object} obj
+ * @return {String}
+ * @api private
+ */
+
+function styles(obj) {
+  var str = '';
+  for(var key in obj) {
+    str += key + ':' + obj[key] + ';';
+  }
+  return str;
 }
 
