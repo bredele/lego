@@ -356,8 +356,18 @@ describe('virtual dom', function() {
           id: 'button'
         });
       });
-      console.log(lego.el);
-      assert.equal(lego.el.outerHTML, '<button class="btn" id="button"></button>')
+      assert.equal(lego.el.outerHTML, '<button class="btn" id="button"></button>');
+    });
+
+    it('should bind attribute with data', function() {
+      var lego = brick(function(dom) {
+        return dom('button', {
+          class: '${label}'
+        });
+      }, {
+        label: 'btn'
+      });
+      assert.equal(lego.el.outerHTML, '<button class="btn"></button>');
     });
 
   });

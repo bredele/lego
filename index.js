@@ -302,7 +302,7 @@ function grout(brick) {
       attrs = null;
     }
     if(content) inner(el, content, brick);
-    if(attrs) attributes(el, attrs);
+    if(attrs) attributes(el, attrs, brick);
     return el;
   };
 }
@@ -315,9 +315,12 @@ function inner(el, content, brick) {
 }
 
 
-function attributes(el, attrs) {
+function attributes(el, attrs, brick) {
   for(var key in attrs) {
-    el.setAttribute(key, attrs[key]);
+    var attr = document.createAttribute(key);
+    attr.nodeValue = attrs[key];
+    brick.bind(attr);
+    el.attributes.setNamedItem(attr);
   }
 }
 
