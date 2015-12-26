@@ -345,6 +345,32 @@ describe('virtual dom', function() {
        assert.equal(lego.el.outerHTML, '<button>hello olivier</button>');
     });
 
+    describe('array', function() {
+
+      it('should set multiple inner text nodes', function() {
+        var lego = brick(function(dom) {
+          return dom('div', [
+            'hello',
+            'world'
+          ]);
+        });
+      });
+
+      it('should set multiple virtual dom nodes', function() {
+
+        var lego = brick(function(dom) {
+          return dom('div', [
+            dom('span', 'hello'),
+            ' ',
+            dom('span', 'world!')
+          ]);
+        });
+        assert.equal(lego.el.innerHTML, '<span>hello</span> <span>world!</span>');
+
+      });
+
+    });
+
   });
 
   describe('attributes', function() {

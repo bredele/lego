@@ -297,7 +297,7 @@ function replace(old, el) {
 function grout(brick) {
   return function(selector, attrs, content) {
     var el = document.createElement(selector);
-    if(typeof attrs !== 'object') {
+    if(typeof attrs !== 'object' || attrs instanceof Array) {
       content = attrs;
       attrs = null;
     }
@@ -309,18 +309,27 @@ function grout(brick) {
 
 
 function inner(el, content, brick) {
-  var node = document.createTextNode(content);
-  brick.bind(node);
+  var node = content;
+  if(content instanceof Array) {
+    node = document.createDocumentFragment();
+    for(var i = 0, l = content.length; i < l; i++) {
+      inner(node, content[i], brick);
+    }
+  } else if(typeof content === 'string') {
+    node = document.createTextNode(content);
+    brick.bind(node);
+  }
   el.appendChild(node);
 }
 
 
+
 function attributes(el, attrs, brick) {
   for(var key in attrs) {
-    var attr = document.createAttribute(key);
-    attr.nodeValue = attrs[key];
-    brick.bind(attr);
-    el.attributes.setNamedItem(attr);
+    var node = document.createAttribute(key);
+    node.nodeValue = attrs[key];
+    brick.bind(node);
+    el.attributes.setNamedItem(node);
   }
 }
 
