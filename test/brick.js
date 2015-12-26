@@ -421,6 +421,23 @@ describe('virtual dom', function() {
         });
         assert.equal(lego.el.getAttribute('style'), 'background:red;width:100px;');
       });
+
+      it('should update style whenever data changes', function() {
+        var lego = brick(function(dom) {
+          return dom('button', {
+            style: {
+              background: 'red',
+              width: '${width}px'
+            }
+          })
+        }, {
+          width: 100
+        });
+        assert.equal(lego.el.getAttribute('style'), 'background:red;width:100px;');
+        lego.set('width', 200);
+        assert.equal(lego.el.getAttribute('style'), 'background:red;width:200px;');
+      });
+
     });
 
   });
