@@ -332,9 +332,17 @@ describe('virtual dom', function() {
       }, {
         name: 'world'
       });
-
       assert.equal(lego.el.outerHTML, '<button>hello world</button>');
+    });
 
+    it('should update inner text whenever data changes', function() {
+      var lego = brick(function(dom) {
+        return dom('button', 'hello ${name}');
+      }, {
+        name: 'world'
+      });
+      lego.set('name', 'olivier');
+       assert.equal(lego.el.outerHTML, '<button>hello olivier</button>');
     });
 
   });
