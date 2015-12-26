@@ -370,6 +370,18 @@ describe('virtual dom', function() {
       assert.equal(lego.el.outerHTML, '<button class="btn"></button>');
     });
 
+    it('should update attribute whenever data changes', function() {
+      var lego = brick(function(dom) {
+        return dom('button', {
+          class: '${label}'
+        });
+      }, {
+        label: 'btn'
+      });
+      lego.set('label', 'olivier');
+       assert.equal(lego.el.outerHTML, '<button class="olivier"></button>');
+    });
+
   });
 
 });
