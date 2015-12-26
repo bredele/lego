@@ -61,7 +61,7 @@ Brick.prototype = Store.prototype;
 
 Brick.prototype.from = function(tmpl, bool) {
   this.el = (typeof tmpl === 'function')
-    ? tmpl(grout())
+    ? tmpl(grout(this))
     : dom(tmpl, bool);
   return this;
 };
@@ -294,22 +294,24 @@ function replace(old, el) {
  * @api private
  */
 
-function grout() {
+function grout(brick) {
   return function(selector, attrs, content) {
     var el = document.createElement(selector);
     if(typeof attrs !== 'object') {
       content = attrs;
       attrs = null;
     }
-    if(content) inner(el, content);
+    if(content) inner(el, content, brick);
     if(attrs) attributes(el, attrs);
     return el;
   };
 }
 
 
-function inner(el, content) {
-  el.innerHTML = content;
+function inner(el, content, brick) {
+  var node = document.createTextNode(content);
+  brick.bind(node);
+  el.appendChild(node);
 }
 
 

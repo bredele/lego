@@ -326,6 +326,17 @@ describe('virtual dom', function() {
       assert.equal(lego.el.outerHTML, '<button>hello world</button>');
     });
 
+    it('should bind inner text with data', function() {
+      var lego = brick(function(dom) {
+        return dom('button', 'hello ${name}');
+      }, {
+        name: 'world'
+      });
+
+      assert.equal(lego.el.outerHTML, '<button>hello world</button>');
+
+    });
+
   });
 
   describe('attributes', function() {
