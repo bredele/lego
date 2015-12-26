@@ -68,25 +68,6 @@ Brick.prototype.from = function(tmpl, bool) {
 
 
 /**
- * Virtual dom implementation.
- *
- * @api private
- */
-
-function grout() {
-  return function(selector, content) {
-    var el = document.createElement(selector);
-    if(content) inner(el, content);
-    return el;
-  };
-}
-
-function inner(el, content) {
-  el.innerHTML = content;
-}
-
-
-/**
  * Append brick to
  * dom element.
  *
@@ -305,3 +286,36 @@ Brick.prototype.mold = many(function(selector, brick) {
 function replace(old, el) {
   old.parentNode.replaceChild(el, old);
 }
+
+
+/**
+ * Virtual dom implementation.
+ *
+ * @api private
+ */
+
+function grout() {
+  return function(selector, attrs, content) {
+    var el = document.createElement(selector);
+    if(typeof attrs !== 'object') {
+      content = attrs;
+      attrs = null;
+    }
+    if(content) inner(el, content);
+    if(attrs) attributes(el, attrs);
+    return el;
+  };
+}
+
+
+function inner(el, content) {
+  el.innerHTML = content;
+}
+
+
+function attributes(el, attrs) {
+  for(var key in attrs) {
+    el.setAttribute(key, attrs[key]);
+  }
+}
+

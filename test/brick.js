@@ -337,7 +337,8 @@ describe('virtual dom', function() {
           id: 'button'
         });
       });
-      assert.equal(lego.el.outerHTML, '<button id="button" class="btn"></button>')
+      console.log(lego.el);
+      assert.equal(lego.el.outerHTML, '<button class="btn" id="button"></button>')
     });
 
   });
