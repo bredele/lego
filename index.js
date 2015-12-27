@@ -291,6 +291,8 @@ function replace(old, el) {
 /**
  * Virtual dom implementation.
  *
+ * @param {Brick} brick
+ * @return {Function}
  * @api private
  */
 
@@ -308,6 +310,15 @@ function grout(brick) {
 }
 
 
+/**
+ * Render virtual dom inner content.
+ *
+ * @param {Element} el
+ * @param {String | Array} content
+ * @param {Brick} brick
+ * @api private
+ */
+
 function inner(el, content, brick) {
   var node = content;
   if(content instanceof Array) {
@@ -323,6 +334,14 @@ function inner(el, content, brick) {
 }
 
 
+/**
+ * Render virtual dom attributes.
+ *
+ * @param {Element} el
+ * @param {Object} attrs
+ * @param {Brick} brick
+ * @api private
+ */
 
 function attributes(el, attrs, brick) {
   for(var key in attrs) {
@@ -334,6 +353,7 @@ function attributes(el, attrs, brick) {
     el.attributes.setNamedItem(node);
   }
 }
+
 
 /**
  * Render virtual dom styles.
