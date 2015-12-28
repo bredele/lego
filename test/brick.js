@@ -255,56 +255,56 @@ describe('mold', function() {
 
 });
 
-// describe("state machine", function() {
+describe("state machine", function() {
 
-//   var obj;
-//   beforeEach(function() {
-//     obj = brick();
-//   });
+  var obj;
+  beforeEach(function() {
+    obj = brick();
+  });
 
-//   it('should have an initial state', function() {
-//     assert.equal(obj.state, 'created');
-//   });
+  it('should have an initial state', function() {
+    assert.equal(obj.state, 'created');
+  });
 
-//   it("should add transition", function(done) {
-//     obj.hook('created', 'lock', function() {
-//       done();
-//     }, 'locked');
-//     obj.emit('lock');
-//   });
+  it("should add transition", function(done) {
+    obj.hook('created', 'lock', function() {
+      done();
+    }, 'locked');
+    obj.emit('lock');
+  });
 
-//   it("should set current state", function() {
-//     obj.hook('created', 'lock', function(){}, 'locked');
-//     obj.emit('lock');
-//     assert.equal(obj.state, 'locked');
-//   });
+  it("should set current state", function() {
+    obj.hook('created', 'lock', function(){}, 'locked');
+    obj.emit('lock');
+    assert.equal(obj.state, 'locked');
+  });
 
-//   it('should not change current state', function() {
-//     obj.hook('created', 'lock', function(){});
-//     obj.emit('lock');
-//     assert.equal(obj.state, 'created');
-//   });
+  it('should not change current state', function() {
+    obj.hook('created', 'lock', function(){});
+    obj.emit('lock');
+    assert.equal(obj.state, 'created');
+  });
 
-//   it('should always change state', function() {
-//     obj.hook('created', 'lock', null, 'locked');
-//     obj.emit('lock');
-//     assert.equal(obj.state, 'locked');
-//   });
+  it('should always change state', function() {
+    obj.hook('created', 'lock', null, 'locked');
+    obj.emit('lock');
+    assert.equal(obj.state, 'locked');
+  });
 
-//   it('should perform transition without callback', function() {
-//     obj.hook('created', 'lock', 'locked');
-//     obj.emit('lock');
-//     assert.equal(obj.state, 'locked');
-//   });
+  it('should perform transition without callback', function() {
+    obj.hook('created', 'lock', 'locked');
+    obj.emit('lock');
+    assert.equal(obj.state, 'locked');
+  });
 
-//   it('should pass arguments', function(done) {
-//     obj.hook('created', 'lock', function(hello, world){
-//       if(hello === 'hello') done();
-//     });
-//     obj.emit('lock', 'hello');
-//   });
+  it('should pass arguments', function(done) {
+    obj.hook('created', 'lock', function(hello, world){
+      if(hello === 'hello') done();
+    });
+    obj.emit('lock', 'hello');
+  });
 
-// });
+});
 
 
 
