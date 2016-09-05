@@ -19,6 +19,7 @@ tape('should be a datastore', test => {
 	test.equal(typeof ui.off, 'function')
 })
 
+
 tape('should create brick element with data', test => {
 	test.plan(2)
 	var btn = brick('<button>', {

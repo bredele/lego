@@ -38,7 +38,6 @@ Brick.prototype = Store.prototype;
 
 /**
  * Create brick element.
- *
  * 
  * @param  {Element|String} tmpl 
  * @return {Element}
