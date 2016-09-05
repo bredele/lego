@@ -1,11 +1,16 @@
+/**
+ * Brick dependencies
+ */
+
+var Store = require('datastore')
 
 
 /**
  * Expose 'brick'
  */
 
-module.exports = function(tmpl) {
-  return new Brick(tmpl)
+module.exports = function(tmpl, data) {
+  return new Brick(tmpl, data)
 }
 
 
@@ -22,9 +27,13 @@ module.exports = function(tmpl) {
  * @api public
  */
 
-function Brick(tmpl) {
-  this.tmpl(tmpl)
+function Brick(tmpl, data) {
+  Store.call(this, data || {});
+  this.from(tmpl)
 }
+
+
+Brick.prototype = Store.prototype;
 
 
 /**
@@ -36,7 +45,7 @@ function Brick(tmpl) {
  * @api public      
  */
 
-Brick.prototype.tmpl = function(str) {
+Brick.prototype.from = function(str) {
   if(typeof str === 'string') {
     if(str.indexOf('<') > -1 ) {
       var div = document.createElement('div')
