@@ -23,27 +23,27 @@ module.exports = function(tmpl) {
  */
 
 function Brick(tmpl) {
-  this.el = element(tmpl)
+  this.tmpl(tmpl)
 }
 
 
-
 /**
- * Create Element.
+ * Create brick element.
  *
  * 
  * @param  {Element|String} tmpl 
  * @return {Element}
- * @api private      
+ * @api public      
  */
 
-function element(tmpl) {
-  if(typeof tmpl === 'string') {
-    if(tmpl.indexOf('<') > -1 ) {
+Brick.prototype.tmpl = function(str) {
+  if(typeof str === 'string') {
+    if(str.indexOf('<') > -1 ) {
       var div = document.createElement('div')
-      div.innerHTML = tmpl
-      tmpl = div.children[0]
-    } else tmpl = document.querySelector(tmpl)
+      div.innerHTML = str
+      str = div.children[0]
+    } else str = document.querySelector(str)
   }
-  return tmpl
-}
+  this.el = str
+  return this
+};

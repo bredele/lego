@@ -30,6 +30,19 @@ tape('should create brick element existing DOM node', test => {
 })
 
 
+tape('should expose a function to create brick elements', test => {
+  test.plan(3)
+  button('hello')
+  var el = document.createElement('span')
+  var btn1 = brick().tmpl('<button>hello world</button>')
+  var btn2 =  brick().tmpl('.hello')
+  var btn3 = brick().tmpl(el)
+  test.equal(btn1.el.outerHTML, '<button>hello world</button>')
+  test.equal(btn2.el.outerHTML, '<button class="hello"></button>')
+  test.equal(btn3.el.outerHTML, '<span></span>')
+})
+
+
 /**
  * Create and append button in document.
  * 
