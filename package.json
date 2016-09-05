@@ -3,12 +3,7 @@
   "version": "0.9.0",
   "description": "MVVM building block to create real time and large scale applications in a flash",
   "main": "index.js",
-  "scripts": {
-    "test": "zuul -- test/*.js",
-    "test-local": "zuul --local -- test/*.js",
-    "standalone": "component build --standalone brick --name brick --out .",
-    "test-server": "mocha test/server.js"
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git://github.com/bredele/brick.git"
@@ -27,17 +22,10 @@
   "bugs": {
     "url": "https://github.com/bredele/brick/issues"
   },
-  "dependencies": {
-    "datastore": "git://github.com/bredele/datastore",
-    "domwalk": "git://github.com/bredele/domwalk",
-    "fragment": "git://github.com/bredele/fragment",
-    "many": "git://github.com/bredele/many",
-    "mouth": "git://github.com/bredele/mouth",
-    "stomach": "git://github.com/bredele/stomach"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "mocha": "^2.2.5",
-    "roof": "git://github.com/bredele/roof",
-    "zuul": "~1.5.4"
+    "browserify": "^13.1.0",
+    "tape": "^4.6.0",
+    "tape-run": "^2.1.4"
   }
 }
