@@ -31,9 +31,11 @@ function Brick(tmpl) {
 
 function element(tmpl) {
   if(typeof tmpl === 'string') {
-    var div = document.createElement('div')
-    div.innerHTML = tmpl
-    tmpl = div.children[0]
+    if(tmpl.indexOf('<') > -1 ) {
+      var div = document.createElement('div')
+      div.innerHTML = tmpl
+      tmpl = div.children[0]
+    } else tmpl = document.querySelector(tmpl)
   }
   return tmpl
 }
