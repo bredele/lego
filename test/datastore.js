@@ -20,9 +20,11 @@ tape('should be a datastore', test => {
 })
 
 tape('should create brick element with data', test => {
-	test.plan(1)
+	test.plan(2)
 	var btn = brick('<button>', {
 		name: 'olivier'
 	})
 	test.equal(btn.get('name'), 'olivier')
+	btn.set('name', 'benjamin')
+	test.equal(btn.get('name'), 'benjamin')
 })
