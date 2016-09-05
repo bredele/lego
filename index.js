@@ -28,6 +28,14 @@ function Brick(tmpl) {
 
 
 
+/**
+ * Create Element.
+ *
+ * 
+ * @param  {Element|String} tmpl 
+ * @return {Element}
+ * @api private      
+ */
 
 function element(tmpl) {
   if(typeof tmpl === 'string') {
