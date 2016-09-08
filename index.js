@@ -107,12 +107,22 @@ Brick.prototype.build = function() {
 Brick.prototype.bind = function(node) {
   var model = this;
   var parent = node.parentElement
-  var value = node.nodeValue
+  var str = node.nodeValue
   node.nodeValue = ''
   var idx = 0
-  value.replace(/(\$|\#)\{([^{}]*)\}/g, function(_, type, expr, i) {
-    parent.appendChild(document.createTextNode(value.substring(idx, i)))
-    parent.appendChild(document.createTextNode(model.get(expr)))
+  str.replace(/(\$|\#)\{([^{}]*)\}/g, function(_, type, expr, i) {
+    var value = model.get(expr)
+    parent.appendChild(document.createTextNode(str.substring(idx, i)))
+    if(typeof value === 'object') {
+      if(typeof value.then === 'function') {
+        var tmp = document.createTextNode('')
+        value.then(function(data) {
+          tmp.nodeValue = data
+        })
+        value = tmp
+      }
+    } else value = document.createTextNode(value)
+    parent.appendChild(value)
     idx = i + _.length
   });
   return this
