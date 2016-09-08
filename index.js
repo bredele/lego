@@ -3,6 +3,7 @@
  */
 
 var Store = require('datastore')
+var walk = require('domwalk')
 
 
 /**
@@ -11,6 +12,7 @@ var Store = require('datastore')
 
 module.exports = function(tmpl, data) {
   return new Brick(tmpl, data)
+    .build()
 }
 
 
@@ -73,5 +75,49 @@ Brick.prototype.attr = function(name, fn) {
     var node = nodes[i]
     fn.call(this, node, node.getAttribute(name))
   }
+  return this
+};
+
+
+/**
+ * [build description]
+ * @return {[type]} [description]
+ */
+Brick.prototype.build = function() {
+  var that = this
+  // or el by default should be fragment?
+  if(this.el) {
+    walk(this.el, function(node) {
+      if(node.nodeType !== 1) {
+        that.bind(node)
+      }
+    })
+  }
+  return this
+};
+
+
+
+/**
+ * [bind description]
+ * @param  {[type]} node [description]
+ * @return {[type]}      [description]
+ */
+
+Brick.prototype.bind = function(node) {
+  var model = this;
+  var parent = node.parentElement
+  var value = node.nodeValue
+  node.nodeValue = ''
+  var idx = 0
+  console.log('value', value)
+  value.replace(/(\$|\#)\{([^{}]*)\}/g, function(_, type, expr, i) {
+    // fo something only if idx !== i
+    // console.log('whhhhat', idx, i)
+    // console.log(value.substring(idx, i))
+    parent.appendChild(document.createTextNode(value.substring(idx, i)))
+    parent.appendChild(document.createTextNode(model.get(expr)))
+    idx = i + _.length
+  });
   return this
 };

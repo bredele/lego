@@ -25,7 +25,8 @@
     "url": "https://github.com/bredele/brick/issues"
   },
   "dependencies": {
-    "datastore": "^1.1.1"
+    "datastore": "^1.1.1",
+    "domwalk": "^1.0.0"
   },
   "devDependencies": {
     "browserify": "^13.1.0",
