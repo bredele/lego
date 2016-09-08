@@ -4,6 +4,7 @@
 
 var Store = require('datastore')
 var walk = require('domwalk')
+var append = require('regurgitate')
 
 
 /**
@@ -113,17 +114,7 @@ Brick.prototype.bind = function(node) {
   str.replace(/(\$|\#)\{([^{}]*)\}/g, function(_, type, expr, i) {
     var value = model.get(expr)
     parent.appendChild(document.createTextNode(str.substring(idx, i)))
-    if(typeof value === 'object') {
-      if(typeof value.then === 'function') {
-        var tmp = document.createTextNode('')
-        value.then(function(data) {
-          tmp.nodeValue = data
-        })
-        value = tmp
-      }
-    } else if(typeof value === 'function') value = document.createTextNode(value())
-    else value = document.createTextNode(value)
-    parent.appendChild(value)
+    append(parent, value)
     idx = i + _.length
   });
   return this

@@ -26,7 +26,8 @@
   },
   "dependencies": {
     "datastore": "^1.1.1",
-    "domwalk": "^1.0.0"
+    "domwalk": "^1.0.0",
+    "regurgitate": "bredele/regurgitate"
   },
   "devDependencies": {
     "browserify": "^13.1.0",
