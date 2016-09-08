@@ -110,11 +110,7 @@ Brick.prototype.bind = function(node) {
   var value = node.nodeValue
   node.nodeValue = ''
   var idx = 0
-  console.log('value', value)
   value.replace(/(\$|\#)\{([^{}]*)\}/g, function(_, type, expr, i) {
-    // fo something only if idx !== i
-    // console.log('whhhhat', idx, i)
-    // console.log(value.substring(idx, i))
     parent.appendChild(document.createTextNode(value.substring(idx, i)))
     parent.appendChild(document.createTextNode(model.get(expr)))
     idx = i + _.length

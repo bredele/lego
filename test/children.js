@@ -25,3 +25,12 @@ tape('bind data primitives', test => {
 	})
 	test.equal(btn.el.outerHTML, '<button>true olivier is 29</button>')
 })
+
+
+tape('bind dom element', test => {
+	test.plan(1)
+	var btn = brick('<button>${child}</buton>', {
+		child: document.createElement('span')
+	})
+	test.equal(btn.el.outerHTML, '<button><span></span></button>')
+})
