@@ -121,7 +121,8 @@ Brick.prototype.bind = function(node) {
         })
         value = tmp
       }
-    } else value = document.createTextNode(value)
+    } else if(typeof value === 'function') value = document.createTextNode(value())
+    else value = document.createTextNode(value)
     parent.appendChild(value)
     idx = i + _.length
   });
