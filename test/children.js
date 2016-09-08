@@ -35,6 +35,7 @@ tape('bind dom element', test => {
 	test.equal(btn.el.outerHTML, '<button><span></span></button>')
 })
 
+
 tape('bind promise returning string', test => {
 	test.plan(1)
 	var child = async('hello world')
@@ -43,6 +44,18 @@ tape('bind promise returning string', test => {
 	})
 	child.then(() => test.equal(btn.el.outerHTML, '<button>hello world</button>'))
 })
+
+
+tape('bind function', test => {
+  test.plan(1)
+  var btn = brick('<button>${fn}</button>', {
+  	fn: function() {
+  		return 'hello world'
+  	}
+  })
+  test.equal(btn.el.outerHTML, '<button>hello world</button>')
+})
+
 
 /**
  * Return value after 500ms using promises.
