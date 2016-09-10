@@ -119,3 +119,30 @@ Brick.prototype.bind = function(node) {
   });
   return this
 };
+
+
+/**
+ * Parse expression and replace
+ * identifier.
+ *
+ * Examples:
+ *
+ *   compile('name + last');
+ *   // => model.name + model.last
+ *
+ *   compile('name[0]');
+ *   // => model.name[0]
+ *   
+ * @param  {String} str
+ * @param  {Array} arr
+ * @return {String}
+ * @api private
+ */
+
+function parse(str, arr) {
+  return str.replace(/\.\w+|"[^"]*"|'[^']*'|\/([^/]+)\/|[a-zA-Z_]\w*/g, function(expr) {
+    if(forbidden.indexOf(expr[0]) > -1) return expr;
+    if(!~arr.indexOf(expr)) arr.push(expr);
+    return 'model.' + expr;
+  });
+}

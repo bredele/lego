@@ -20,7 +20,7 @@ tape('should be a datastore', test => {
 })
 
 
-tape('should create brick element with data', test => {
+tape('should create brick with data', test => {
 	test.plan(2)
 	var btn = brick('<button>', {
 		name: 'olivier'
@@ -29,3 +29,14 @@ tape('should create brick element with data', test => {
 	btn.set('name', 'benjamin')
 	test.equal(btn.get('name'), 'benjamin')
 })
+
+tape('should update brick element when data changes', test => {
+	test.plan(2)
+	var btn = brick('<button>${name}</button>', {
+		name: 'olivier'
+	})
+	test.equal(btn.el.outerHTML, '<button>olivier</button>')
+	btn.set('name', 'benjamin')
+	test.equal(btn.el.outerHTML, '<button>benjamin</button>')
+})
+
