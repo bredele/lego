@@ -52,3 +52,16 @@ tape('should update brick element with complex expressions', test => {
 	test.equal(btn.el.outerHTML, '<button>benjamin wietrich</button>')
 })
 
+tape('should interpolate once expressions contained in #{}', test => {
+	test.plan(2)
+	var btn = brick('<button>${first} #{last}</button>', {
+		first: 'olivier',
+		last: 'wietrich'
+	})
+	test.equal(btn.el.outerHTML, '<button>olivier wietrich</button>')
+	btn.set({
+		first: 'klara',
+		last: 'dueck'
+	})
+	test.equal(btn.el.outerHTML, '<button>klara wietrich</button>')
+})

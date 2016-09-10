@@ -97,9 +97,13 @@ Brick.prototype.attr = function(name, fn) {
 
 
 /**
- * [build description]
- * @return {[type]} [description]
+ * Build a brick by replacing inerpolation expressions
+ * with brick data.
+ * 
+ * @return {this}
+ * @api public
  */
+
 Brick.prototype.build = function() {
   var that = this
   // or el by default should be fragment?
@@ -116,9 +120,14 @@ Brick.prototype.build = function() {
 
 
 /**
- * [bind description]
- * @param  {[type]} node [description]
- * @return {[type]}      [description]
+ * Bind node (type 1 or 3) with brick data.
+ *
+ * Node containing `${}` expressions will be updated 
+ * whenever the brick data changes.
+ * 
+ * @param  {Node} node 
+ * @return {this}
+ * @api public      
  */
 
 Brick.prototype.bind = function(node) {
@@ -129,7 +138,7 @@ Brick.prototype.bind = function(node) {
   var idx = 0
   str.replace(expressions, function(_, type, expr, i) {
     parent.appendChild(document.createTextNode(str.substring(idx, i)))
-    update(parent, model, expr)
+    update(parent, model, expr, type == '$')
     idx = i + _.length
   });
   return this
@@ -145,20 +154,22 @@ Brick.prototype.bind = function(node) {
  * @param {Node} node
  * @param {Store} model
  * @param {String} expr
+ * @param {Boolean} bool
  * @api private
  */
 
-function update(node, model, expr) {
+function update(node, model, expr, bool) {
   var list = []
   var cb = new Function('model', 'return ' + compile(expr, list))
   var el = append(node, cb(model.data))
-  list.map(function(name) {
-    model.on('change ' + name, function() {
-      el.nodeValue = cb(model.data)
-    })
-  });
+  if(bool) {
+    list.map(function(name) {
+      model.on('change ' + name, function() {
+        el.nodeValue = cb(model.data)
+      })
+    });
+  }
 }
-
 
 /**
  * Compile expression by replacing identifiers.
