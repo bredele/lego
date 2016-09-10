@@ -160,7 +160,7 @@ Brick.prototype.bind = function(node) {
 
 function update(node, model, expr, bool) {
   var list = []
-  var cb = new Function('model', 'return ' + compile(expr, list))
+  var cb = compile(expr, list)
   var el = append(node, cb(model.data))
   if(bool) {
     list.map(function(name) {
@@ -189,9 +189,9 @@ function update(node, model, expr, bool) {
  */
 
 function compile(str, arr) {
-  return str.replace(parser, function(expr) {
+  return new Function('model', 'return ' + str.replace(parser, function(expr) {
     if(forbidden.indexOf(expr[0]) > -1) return expr;
     if(!~arr.indexOf(expr)) arr.push(expr);
     return 'model.' + expr;
-  });
+  }));
 }
