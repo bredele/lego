@@ -8,10 +8,11 @@ var append = require('regurgitate')
 
 
 /**
- * Compilation regexp.
+ * Compilation regexps.
  */
 
-var reg = /\.\w+|"[^"]*"|'[^']*'|\/([^/]+)\/|[a-zA-Z_]\w*/g
+var expressions = /(\$|\#)\{([^{}]*)\}/g
+var parser = /\.\w+|"[^"]*"|'[^']*'|\/([^/]+)\/|[a-zA-Z_]\w*/g
 
 
 /**
@@ -126,18 +127,9 @@ Brick.prototype.bind = function(node) {
   var str = node.nodeValue
   node.nodeValue = ''
   var idx = 0
-  str.replace(/(\$|\#)\{([^{}]*)\}/g, function(_, type, expr, i) {
-    //var value = model.get(expr)
-    var list = []
-    var fn = new Function('model', 'return ' + parse(expr, list))
+  str.replace(expressions, function(_, type, expr, i) {
     parent.appendChild(document.createTextNode(str.substring(idx, i)))
-    var el = append(parent, fn(model.data))
-    list.map(function(name) {
-      model.on('change ' + name, function() {
-        // should use the transform/proxy
-        el.nodeValue = fn(model.data)
-      })
-    });
+    update(parent, model, expr)
     idx = i + _.length
   });
   return this
@@ -145,8 +137,31 @@ Brick.prototype.bind = function(node) {
 
 
 /**
- * Parse expression and replace
- * identifier.
+ * Update node whenever model data changes.
+ *
+ * @note the node value of a text node when the data changes
+ * should be transformed (stream, promises, etc)
+ *
+ * @param {Node} node
+ * @param {Store} model
+ * @param {String} expr
+ * @api private
+ */
+
+function update(node, model, expr) {
+  var list = []
+  var cb = new Function('model', 'return ' + compile(expr, list))
+  var el = append(node, cb(model.data))
+  list.map(function(name) {
+    model.on('change ' + name, function() {
+      el.nodeValue = cb(model.data)
+    })
+  });
+}
+
+
+/**
+ * Compile expression by replacing identifiers.
  *
  * Examples:
  *
@@ -162,8 +177,8 @@ Brick.prototype.bind = function(node) {
  * @api private
  */
 
-function parse(str, arr) {
-  return str.replace(reg, function(expr) {
+function compile(str, arr) {
+  return str.replace(parser, function(expr) {
     if(forbidden.indexOf(expr[0]) > -1) return expr;
     if(!~arr.indexOf(expr)) arr.push(expr);
     return 'model.' + expr;

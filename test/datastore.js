@@ -40,6 +40,7 @@ tape('should update brick element when data changes', test => {
 	test.equal(btn.el.outerHTML, '<button>benjamin</button>')
 })
 
+
 tape('should update brick element with complex expressions', test => {
 	test.plan(2)
 	var btn = brick('<button>${first + " " + last}</button>', {
