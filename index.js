@@ -134,6 +134,7 @@ Brick.prototype.bind = function(node) {
     var el = append(parent, fn(model.data))
     list.map(function(name) {
       model.on('change ' + name, function() {
+        // should use the transform/proxy
         el.nodeValue = fn(model.data)
       })
     });
