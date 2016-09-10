@@ -8,6 +8,21 @@ var append = require('regurgitate')
 
 
 /**
+ * Compilation regexp.
+ */
+
+var reg = /\.\w+|"[^"]*"|'[^']*'|\/([^/]+)\/|[a-zA-Z_]\w*/g
+
+
+/**
+ * Compilation forbidden special characters.
+ * @type {Array}
+ */
+
+var forbidden = ['"', '.'];
+
+
+/**
  * Expose 'brick'
  */
 
@@ -111,8 +126,10 @@ Brick.prototype.bind = function(node) {
   var str = node.nodeValue
   node.nodeValue = ''
   var idx = 0
+  var list = []
   str.replace(/(\$|\#)\{([^{}]*)\}/g, function(_, type, expr, i) {
     var value = model.get(expr)
+    var fn = new Function('model', 'return ' + parse(expr, list))
     parent.appendChild(document.createTextNode(str.substring(idx, i)))
     append(parent, value)
     idx = i + _.length
@@ -140,7 +157,7 @@ Brick.prototype.bind = function(node) {
  */
 
 function parse(str, arr) {
-  return str.replace(/\.\w+|"[^"]*"|'[^']*'|\/([^/]+)\/|[a-zA-Z_]\w*/g, function(expr) {
+  return str.replace(reg, function(expr) {
     if(forbidden.indexOf(expr[0]) > -1) return expr;
     if(!~arr.indexOf(expr)) arr.push(expr);
     return 'model.' + expr;
