@@ -126,12 +126,17 @@ Brick.prototype.bind = function(node) {
   var str = node.nodeValue
   node.nodeValue = ''
   var idx = 0
-  var list = []
   str.replace(/(\$|\#)\{([^{}]*)\}/g, function(_, type, expr, i) {
-    var value = model.get(expr)
+    //var value = model.get(expr)
+    var list = []
     var fn = new Function('model', 'return ' + parse(expr, list))
     parent.appendChild(document.createTextNode(str.substring(idx, i)))
-    append(parent, value)
+    var el = append(parent, fn(model.data))
+    list.map(function(name) {
+      model.on('change ' + name, function() {
+        el.nodeValue = fn(model.data)
+      })
+    });
     idx = i + _.length
   });
   return this
