@@ -58,3 +58,13 @@ test('should bind once DOM element with simple data expression', assert => {
   btn.set('name', 'olivier')
   assert.equal(btn().outerHTML, '<button></button>')
 })
+
+
+test('should bind DOM element with complex expression', assert => {
+  assert.plan(2)
+  var btn = lego('<button>${first + " " + last}</button>')
+  btn.set('first', 'olivier')
+  assert.equal(btn().outerHTML, '<button>olivier </button>')
+  btn.set('last', 'wietrich')
+  assert.equal(btn().outerHTML, '<button>olivier wietrich</button>')
+})

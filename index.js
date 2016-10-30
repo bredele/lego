@@ -49,6 +49,15 @@ var expressions = /(\$|\#)\{([^{}]*)\}/g
 function text(brick, node) {
   var str = node.nodeValue
   str.replace(expressions, function(_, type, expr, i) {
+    // var properties = []
+    // var cb = compile(expr, properties)
+    // node.nodeValue = cb()
+    // if(type == '$') {
+    //
+    // }
+    // properties.map(function(prop) {
+    //
+    // })
     brick.pull(expr).then(function(value) {
       node.nodeValue = value
     })
@@ -72,4 +81,33 @@ function domify(tmpl) {
   var div = document.createElement('div')
   div.innerHTML = tmpl
   return div.children[0]
+}
+
+
+var parser = /\.\w+|"[^"]*"|'[^']*'|\/([^/]+)\/|[a-zA-Z_]\w*/g
+var forbidden = ['"', '.', "'"];
+
+/**
+ * Compile expression by replacing identifiers.
+ *
+ * Examples:
+ *
+ *   compile('name + last');
+ *   // => model.name + model.last
+ *
+ *   compile('name[0]');
+ *   // => model.name[0]
+ *
+ * @param  {String} str
+ * @param  {Array} arr
+ * @return {String}
+ * @api private
+ */
+
+function compile(str, arr) {
+  return new Function('model', 'return ' + str.replace(parser, function(expr) {
+    if(forbidden.indexOf(expr[0]) > -1) return expr;
+    if(!~arr.indexOf(expr)) arr.push(expr);
+    return 'model.' + expr;
+  }));
 }
