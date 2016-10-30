@@ -2,7 +2,7 @@
  * Dependencies
  */
 
-var store = require('datastore')
+var store = require('datastore').factory
 var walk = require('domwalk')
 
 
@@ -11,23 +11,25 @@ var walk = require('domwalk')
  */
 
 module.exports = function(tmpl, target) {
+
   target = target || {}
 
-  var brick = store(target.data)
+  var el = domify(tmpl)
 
-  brick.el = domify(tmpl)
+  var brick = store(function() {
+    return el
+  }, target.data)
 
-  walk(brick.el, function(node) {
+  walk(el, function(node) {
     if(node.nodeType == 1) {
       var attrs = node.attributes
       for(var i = 0, l = attrs.length; i < l; i++) {
         var attr = attrs[i]
         var name = attr.nodeName
         if(name.substring(0,2) == 'on') {
-          var topic = name.substring(2)
           var content = attr.nodeValue
           attr.nodeValue = ''
-          listen(brick, node, topic, content)
+          listen(brick, node, name.substring(2), content)
         }
       }
     }
