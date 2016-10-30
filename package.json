@@ -3,8 +3,7 @@
   "version": "0.0.0",
   "description": "Build web applications brick by brick as a child's play",
   "main": "index.js",
-  "scripts": {
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git://github.com/bredele/legoh.git"
@@ -24,7 +23,7 @@
     "url": "https://github.com/bredele/legoh/issues"
   },
   "dependencies": {
+    "datastore": "^1.8.2"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }
