@@ -20,6 +20,13 @@ module.exports = function(tmpl, target) {
     return el
   }, target.data)
 
+  bind(brick, el)
+
+  return brick
+}
+
+
+function bind(brick, el) {
   walk(el, function(node) {
     if(node.nodeType == 1) {
       var attrs = node.attributes
@@ -32,13 +39,28 @@ module.exports = function(tmpl, target) {
           listen(brick, node, name.substring(2), content)
         }
       }
-    }
+    } else text(brick, node)
   })
-
-  return brick
 }
 
 
+var expressions = /(\$|\#)\{([^{}]*)\}/g
+
+function text(brick, node) {
+  var str = node.nodeValue
+  str.replace(expressions, function(_, type, expr, i) {
+    brick.pull(expr).then(function(value) {
+      node.nodeValue = value
+    })
+    brick.on('changed ' + expr, function(value) {
+      node.nodeValue = value
+    })
+  });
+}
+
+function update() {
+
+}
 
 function listen(brick, node, type, topic) {
   node.addEventListener(type, function(event) {

@@ -40,3 +40,11 @@ test('should listen DOM events and trigger event in emitter', assert => {
   })
   btn().click()
 })
+
+test('should bind DOM element with data', assert => {
+  assert.plan(2)
+  var btn = lego('<button>${name}</button>')
+  assert.equal(btn().outerHTML, '<button></button>')
+  btn.set('name', 'olivier')
+  assert.equal(btn().outerHTML, '<button>olivier</button>')
+})
