@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "description": "Build web applications brick by brick as a child's play",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "browserify test/*.js | tape-run"
+  },
   "repository": {
     "type": "git",
     "url": "git://github.com/bredele/legoh.git"
@@ -25,5 +27,9 @@
   "dependencies": {
     "datastore": "^1.8.2"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "browserify": "^13.1.1",
+    "tape": "^4.6.2",
+    "tape-run": "^2.1.4"
+  }
 }
