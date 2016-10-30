@@ -52,20 +52,19 @@ function text(brick, node) {
     brick.pull(expr).then(function(value) {
       node.nodeValue = value
     })
-    brick.on('changed ' + expr, function(value) {
-      node.nodeValue = value
-    })
+    if(type == '$') {
+      brick.on('changed ' + expr, function(value) {
+        node.nodeValue = value
+      })
+    }
   });
-}
-
-function update() {
-
 }
 
 function listen(brick, node, type, topic) {
   node.addEventListener(type, function(event) {
     brick.emit(type + (topic ? ' ' + topic : ''))
   })
+  //brick.on('removed',)
 }
 
 
