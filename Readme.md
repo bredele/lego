@@ -14,6 +14,7 @@
 ## Usage
 
 ```js
+var lego = require('legoh')
 
 ```
 
