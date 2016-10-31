@@ -17,9 +17,7 @@ test('should be a datastore', assert => {
 test('should initialize datastore with data', assert => {
   assert.plan(1)
   var brick = lego('<button>hello</button>', {
-    data : {
-      name : 'olivier'
-    }
+    name : 'olivier'
   })
   assert.equal(brick.get('name'), 'olivier')
 })

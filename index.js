@@ -6,30 +6,35 @@ var store = require('datastore').factory
 var walk = require('domwalk')
 var bind = require('./lib/bind')
 
+
 /**
+ * Create a Legoh brick.
+ * A brick is a DOM element that updates itself with data changes.
  *
+ * @param {String | Element} tmpl
+ * @param {Object} data
+ * @api public
  */
 
-module.exports = function(tmpl, target) {
+module.exports = function(tmpl, data) {
 
-  target = target || {}
+  data = data || {}
 
   var el = domify(tmpl)
-
-  var data = target.data || {}
 
   var brick = store(function() {
     return el
   }, data)
 
   walk(el, function(node) {
-    if(node.nodeType == 1) attribute(brick, node, data)
-    else bind(brick, node, data)
+    if(node.nodeType == 1) {
+      // @note attributes and node type should be handled by bind
+      attribute(brick, node, data)
+    } else bind(brick, node, data)
   })
 
   return brick
 }
-
 
 function attribute(brick, node, data) {
   var attrs = node.attributes
@@ -46,13 +51,32 @@ function attribute(brick, node, data) {
 }
 
 
+/**
+ * Delegate DOM event to the datastore emitter.
+ *
+ * @note we should also register the listener handler
+ * to a removed event (with mutation observer).
+ *
+ * @param {Datastore} brick
+ * @param {Element} node
+ * @param {String} type
+ * @param {String} topic
+ * @api private
+ */
+
 function listen(brick, node, type, topic) {
   node.addEventListener(type, function(event) {
     brick.emit(type + (topic ? ' ' + topic : ''))
   })
-  //brick.on('removed',)
 }
 
+/**
+ * Transform template into a DOM element.
+ *
+ * @param {String | Element} tmpl
+ * @return {Element}
+ * @api private
+ */
 
 function domify(tmpl) {
   var div = document.createElement('div')
