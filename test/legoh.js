@@ -68,3 +68,13 @@ test('should bind DOM element with complex expression', assert => {
   btn.set('last', 'wietrich')
   assert.equal(btn().outerHTML, '<button>olivier wietrich</button>')
 })
+
+
+test('should bind DOM attribute with simple data expression', assert => {
+  assert.plan(2)
+  var link = lego('<a href="${domain}">link</a>')
+  link.set('domain', 'http://www.google.com')
+  assert.equal(link().getAttribute('href'), 'http://www.google.com')
+  link.set('domain', 'http://github.com/bredele')
+  assert.equal(link().getAttribute('href'), 'http://github.com/bredele')
+})

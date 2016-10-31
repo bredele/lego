@@ -28,7 +28,7 @@ module.exports = function(tmpl, target) {
   }, data)
 
   walk(el, function(node) {
-    if(node.nodeType == 1) attribute(brick, node)
+    if(node.nodeType == 1) attribute(brick, node, data)
     else text(brick, node, data)
   })
 
@@ -36,10 +36,11 @@ module.exports = function(tmpl, target) {
 }
 
 
-function attribute(brick, node) {
+function attribute(brick, node, data) {
   var attrs = node.attributes
   for(var i = 0, l = attrs.length; i < l; i++) {
     var attr = attrs[i]
+    text(brick, attr, data)
     var name = attr.nodeName
     if(name.substring(0,2) == 'on') {
       var content = attr.nodeValue
