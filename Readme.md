@@ -1,15 +1,11 @@
 # Legoh
 
-  > A UI library as simple as Lego...oh!
-
 [![Build Status](https://travis-ci.org/bredele/legoh.svg?branch=master)](https://travis-ci.org/bredele/legoh)
 [![NPM](https://img.shields.io/npm/v/legoh.svg)](https://www.npmjs.com/package/legoh)
 [![Downloads](https://img.shields.io/npm/dm/legoh.svg)](http://npm-stat.com/charts.html?package=legoh)
 [![pledge](https://bredele.github.io/contributing-guide/community-pledge.svg)](https://github.com/bredele/contributing-guide/blob/master/community.md)
 
-**Currently in development** (Check npm brickjs for previous version)
-
-[Try it online!]()
+**DEPRECATED** Please use [brickjs branch](https://github.com/bredele/lego/tree/brickjs) or even better, use React or Vue.
 
 ## Usage
 
