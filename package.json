@@ -1,23 +1,20 @@
 {
-  "name": "brickjs",
-  "version": "0.9.0",
-  "description": "MVVM building block to create real time and large scale applications in a flash",
+  "name": "legoh",
+  "version": "0.0.0",
+  "description": "Build web applications brick by brick as a child's play",
   "main": "index.js",
   "scripts": {
-    "test": "zuul -- test/*.js",
-    "test-local": "zuul --local -- test/*.js",
-    "standalone": "component build --standalone brick --name brick --out .",
-    "test-server": "mocha test/server.js"
+    "test": "browserify test/*.js | tape-run"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/bredele/brick.git"
+    "url": "git://github.com/bredele/legoh.git"
   },
   "keywords": [
     "MVVM",
     "brick",
-    "cement",
-    "wall",
+    "UI",
+    "MVC",
     "store",
     "model",
     "binding"
@@ -25,19 +22,15 @@
   "author": "Olivier Wietrich <olivier.wietrich@gmail.com> (http://github.com/bredele)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/bredele/brick/issues"
+    "url": "https://github.com/bredele/legoh/issues"
   },
   "dependencies": {
-    "datastore": "git://github.com/bredele/datastore",
-    "domwalk": "git://github.com/bredele/domwalk",
-    "fragment": "git://github.com/bredele/fragment",
-    "many": "git://github.com/bredele/many",
-    "mouth": "git://github.com/bredele/mouth",
-    "stomach": "git://github.com/bredele/stomach"
+    "datastore": "^1.8.2",
+    "domwalk": "^1.1.0"
   },
   "devDependencies": {
-    "mocha": "^2.2.5",
-    "roof": "git://github.com/bredele/roof",
-    "zuul": "~1.5.4"
+    "browserify": "^13.1.1",
+    "tape": "^4.6.2",
+    "tape-run": "^2.1.4"
   }
 }

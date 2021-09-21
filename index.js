@@ -1,373 +1,85 @@
-
 /**
- * Module dependencies.
+ * Dependencies
  */
 
-var many = require('many');
-var dom = require('stomach');
-var mouth = require('mouth');
-var walk = require('domwalk');
-var Store = require('datastore');
-var fragment = require('fragment');
+var store = require('datastore').factory
+var walk = require('domwalk')
+var bind = require('./lib/bind')
 
 
 /**
- * Expose 'brick'
- */
-
-module.exports = function(tmpl, data, anchor) {
-  if(data instanceof Element) {
-    anchor = data;
-    data = {};
-  }
-  var brick = new Brick(tmpl, data);
-  if(anchor) brick.to(anchor);
-  return brick;
-};
-
-
-/**
- * Brick constructor.
+ * Create a Legoh brick.
+ * A brick is a DOM element that updates itself with data changes.
  *
- * Examples:
- *
- *   var lego = brick('<button>');
- *   var lego = brick('<button>', data);
- *
- * @param {String | Element?} tmpl
- * @param {Object?} data
+ * @param {String | Element} tmpl
+ * @param {Object} data
  * @api public
  */
 
-function Brick(tmpl, data) {
-  Store.call(this, data || {});
-  this.from(tmpl);
-  this.state = 'created';
+module.exports = function(tmpl, data) {
+
+  data = data || {}
+
+  var el = domify(tmpl)
+
+  var brick = store(function() {
+    return el
+  }, data)
+
+  walk(el, function(node) {
+    if(node.nodeType == 1) {
+      // @note attributes and node type should be handled by bind
+      attribute(brick, node, data)
+    } else bind(brick, node, data)
+  })
+
+  return brick
 }
 
-
-Brick.prototype = Store.prototype;
-
-
-/**
- * Create brick dom element from
- * string or existing dom element.
- * 
- * @param  {String | Element}  tmpl
- * @param {Boolean?} bool clone node
- * @return {this}
- * @api public
- */
-
-Brick.prototype.from = function(tmpl, bool) {
-  this.el = (typeof tmpl === 'function')
-    ? tmpl(grout(this))
-    : dom(tmpl, bool);
-  return this;
-};
-
-
-/**
- * Append brick to
- * dom element.
- *
- * Examples:
- *
- *   // dom element
- *   var foo = brick(tmpl);
- *   foo.to(document.body);
- *
- *   // query selector
- *   var bar = brick(tmpl);
- *   bar.to('.article');
- * 
- * @param  {Element | String} el
- * @return {this}
- * @api public
- */
-
-Brick.prototype.to = function(anchor) {
-  dom(anchor).appendChild(this.el);
-  return this;
-};
-
-
-/**
- * Bind DOM node with data using
- * mouth template engine.
- *
- * @return {Element} node
- * @api private
- */
-
-Brick.prototype.bind = function(node) {
-  var data = this.data;
-  var compiled = mouth(node.nodeValue, data);
-  var keys = compiled[1];
-  var fn = function() {
-    node.nodeValue = compiled[0](data);
-  };
-  fn();
-  for(var l = keys.length; l--;) {
-    this.on('change ' + keys[l], fn);
-  }
-  return this;
-};
-
-
-/**
- * Apply data bindings on brick dom
- * element.
- * 
- * @return {this}
- * @api public
- */
-
-Brick.prototype.build = function() {
-  var that = this;
-  walk(this.el, function(node) {
-    if(node.nodeType === 1) {
-      var attrs = node.attributes;
-      for(var i = 0, l = attrs.length; i < l; i++) {
-        that.bind(attrs[i]);
-      }
-    } else {
-      that.bind(node);
+function attribute(brick, node, data) {
+  var attrs = node.attributes
+  for(var i = 0, l = attrs.length; i < l; i++) {
+    var attr = attrs[i]
+    //text(brick, attr, data)
+    var name = attr.nodeName
+    if(name.substring(0,2) == 'on') {
+      var content = attr.nodeValue
+      attr.nodeValue = ''
+      listen(brick, node, name.substring(2), content)
     }
-  });
-  return this;
-};
-
-
-/**
- * Add attribute binding.
- *
- * As seen below, a brick can bind
- * existing attributes, dataset or
- * custom attributes.
- *
- * Examples:
- *
- *   lego.attr('class', fn);
- *   lego.attr('awesome', fn);
- *   lego.attr('data-test', fn);
- *   lego.attr({
- *     class: fn,
- *     'data-test': cb
- *   });
- * 
- * @param  {String | Object} name 
- * @param  {Function?} binding
- * @return {this}
- * @api public
- */
-
-Brick.prototype.attr = many(function(name, binding) {
-  if(this.el.hasAttribute(name)) binding.call(this, this.el, this.el.getAttribute(name));
-  this.query('[' + name + ']', function(node) {
-    binding.call(this, node, node.getAttribute(name));
-  });
-  return this;
-});
-
-
-/**
- * Query all nodes inside a brick.
- *
- * Examples:
- *
- *  lego.query('input', function() {
- *    // do something
- *  })
- * 
- * @param {String} selector
- * @param {Function} cb
- * @api private
- */
-
-Brick.prototype.query = function(selector, cb) {
-  var els = this.el.querySelectorAll(selector);
-  for(var i = 0, l = els.length; i < l; i++) {
-    cb.call(this, els[i]);
-  }
-  return this;
-};
-
-
-/**
- * Add custom element.
- *
- * Brick allows you to create your
- * own tags (with the web component
- * standard) or to override existing
- * one.
- *
- * Examples:
- *
- *   var list = brick('<div><user /></div>');
- *   var user = brick('<button></button>');
- *
- *   list.tag('user', user);
- * 
- * @param  {String} name
- * @param  {Brick} brick
- * @return {this}
- */
-
-Brick.prototype.mold = many(function(selector, brick) {
-  brick.build();
-  this.query(selector, function(node) {
-    replace(node, brick.el);
-    brick.query('content', function(content) {
-      var select = content.getAttribute('select');
-      if(select) {
-        replace(content, node.querySelector(select));
-      } else {
-        replace(content, fragment([].slice.call(node.childNodes)));
-      }
-    });
-  });
-  return this;
-});
-
-
-/**
- * Add state machine transition
- * aka hook.
- *
- * Listen to a change of state or
- * define a state transition callback.
- *
- * Examples:
- *
- *   // transition on event lock
- *   lego.hook('created', 'lock', 'locked');
- *   lego.emit('lock');
- *   
- *   // with callback
- *   lego.hook('created', 'lock', function() {
- *     // do something
- *   }, 'locked');
- * 
- * @param  {String}   before
- * @param  {String}   ev
- * @param  {Function?} cb
- * @param  {String?}   after
- * @return {this}
- * @api public
- */
-
-Brick.prototype.hook = function(before, ev, cb, after) {
-  var that = this;
-  if(typeof cb === 'string') {
-    after = cb;
-    cb = null;
-  }
-  this.on(ev, function() {
-    if(that.state === before) {
-      cb && cb.apply(that, arguments);
-      if(after) that.state = after;
-    }
-  });
-  return this;
-};
-
-
-/**
- * Replace one node with another.
- *
- * @note benchmark vs remove/insertBefore
- * 
- * @param {Element} old
- * @param {Element} el
- * @api private
- */
-
-function replace(old, el) {
-  old.parentNode.replaceChild(el, old);
-}
-
-
-/**
- * Virtual dom implementation.
- *
- * @param {Brick} brick
- * @return {Function}
- * @api private
- */
-
-function grout(brick) {
-  return function(selector, attrs, content) {
-    var el = document.createElement(selector);
-    if(typeof attrs !== 'object' || attrs instanceof Array) {
-      content = attrs;
-      attrs = null;
-    }
-    if(content) inner(el, content, brick);
-    if(attrs) attributes(el, attrs, brick);
-    return el;
-  };
-}
-
-
-/**
- * Render virtual dom inner content.
- *
- * @param {Element} el
- * @param {String | Array} content
- * @param {Brick} brick
- * @api private
- */
-
-function inner(el, content, brick) {
-  var node = content;
-  if(content instanceof Array) {
-    node = document.createDocumentFragment();
-    for(var i = 0, l = content.length; i < l; i++) {
-      inner(node, content[i], brick);
-    }
-  } else if(typeof content === 'string') {
-    node = document.createTextNode(content);
-    brick.bind(node);
-  }
-  el.appendChild(node);
-}
-
-
-/**
- * Render virtual dom attributes.
- *
- * @param {Element} el
- * @param {Object} attrs
- * @param {Brick} brick
- * @api private
- */
-
-function attributes(el, attrs, brick) {
-  for(var key in attrs) {
-    var node = document.createAttribute(key);
-    var value = attrs[key];
-    if(typeof value === 'object') value = styles(value);
-    node.nodeValue = value;
-    brick.bind(node);
-    el.attributes.setNamedItem(node);
   }
 }
 
 
 /**
- * Render virtual dom styles.
+ * Delegate DOM event to the datastore emitter.
  *
- * @param {Object} obj
- * @return {String}
+ * @note we should also register the listener handler
+ * to a removed event (with mutation observer).
+ *
+ * @param {Datastore} brick
+ * @param {Element} node
+ * @param {String} type
+ * @param {String} topic
  * @api private
  */
 
-function styles(obj) {
-  var str = '';
-  for(var key in obj) {
-    str += key + ':' + obj[key] + ';';
-  }
-  return str;
+function listen(brick, node, type, topic) {
+  node.addEventListener(type, function(event) {
+    brick.emit(type + (topic ? ' ' + topic : ''))
+  })
 }
 
+/**
+ * Transform template into a DOM element.
+ *
+ * @param {String | Element} tmpl
+ * @return {Element}
+ * @api private
+ */
+
+function domify(tmpl) {
+  var div = document.createElement('div')
+  div.innerHTML = tmpl
+  return div.children[0]
+}
